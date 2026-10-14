@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Effem Radio</title>
+<meta name="theme-color" content="#170B2E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Effem">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Yellowtail&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+/* Sunset : nuit violette, dégradé coucher de soleil sur les actions, lagon pour les infos */
+:root{
+  --nuit:#170B2E; --nuit2:#2A0F4A; --nuit3:#3A1763; --magenta:#FF2E88; --mandarine:#FF8A3D;
+  --soleil:#FFD166; --lagon:#19C3B4; --creme:#FFF4E6; --lilas:#CDBFE6; --gris:#8E7FAA; --ligne:rgba(255,244,230,.09);
+  --sun:linear-gradient(180deg,#FFD166 0%,#FF8A3D 45%,#FF2E88 75%,#8B2BD9 100%);
+  --sunh:linear-gradient(90deg,#FFD166,#FF8A3D 45%,#FF2E88);
+  --display:Anton,Impact,"Arial Narrow",sans-serif; --script:Yellowtail,"Brush Script MT",cursive; --body:Manrope,system-ui,-apple-system,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;background:var(--nuit);color:var(--creme);font-family:var(--body);overscroll-behavior:none}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--lagon);outline-offset:2px}
+img{display:block;max-width:100%}
+#app{position:relative;height:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;
+  background:radial-gradient(circle at 85% 0%,rgba(255,46,136,.32),rgba(255,46,136,0) 45%),var(--nuit)}
+.view{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:calc(env(safe-area-inset-top,0px) + 14px) max(20px,env(safe-area-inset-right,0px)) 16px max(20px,env(safe-area-inset-left,0px))}
+.view[hidden]{display:none}
+h1.big{margin:0;font:400 40px/1 var(--display);letter-spacing:1px}
+h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
+.lbl{margin:0;font-size:12px;font-weight:800;letter-spacing:1.6px;color:var(--mandarine);text-transform:uppercase}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;align-items:center;gap:10px}
+.grow{flex:1;min-width:0}
+.muted{color:var(--lilas)}
+.small{font-size:13px}
+.pill{height:44px;padding:0 16px;border-radius:22px;border:1.5px solid rgba(255,244,230,.25);display:inline-flex;align-items:center;font-size:15px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.pill.on{background:var(--sunh);color:var(--nuit);border-color:transparent;font-weight:800}
+.round{width:44px;height:44px;border-radius:22px;background:var(--nuit2);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.cta{height:56px;border-radius:28px;background:var(--sunh);color:var(--nuit);font:400 22px/1 var(--display);letter-spacing:1px;display:flex;align-items:center;justify-content:center;width:100%}
+.ghost{height:48px;border-radius:24px;background:var(--nuit2);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.card{border-radius:20px;background:var(--nuit2)}
+.scrollx{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px}
+.scrollx::-webkit-scrollbar{display:none}
+
+/* Logos */
+.logo{display:block;position:relative;overflow:hidden;background:#fff;flex-shrink:0}
+.logo img{width:100%;height:100%;object-fit:cover}
+.logo .fb{position:absolute;inset:0;background:linear-gradient(160deg,var(--mandarine),var(--magenta));display:flex;flex-direction:column;justify-content:flex-end;padding:9%;overflow:hidden}
+.logo .fbt{display:block;font-family:var(--display);color:var(--nuit);line-height:.98;letter-spacing:.02em;word-break:normal;overflow-wrap:normal;hyphens:none;text-transform:uppercase}
+
+/* Accueil */
+.brand{display:flex;align-items:center;gap:2px}
+.brand .w{font:400 38px/1 var(--display);letter-spacing:2px;background:var(--sun);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand .s{font:24px/1 var(--script);color:var(--lagon);margin:14px 0 0 -2px;transform:rotate(-6deg)}
+.promise{min-height:32px;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--lagon)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tile{display:flex;flex-direction:column;gap:6px;text-align:left;min-width:0}
+.tile .logo{width:100%;aspect-ratio:1;border-radius:20px}
+.tile .nm{font-size:13px;font-weight:500;color:var(--lilas);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile.cur .nm{font-weight:800;color:var(--creme)}
+.ring{position:absolute;inset:0;border-radius:inherit;pointer-events:none}
+.cur .ring{box-shadow:inset 0 0 0 3px var(--creme),inset 0 0 0 6px var(--nuit)}
+.eq{position:absolute;top:8px;right:8px;height:24px;padding:0 7px 6px;border-radius:12px;background:var(--magenta);display:flex;align-items:flex-end;gap:2px}
+.eq i{width:3px;border-radius:2px;background:var(--creme);animation:eq 1s ease-in-out infinite}
+.eq i:nth-child(1){height:8px}.eq i:nth-child(2){height:12px;animation-delay:.2s}.eq i:nth-child(3){height:6px;animation-delay:.4s}
+.eq.still i{animation:none;opacity:.6}
+@keyframes eq{50%{transform:scaleY(.4)}}
+.recent{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none}
+.recent .logo{width:60px;height:60px;border-radius:14px}
+
+/* Mini-lecteur + onglets */
+.mini{margin:0 16px 8px;height:64px;border-radius:20px;background:var(--nuit2);box-shadow:0 0 0 1.5px var(--magenta),0 8px 24px rgba(255,46,136,.3);padding:8px;display:flex;align-items:center;gap:12px;text-align:left;flex-shrink:0}
+.mini .logo{width:48px;height:48px;border-radius:12px}
+.mini .t{font:400 19px/1 var(--display);letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st{font-size:10px;font-weight:800;letter-spacing:1.2px;color:var(--magenta);white-space:nowrap}
+.st.pause{color:var(--soleil)}.st.err{color:var(--soleil)}.st.load{color:var(--lilas)}
+.play{border-radius:50%;background:var(--sun);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.play svg{fill:var(--nuit)}
+.mini .play{width:48px;height:48px}
+nav.tabs{flex-shrink:0;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ligne);background:rgba(23,11,46,.92);
+  padding:6px max(8px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 6px) max(8px,env(safe-area-inset-left,0px))}
+nav.tabs button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px;font-size:11px;font-weight:500;color:var(--lilas);min-height:44px}
+nav.tabs button svg{stroke:currentColor}
+nav.tabs button.on{color:var(--magenta);font-weight:800}
+
+/* Overlays */
+.layer{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;background:var(--nuit);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.layer[hidden]{display:flex!important;transform:translateY(105%);pointer-events:none;visibility:hidden;transition:transform .28s ease-in,visibility 0s .28s}
+.layer.player{background:radial-gradient(circle at 50% 28%,rgba(255,46,136,.45),rgba(255,46,136,0) 55%),var(--nuit);
+  padding:calc(env(safe-area-inset-top,0px) + 8px) 20px calc(env(safe-area-inset-bottom,0px) + 18px)}
+.player .art{position:relative;margin:10px auto 0;width:min(290px,72vw);aspect-ratio:1;border-radius:32px;box-shadow:0 24px 60px rgba(255,46,136,.35);flex-shrink:0}
+.player .art .logo{width:100%;height:100%;border-radius:32px}
+.player .badge{position:absolute;top:14px;left:14px;height:30px;padding:0 12px;border-radius:15px;background:rgba(23,11,46,.82);display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:1.4px}
+.player .badge i{width:8px;height:8px;border-radius:4px;background:var(--magenta)}
+.spin{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(23,11,46,.45);border-radius:32px}
+.spin span{width:64px;height:64px;border-radius:50%;border:6px solid rgba(255,244,230,.25);border-top-color:var(--creme);animation:sp 0.9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.player h1{margin:0;font:400 44px/1 var(--display);letter-spacing:1px;overflow-wrap:anywhere}
+.ctrls{display:flex;align-items:center;justify-content:space-between;padding:0 12px}
+.ctrls .side{width:64px;height:64px;border-radius:32px;background:var(--nuit2);display:flex;align-items:center;justify-content:center}
+.ctrls .play{width:96px;height:96px;box-shadow:0 12px 34px rgba(255,46,136,.5)}
+.strip{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:4px 2px}
+.strip button{position:relative;border-radius:14px;flex-shrink:0}
+.strip .logo{width:52px;height:52px;border-radius:14px}
+.strip .cur .ring{box-shadow:inset 0 0 0 3px var(--creme),inset 0 0 0 5px var(--nuit)}
+.note{border-radius:16px;padding:10px 14px;background:rgba(255,209,102,.1);box-shadow:inset 0 0 0 1px rgba(255,209,102,.35);font-size:13px;line-height:18px;color:var(--creme)}
+.note b{color:var(--soleil)}
+
+/* Feuilles */
+.scrim{position:absolute;inset:0;z-index:30;background:rgba(8,3,18,.62);display:flex;flex-direction:column;justify-content:flex-end}
+.scrim[hidden]{display:none}
+.sheet{border-radius:30px 30px 0 0;background:#22103E;padding:10px 20px calc(env(safe-area-inset-bottom,0px) + 24px);display:flex;flex-direction:column;gap:14px;max-height:92%;overflow-y:auto}
+.grab{align-self:center;width:40px;height:5px;border-radius:3px;background:#4A3768}
+.sheet h1{margin:0;font:400 32px/1 var(--display);letter-spacing:1px}
+.opts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.opts button{height:48px;border-radius:16px;background:var(--nuit2);font-size:15px;font-weight:700}
+.opts button.on{background:var(--sunh);color:var(--nuit);font-weight:800}
+.prom{display:flex;gap:12px;align-items:flex-start}
+.prom span.k{width:40px;height:40px;border-radius:12px;background:var(--nuit2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font:400 18px/1 var(--display);color:var(--lagon)}
+
+/* Explorer */
+.search{height:52px;border-radius:26px;background:var(--nuit2);display:flex;align-items:center;gap:10px;padding:0 18px}
+.search:focus-within{box-shadow:0 0 0 1.5px var(--lagon)}
+.search input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--creme);font:600 17px var(--body)}
+.search input::placeholder{color:var(--gris);font-weight:500}
+.genres{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.genres button{height:68px;border-radius:18px;display:flex;align-items:flex-end;padding:0 0 10px 14px;font:400 23px/1 var(--display);letter-spacing:1px;color:var(--nuit);text-align:left}
+.res{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.res li{display:flex;align-items:center;gap:12px;padding:6px 0}
+.res .main{display:flex;align-items:center;gap:14px;flex:1;min-width:0;text-align:left}
+.res .logo{width:56px;height:56px;border-radius:14px}
+.res .n{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.res .m{font-size:13px;color:var(--lilas);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.heart{width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:30px 10px}
+.empty h3{margin:0;font:400 28px/1.05 var(--display);letter-spacing:1px}
+
+/* Réglages */
+.list{border-radius:20px;background:var(--nuit2);display:flex;flex-direction:column}
+.list>*{min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--ligne);text-align:left;font-size:16px;font-weight:700}
+.list>*:last-child{border-bottom:0}
+.hint{display:block;font-size:13px;font-weight:500;color:var(--lilas);margin-top:2px;line-height:18px}
+.seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:12px}
+.seg button{height:44px;border-radius:14px;background:var(--nuit3);font-size:14px;font-weight:700}
+.seg button.on{background:var(--sunh);color:var(--nuit);font-weight:800}
+
+/* Modifier */
+.edit li{display:flex;align-items:center;gap:8px;padding:6px 0}
+.edit .logo{width:48px;height:48px;border-radius:12px}
+.minus{width:26px;height:26px;border-radius:13px;background:var(--magenta);display:flex;align-items:center;justify-content:center}
+.sep{display:flex;align-items:center;gap:10px;padding:10px 0 4px}
+.sep span:last-child{flex:1;height:1px;background:rgba(255,138,61,.35)}
+
+/* Voiture */
+.car{background:#0E0620;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px calc(env(safe-area-inset-bottom,0px) + 16px);gap:14px}
+.car .cgrid{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);gap:12px}
+.car .cgrid button{position:relative;border-radius:24px;overflow:hidden}
+.car .cgrid .logo{position:absolute;inset:0;width:100%;height:100%}
+.car .num{position:absolute;top:10px;left:10px;width:34px;height:34px;border-radius:17px;background:var(--nuit);display:flex;align-items:center;justify-content:center;font:400 18px/1 var(--display)}
+.car .cur .ring{box-shadow:inset 0 0 0 4px var(--creme),inset 0 0 0 8px #0E0620}
+.car .bar{height:104px;border-radius:30px;background:var(--nuit2);box-shadow:0 0 0 1.5px var(--magenta);display:flex;align-items:center;gap:14px;padding:0 12px 0 22px;flex-shrink:0}
+.car .bar .play{width:80px;height:80px}
+
+.toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%);z-index:50;background:var(--creme);color:var(--nuit);font-size:14px;font-weight:700;padding:10px 16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:calc(100% - 40px);text-align:center}
+.toast[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ACCUEIL -->
+  <section class="view" id="v-home">
+    <div class="stack" style="gap:14px">
+      <header class="row">
+        <div class="brand grow"><span class="w">EFFEM</span><span class="s">radio</span></div>
+        <button class="round" id="toCar" aria-label="Mode voiture"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFF4E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.5-4.5A2 2 0 018.4 5h7.2a2 2 0 011.9 1.5L19 11M4 11h16v5H4zM6.5 16v2M17.5 16v2"/></svg></button>
+      </header>
+      <button class="promise" id="openPromise" style="margin-top:-8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
+        0 pub dans l’app · 0 pisteur
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
+      </button>
+      <div class="row" style="justify-content:space-between;align-items:baseline">
+        <h2 class="sec" style="font-size:26px">MES STATIONS</h2>
+        <button class="muted" id="openEdit" style="min-height:44px;font-size:14px;font-weight:700">Modifier</button>
+      </div>
+      <div class="grid" id="homeGrid"></div>
+      <div class="stack" id="recentWrap" style="gap:10px;margin-top:4px">
+        <h2 class="sec" style="font-size:22px">RÉCEMMENT</h2>
+        <div class="recent" id="recent"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPLORER -->
+  <section class="view" id="v-explore" hidden>
+    <div class="stack" style="gap:14px">
+      <h1 class="big">EXPLORER</h1>
+      <label class="search" for="q">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#19C3B4" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        <input id="q" type="text" placeholder="Radio, genre, ville, île…" autocomplete="off" enterkeyhint="search">
+        <button id="qClear" aria-label="Effacer" hidden style="width:28px;height:28px;border-radius:14px;background:#4A3768;font-size:13px;font-weight:800">✕</button>
+      </label>
+      <div id="exHome" class="stack" style="gap:10px">
+        <p class="lbl">Radios françaises · par genre</p>
+        <div class="genres" id="genres"></div>
+      </div>
+      <div id="exRes" hidden class="stack" style="gap:6px">
+        <button id="resBack" hidden class="muted" style="align-self:flex-start;min-height:40px;font-size:15px;font-weight:700">‹ Toutes les régions</button>
+        <div class="row" style="justify-content:space-between"><p class="lbl" id="resTitle">Stations</p><span class="small muted" id="resCount"></span></div>
+        <ul class="res" id="resList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RÉGLAGES -->
+  <section class="view" id="v-settings" hidden>
+    <div class="stack" style="gap:16px">
+      <h1 class="big">RÉGLAGES</h1>
+      <div class="stack" style="gap:8px">
+        <p class="lbl">Pause sans nouvelle pub</p>
+        <div class="list">
+          <div style="display:block"><span>Garder le direct connecté en pause</span>
+            <span class="hint">Pause coupe seulement le son. À la reprise, tu retombes tout de suite sur le direct, sans repasser par la pub de connexion. Au-delà de cette durée, le flux est vraiment coupé.</span></div>
+          <div class="seg" id="keepSeg" style="padding:12px;border-bottom:0"></div>
+        </div>
+        <p class="small muted" style="margin:0 4px;line-height:18px">Tant que le direct reste connecté, il consomme des données comme pendant l’écoute (environ 60 Mo par heure).</p>
+      </div>
+      <div class="stack" style="gap:8px">
+        <p class="lbl">Lecture</p>
+        <div class="list">
+          <button id="resumeRow"><span>Reprendre au lancement<span class="hint">Remet ta dernière station en avant</span></span><span id="resumeVal" style="font-size:15px;color:var(--soleil)"></span></button>
+          <button id="resetRow"><span>Réinitialiser mes stations<span class="hint">Revient aux 6 stations de départ</span></span><span class="muted">›</span></button>
+        </div>
+      </div>
+      <div class="stack" style="gap:8px">
+        <p class="lbl">Effem</p>
+        <div class="list">
+          <button id="promiseRow"><span>Notre promesse · 0 pisteur</span><span class="muted">›</span></button>
+          <div><span>Annuaire des stations</span><span class="small muted" style="font-weight:500">France et outre-mer</span></div>
+          <div><span>Version</span><span class="small muted" style="font-weight:500">0.1 · prototype</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MINI-LECTEUR -->
+  <button class="mini" id="mini" hidden aria-label="Ouvrir le lecteur">
+    <span class="logo" id="miniLogo"></span>
+    <span class="grow" style="display:flex;flex-direction:column;gap:3px">
+      <span class="t" id="miniName"></span>
+      <span class="st" id="miniSt"></span>
+    </span>
+    <span class="play" id="miniPlay" role="button" aria-label="Lecture"></span>
+  </button>
+
+  <nav class="tabs" id="tabs">
+    <button data-v="home" class="on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9H4z"/></svg>Accueil</button>
+    <button data-v="explore"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Explorer</button>
+    <button data-v="settings"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8M16 5v4M10 15v4"/></svg>Réglages</button>
+  </nav>
+
+  <!-- LECTEUR -->
+  <div class="layer player" id="player" hidden role="dialog" aria-label="Lecteur">
+    <div class="row" style="justify-content:space-between">
+      <button class="round" id="closePlayer" aria-label="Réduire le lecteur" style="background:transparent"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFF4E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <span class="small muted" style="font-weight:700" id="pPos"></span>
+      <button class="round" id="pFav" aria-label="Ajouter à mes stations" style="background:transparent"></button>
+    </div>
+    <div class="art"><span class="logo" id="pLogo"></span><span class="badge" id="pBadge"><i></i>EN DIRECT</span><span class="spin" id="pSpin" hidden><span></span></span></div>
+    <div class="stack" style="gap:6px;padding:20px 4px 0">
+      <h1 id="pName"></h1>
+      <span class="st" id="pSt" style="font-size:12px"></span>
+      <span class="muted" id="pMeta" style="font-size:15px"></span>
+    </div>
+    <div id="pErr" hidden class="stack" style="gap:8px;padding-top:12px">
+      <div class="note"><b>La station ne répond pas.</b> Le flux est coupé ou le réseau est trop faible.</div>
+      <button class="ghost" id="retry" style="background:var(--sunh);color:var(--nuit);font-weight:800">Réessayer</button>
+    </div>
+    <div style="flex:1;min-height:12px"></div>
+    <div class="ctrls">
+      <button class="side" id="prev" aria-label="Station précédente"><svg width="28" height="28" viewBox="0 0 24 24" fill="#FFF4E6"><path d="M18 5v14L8 12z"/><rect x="5" y="5" width="2.5" height="14" rx="1"/></svg></button>
+      <button class="play" id="pPlay" aria-label="Lecture"></button>
+      <button class="side" id="next" aria-label="Station suivante"><svg width="28" height="28" viewBox="0 0 24 24" fill="#FFF4E6"><path d="M6 5v14l10-7z"/><rect x="16.5" y="5" width="2.5" height="14" rx="1"/></svg></button>
+    </div>
+    <div style="flex:1;min-height:12px"></div>
+    <div class="strip" id="pStrip"></div>
+    <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px">
+      <button class="ghost" id="openTimer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFD166" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg><span id="timerLbl">Minuteur</span></button>
+    </div>
+  </div>
+
+  <!-- MODIFIER -->
+  <div class="layer" id="edit" hidden role="dialog" aria-label="Modifier mes stations" style="padding:calc(env(safe-area-inset-top,0px) + 12px) 20px calc(env(safe-area-inset-bottom,0px) + 16px)">
+    <div class="row" style="justify-content:space-between">
+      <span></span>
+      <button id="closeEdit" style="height:40px;padding:0 18px;border-radius:20px;background:var(--sun);color:var(--nuit);font-size:15px;font-weight:800">OK</button>
+    </div>
+    <h1 class="big">MES STATIONS</h1>
+    <p class="small muted" style="margin:6px 0 0;line-height:19px">Les flèches changent l’ordre. Les 6 premières s’affichent en mode voiture.</p>
+    <ul class="res edit" id="editList" style="overflow-y:auto;flex:1;min-height:0;margin-top:8px"></ul>
+    <button class="ghost" id="editAdd" style="background:transparent;box-shadow:inset 0 0 0 1.5px var(--lagon);color:var(--lagon);margin-top:10px">+ Ajouter une station</button>
+  </div>
+
+  <!-- VOITURE -->
+  <div class="layer car" id="car" hidden role="dialog" aria-label="Mode voiture">
+    <div class="row" style="justify-content:space-between">
+      <span style="font:400 30px/1 var(--display);letter-spacing:1px">MODE VOITURE</span>
+      <button id="closeCar" style="height:48px;padding:0 20px;border-radius:24px;background:var(--nuit2);font-size:16px;font-weight:800">Quitter</button>
+    </div>
+    <div class="cgrid" id="carGrid"></div>
+    <div class="bar">
+      <div class="grow"><div class="st" id="carSt" style="font-size:13px"></div><div id="carName" style="font:400 34px/1.05 var(--display);letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div></div>
+      <button class="play" id="carPlay" aria-label="Lecture"></button>
+    </div>
+  </div>
+
+  <!-- FEUILLE MINUTEUR -->
+  <div class="scrim" id="timerSheet" hidden>
+    <div class="sheet" role="dialog" aria-label="Minuteur">
+      <span class="grab"></span>
+      <div class="row" style="justify-content:space-between"><h1>MINUTEUR</h1><button class="round" data-close aria-label="Fermer" style="font-weight:800">✕</button></div>
+      <div id="tRun" hidden style="align-self:center;text-align:center">
+        <div id="tLeft" style="font:400 64px/1 var(--display);letter-spacing:1px;font-variant-numeric:tabular-nums"></div>
+        <div class="small muted" id="tEnd"></div>
+      </div>
+      <div class="opts" id="tOpts"></div>
+      <div id="tActions" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button class="ghost" id="tPlus">+ 15 min</button>
+        <button class="ghost" id="tStop" style="background:transparent;box-shadow:inset 0 0 0 1.5px var(--magenta);color:var(--magenta)">Arrêter</button>
+      </div>
+      <p class="small muted" style="margin:0;text-align:center">À la fin, la radio s’arrête et le flux est coupé.</p>
+    </div>
+  </div>
+
+  <!-- FEUILLE PROMESSE -->
+  <div class="scrim" id="promiseSheet" hidden>
+    <div class="sheet" role="dialog" aria-label="Notre promesse">
+      <span class="grab"></span>
+      <div class="row" style="justify-content:space-between"><h1>NOTRE PROMESSE</h1><button class="round" data-close aria-label="Fermer" style="font-weight:800">✕</button></div>
+      <div class="prom"><span class="k">0</span><span><b>Aucune pub dans l’app</b><span class="hint">Pas de bannière, pas de vidéo, pas d’écran de pub entre deux stations.</span></span></div>
+      <div class="prom"><span class="k">0</span><span><b>Aucun pisteur</b><span class="hint">Pas de compte, pas de pub ciblée. Tes stations restent sur ton téléphone.</span></span></div>
+      <div class="prom"><span class="k">i</span><span><b>La pub à l’antenne, c’est la radio</b><span class="hint">Le son vient directement de chaque station. Si elle diffuse de la pub dans son programme, tu l’entends comme sur un poste FM.</span></span></div>
+      <button class="cta" data-close>COMPRIS</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden role="status"></div>
+</div>
+
+<script>
+const LOGOS = %%LOGOS%%;
+const LOCAL = %%LOCAL%%;  // radios locales par région (relevé de l'annuaire)
+const DEFAULTS = [
+  {id:'inter', name:'France Inter', url:'https://icecast.radiofrance.fr/franceinter-midfi.mp3', meta:'Généraliste', logo:'inter'},
+  {id:'finfo', name:'franceinfo', url:'https://icecast.radiofrance.fr/franceinfo-midfi.mp3', meta:'Info en continu', logo:'franceinfo'},
+  {id:'culture', name:'France Culture', url:'https://icecast.radiofrance.fr/franceculture-midfi.mp3', meta:'Culture, idées', logo:'culture'},
+  {id:'fip', name:'FIP', url:'https://icecast.radiofrance.fr/fip-midfi.mp3', meta:'Musiques éclectiques', logo:'fip'},
+  {id:'tsf', name:'TSF Jazz', url:'https://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3', meta:'Jazz', logo:'tsf'},
+  {id:'nova', name:'Radio Nova', url:'https://novazz.ice.infomaniak.ch/novazz-128.mp3', meta:'Musiques du monde', short:'NOVA'}
+];
+const GENRES = [
+  ['Info','news','#FFD166','#FF8A3D'],['Jazz','jazz','#19C3B4','#0E8F86'],['Pop','pop','#FF2E88','#8B2BD9'],['Classique','classical','#FFF4E6','#CDBFE6'],
+  ['Rap','hip-hop','#FF8A3D','#FF2E88'],['Rock','rock','#8B2BD9','#5A1FA0'],['Électro','electronic','#7FE3D8','#19C3B4'],['Années 80','80s','#FFD166','#FF2E88'],['Sport','sport','#FF8A3D','#FFD166'],['Radios locales','__local','#19C3B4','#FF8A3D']
+];
+const KEEP_OPTS = [[0,'Non'],[5,'5 min'],[15,'15 min'],[30,'30 min']];
+const RB_HOSTS = ['de1.api.radio-browser.info','de2.api.radio-browser.info','fi1.api.radio-browser.info','at1.api.radio-browser.info'];
+
+/* ---------- stockage (tolérant aux erreurs) ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('effem.'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('effem.'+k, JSON.stringify(v)); }catch(e){} }
+};
+let mine = store.get('mine', DEFAULTS);
+let recent = store.get('recent', []);
+let keepMin = store.get('keepMin', 15);
+let resumeLast = store.get('resumeLast', true);
+let cur = null;               // station en cours (objet)
+let status = 'idle';          // idle | loading | live | muted | stopped | error
+let connected = false;        // le flux est-il ouvert ?
+let keepTimer = null, keepUntil = 0;
+let sleepEnd = 0, sleepTimer = null;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');
+const KNOWN = {franceinter:'inter',franceinfo:'franceinfo',franceculture:'culture',fip:'fip',tsfjazz:'tsf',nostalgie:'nostalgie',skyrock:'skyrock',rfm:'rfm',europe1:'europe1'};
+
+function logoSrc(st){
+  if (st.logo && LOGOS[st.logo]) return LOGOS[st.logo];
+  const k = KNOWN[norm(st.name)]; if (k && LOGOS[k]) return LOGOS[k];
+  if (st.favicon && st.favicon.startsWith('https://')) return st.favicon;
+  return '';
+}
+function shortName(st){
+  if (st.short) return st.short;
+  let t = String(st.name).replace(/[\u{1F000}-\u{1FFFF}☀-➿]/gu,'').replace(/\(.*?\)|\[.*?\]/g,'')
+    .replace(/^\s*radio\s+/i,'').replace(/\s*[-–|:·].*$/,'').replace(/\s+/g,' ').trim();
+  return (t || String(st.name)).split(' ').slice(0,3).join(' ').toUpperCase();
+}
+const fbHTML = (txt, fs) => `<span class="fb"><span class="fbt" data-fs="${fs}" style="font-size:${fs}px">${esc(txt)}</span></span>`;
+function logoHTML(st, fs){
+  const src = logoSrc(st), txt = shortName(st);
+  return src ? `<img src="${esc(src)}" alt="" loading="lazy" data-fb="${esc(txt)}" data-fs="${fs}" onerror="fbFail(this)">` : fbHTML(txt, fs);
+}
+function fbFail(img){ const w = document.createElement('span'); w.innerHTML = fbHTML(img.dataset.fb, img.dataset.fs); const el = w.firstChild; img.replaceWith(el); fitFb(el.firstChild); }
+/* Vignette sans logo : le nom tient sur une ligne par mot, on réduit la taille jusqu'à ce que le mot le plus long rentre */
+function fitFb(t){
+  const box = t.parentElement; if (!box || !box.clientWidth) return;
+  const cs = getComputedStyle(box), w = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), h = box.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  let fs = +t.dataset.fs; t.style.fontSize = fs + 'px';
+  while (fs > 7 && (t.scrollWidth > w + 0.5 || t.offsetHeight > h + 0.5)) { fs -= 0.5; t.style.fontSize = fs + 'px'; }
+}
+function fitAll(root = document){ root.querySelectorAll('.fbt').forEach(fitFb); }
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fitAll());
+const ICON_PLAY = s => `<svg width="${s}" height="${s}" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>`;
+const ICON_PAUSE = s => `<svg width="${s}" height="${s}" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>`;
+const HEART = on => `<svg width="24" height="24" viewBox="0 0 24 24" fill="${on?'#FF2E88':'none'}" stroke="${on?'#FF2E88':'#CDBFE6'}" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.5-7 10-7 10z"/></svg>`;
+
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.hidden=false; clearTimeout(toast.h); toast.h=setTimeout(()=>t.hidden=true, 2400); }
+function isMine(st){ return !!st && mine.some(m => m.id===st.id || m.url===st.url); }
+function save(){ store.set('mine', mine); store.set('recent', recent); }
+
+/* ---------- audio : pause = son coupé, le direct reste connecté ---------- */
+const A = new Audio();
+A.preload = 'none';
+A.setAttribute('playsinline','');
+let ourPause = false, connSeq = 0;
+
+function setStatus(s){ status = s; render(); }
+
+function connect(st){
+  clearKeep();
+  cur = st;
+  recent = [st, ...recent.filter(r => r.url !== st.url)].slice(0, 8);
+  store.set('last', st); save();
+  ourPause = true; try{ A.pause(); }catch(e){} ourPause = false;
+  A.muted = false;
+  A.src = st.url;
+  connected = true;
+  setStatus('loading');
+  setMediaSession();
+  const token = ++connSeq;
+  const p = A.play();
+  if (p && p.catch) p.catch(err => { if (err && err.name==='AbortError') return; if (token===connSeq && status==='loading') { connected=false; setStatus(err && err.name==='NotAllowedError' ? 'stopped' : 'error'); } });
+  if (st.uuid) fetch(`https://${RB_HOSTS[0]}/json/url/${st.uuid}`).catch(()=>{});  // compte le clic pour l'annuaire
+}
+function hardStop(){
+  clearKeep();
+  ourPause = true;
+  try{ A.pause(); A.removeAttribute('src'); A.load(); }catch(e){}
+  ourPause = false;
+  connected = false; A.muted = false;
+  if (cur) setStatus('stopped'); else setStatus('idle');
+}
+function softPause(){
+  if (!cur) return;
+  if (status==='loading' || status==='error' || keepMin===0 || !connected) { hardStop(); return; }
+  A.muted = true;
+  keepUntil = Date.now() + keepMin*60000;
+  clearTimeout(keepTimer);
+  keepTimer = setTimeout(hardStop, keepMin*60000);
+  setStatus('muted');
+}
+function resume(){
+  if (!cur) { const st = mine[0]; if (st) connect(st); return; }
+  if (status==='muted' && connected && !A.paused) { clearKeep(); A.muted = false; setStatus('live'); return; }
+  connect(cur);
+}
+function clearKeep(){ clearTimeout(keepTimer); keepTimer=null; keepUntil=0; }
+function toggle(){ (status==='live' || status==='loading') ? softPause() : resume(); }
+function pick(st){ if (cur && cur.url===st.url && (status==='live'||status==='loading')) return openPlayer(); if (cur && cur.url===st.url && status==='muted') return resume(); connect(st); }
+function step(d){
+  const list = mine.length ? mine : DEFAULTS;
+  let i = cur ? list.findIndex(m => m.url===cur.url) : -1;
+  i = (i + d + list.length) % list.length;
+  connect(list[i]);
+}
+
+A.addEventListener('playing', () => { if (!A.muted && cur) setStatus('live'); });
+A.addEventListener('waiting', () => { if (!A.muted && status==='live') setStatus('loading'); });
+A.addEventListener('error', () => { if (!A.getAttribute('src')) return; connected=false; clearKeep(); setStatus('error'); });
+A.addEventListener('pause', () => { if (ourPause) return; connected=false; clearKeep(); if (cur) setStatus('stopped'); }); // coupure système (appel…)
+A.addEventListener('ended', () => { connected=false; setStatus('error'); });
+
+function setMediaSession(){
+  if (!('mediaSession' in navigator) || !cur) return;
+  try{
+    const src = logoSrc(cur);
+    navigator.mediaSession.metadata = new MediaMetadata({ title: cur.name, artist: 'En direct · Effem Radio', album: cur.meta || '', artwork: src ? [{src, sizes:'512x512'}] : [] });
+    navigator.mediaSession.setActionHandler('play', resume);
+    navigator.mediaSession.setActionHandler('pause', softPause);
+    navigator.mediaSession.setActionHandler('stop', hardStop);
+    navigator.mediaSession.setActionHandler('previoustrack', () => step(-1));
+    navigator.mediaSession.setActionHandler('nexttrack', () => step(1));
+  }catch(e){}
+}
+
+/* ---------- minuteur ---------- */
+function setSleep(min){
+  clearTimeout(sleepTimer);
+  if (!min){ sleepEnd = 0; render(); return; }
+  sleepEnd = Date.now() + min*60000;
+  sleepTimer = setTimeout(() => { sleepEnd = 0; hardStop(); toast('Minuteur terminé : radio arrêtée'); }, min*60000);
+  render();
+}
+function fmt(ms){ const s=Math.max(0,Math.round(ms/1000)); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h? h+':'+String(m).padStart(2,'0') : m)+':'+String(x).padStart(2,'0'); }
+function clock(t){ return new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+
+/* ---------- rendu ---------- */
+function stLabel(){
+  switch(status){
+    case 'loading': return ['Connexion…','load'];
+    case 'live': return ['● EN DIRECT',''];
+    case 'muted': return ['❚❚ PAUSE · DIRECT GARDÉ ' + fmt(keepUntil-Date.now()),'pause'];
+    case 'stopped': return ['EN PAUSE','pause'];
+    case 'error': return ['LA STATION NE RÉPOND PAS','err'];
+    default: return ['',''];
+  }
+}
+function render(){ renderCore(); requestAnimationFrame(() => fitAll()); }
+function renderCore(){
+  const playing = status==='live' || status==='loading';
+  const [lbl, cls] = stLabel();
+  // Accueil
+  $('#homeGrid').innerHTML = mine.map((s,i) => {
+    const on = cur && cur.url===s.url;
+    return `<button class="tile ${on?'cur':''}" data-i="${i}" aria-label="Écouter ${esc(s.name)}">
+      <span class="logo" style="border-radius:20px">${logoHTML(s,22)}<span class="ring"></span>${on && (status==='live'||status==='muted') ? `<span class="eq ${status==='muted'?'still':''}"><i></i><i></i><i></i></span>`:''}</span>
+      <span class="nm">${esc(s.name)}</span></button>`;
+  }).join('') || `<p class="muted small" style="grid-column:1/-1">Aucune station. Ajoute-en depuis Explorer.</p>`;
+  const rec = recent.filter(r => !isMine(r));
+  $('#recentWrap').hidden = !rec.length;
+  $('#recent').innerHTML = rec.map((s,i) => `<button class="logo" data-r="${i}" aria-label="${esc(s.name)}">${logoHTML(s,13)}</button>`).join('');
+  // Mini
+  $('#mini').hidden = !cur;
+  if (cur){
+    $('#miniLogo').innerHTML = logoHTML(cur,12);
+    $('#miniName').textContent = cur.name;
+    $('#miniSt').textContent = lbl; $('#miniSt').className = 'st '+cls;
+    $('#miniPlay').innerHTML = playing ? ICON_PAUSE(20) : ICON_PLAY(20);
+    $('#miniPlay').setAttribute('aria-label', playing ? 'Pause' : 'Lecture');
+  }
+  // Lecteur
+  if (cur){
+    const idx = mine.findIndex(m => m.url===cur.url);
+    $('#pPos').textContent = idx>=0 ? `Mes stations · ${idx+1}/${mine.length}` : 'Hors de mes stations';
+    $('#pLogo').innerHTML = logoHTML(cur,64);
+    $('#pName').textContent = cur.name;
+    $('#pSt').textContent = lbl; $('#pSt').className = 'st '+cls;
+    $('#pMeta').textContent = status==='muted' ? 'Le son est coupé, la station reste branchée. Reprends : tu tombes direct sur l’antenne.' : (cur.meta || '');
+    $('#pBadge').hidden = status!=='live';
+    $('#pSpin').hidden = status!=='loading';
+    $('#pErr').hidden = status!=='error';
+    $('#pPlay').innerHTML = playing ? ICON_PAUSE(40) : ICON_PLAY(40);
+    $('#pPlay').setAttribute('aria-label', playing ? 'Pause' : 'Lecture');
+    $('#pFav').innerHTML = HEART(isMine(cur));
+    $('#pFav').setAttribute('aria-label', isMine(cur) ? 'Retirer de mes stations' : 'Ajouter à mes stations');
+    $('#pStrip').innerHTML = mine.map((s,i) => `<button class="${cur.url===s.url?'cur':''}" data-i="${i}" aria-label="Écouter ${esc(s.name)}"><span class="logo">${logoHTML(s,12)}</span><span class="ring"></span></button>`).join('');
+  }
+  $('#timerLbl').textContent = sleepEnd ? 'Arrêt dans ' + fmt(sleepEnd-Date.now()) : 'Minuteur';
+  // Voiture
+  const six = mine.slice(0,6);
+  $('#carGrid').innerHTML = six.map((s,i) => `<button class="${cur&&cur.url===s.url?'cur':''}" data-i="${i}" aria-label="Écouter ${esc(s.name)}"><span class="logo">${logoHTML(s,36)}</span><span class="num">${i+1}</span><span class="ring"></span></button>`).join('');
+  $('#carName').textContent = cur ? cur.name : 'Aucune radio';
+  $('#carSt').textContent = lbl; $('#carSt').className = 'st '+cls;
+  $('#carPlay').innerHTML = playing ? ICON_PAUSE(34) : ICON_PLAY(34);
+  // Réglages
+  $('#keepSeg').innerHTML = KEEP_OPTS.map(([v,l]) => `<button class="${v===keepMin?'on':''}" data-k="${v}">${l}</button>`).join('');
+  $('#resumeVal').textContent = resumeLast ? 'Oui' : 'Non';
+  // Minuteur
+  $('#tOpts').innerHTML = [15,30,60,120].map(m => `<button data-m="${m}">${m<60?m+' min':(m/60)+' h'}</button>`).join('');
+  $('#tRun').hidden = !sleepEnd; $('#tActions').hidden = !sleepEnd;
+  if (sleepEnd){ $('#tLeft').textContent = fmt(sleepEnd-Date.now()); $('#tEnd').textContent = 'La radio s’arrête à ' + clock(sleepEnd); }
+  if ('mediaSession' in navigator) try{ navigator.mediaSession.playbackState = playing ? 'playing' : (cur ? 'paused' : 'none'); }catch(e){}
+}
+setInterval(() => { if (status==='muted' || sleepEnd) render(); }, 1000);
+
+/* ---------- navigation ---------- */
+function show(v){
+  for (const id of ['home','explore','settings']) $('#v-'+id).hidden = id!==v;
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.v===v));
+  if (v==='explore' && !$('#q').value) $('#q').blur();
+  requestAnimationFrame(() => fitAll($('#v-'+v)));
+}
+const openLayer = id => { $('#'+id).hidden = false; requestAnimationFrame(() => fitAll($('#'+id))); };
+const closeLayer = id => { $('#'+id).hidden = true; };
+function openPlayer(){ if (cur) openLayer('player'); }
+
+$('#tabs').addEventListener('click', e => { const b=e.target.closest('button'); if (b) show(b.dataset.v); });
+$('#homeGrid').addEventListener('click', e => { const b=e.target.closest('[data-i]'); if (b) pick(mine[+b.dataset.i]); });
+$('#recent').addEventListener('click', e => { const b=e.target.closest('[data-r]'); if (b) pick(recent.filter(r=>!isMine(r))[+b.dataset.r]); });
+$('#mini').addEventListener('click', e => { if (e.target.closest('#miniPlay')) { e.stopPropagation(); toggle(); } else openPlayer(); });
+$('#closePlayer').onclick = () => closeLayer('player');
+$('#pPlay').onclick = toggle; $('#carPlay').onclick = toggle;
+$('#prev').onclick = () => step(-1); $('#next').onclick = () => step(1);
+$('#retry').onclick = () => cur && connect(cur);
+$('#pStrip').addEventListener('click', e => { const b=e.target.closest('[data-i]'); if (b) connect(mine[+b.dataset.i]); });
+$('#pFav').onclick = () => { if (!cur) return; if (isMine(cur)) { mine = mine.filter(m => m.url!==cur.url); toast('Retirée de mes stations'); } else { mine = [...mine, cur]; toast('Ajoutée à mes stations'); } save(); render(); };
+$('#toCar').onclick = () => openLayer('car'); $('#closeCar').onclick = () => closeLayer('car');
+$('#carGrid').addEventListener('click', e => { const b=e.target.closest('[data-i]'); if (b) connect(mine[+b.dataset.i]); });
+$('#openTimer').onclick = () => { $('#timerSheet').hidden = false; };
+$('#tOpts').addEventListener('click', e => { const b=e.target.closest('[data-m]'); if (b){ setSleep(+b.dataset.m); toast('Arrêt à ' + clock(sleepEnd)); } });
+$('#tPlus').onclick = () => { if (sleepEnd) setSleep(Math.round((sleepEnd-Date.now())/60000) + 15); };
+$('#tStop').onclick = () => { setSleep(0); $('#timerSheet').hidden = true; };
+const openPromise = () => { $('#promiseSheet').hidden = false; };
+$('#openPromise').onclick = openPromise; $('#promiseRow').onclick = openPromise;
+document.querySelectorAll('.scrim').forEach(s => s.addEventListener('click', e => { if (e.target===s || e.target.closest('[data-close]')) s.hidden = true; }));
+$('#keepSeg').addEventListener('click', e => { const b=e.target.closest('[data-k]'); if (!b) return; keepMin=+b.dataset.k; store.set('keepMin', keepMin); if (status==='muted'){ if (!keepMin) hardStop(); else { clearTimeout(keepTimer); keepUntil=Date.now()+keepMin*60000; keepTimer=setTimeout(hardStop, keepMin*60000);} } render(); });
+$('#resumeRow').onclick = () => { resumeLast=!resumeLast; store.set('resumeLast', resumeLast); render(); };
+$('#resetRow').onclick = () => { mine = DEFAULTS.slice(); save(); render(); toast('Stations de départ remises'); };
+
+/* ---------- Modifier ---------- */
+function renderEdit(){
+  $('#editList').innerHTML = mine.map((s,i) => `${i===6?'<li class="sep"><span class="lbl" style="color:var(--lilas)">Hors mode voiture</span><span></span></li>':''}
+    <li><button class="heart" data-del="${i}" aria-label="Retirer ${esc(s.name)}"><span class="minus"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFF4E6" stroke-width="3.5" stroke-linecap="round"><path d="M6 12h12"/></svg></span></button>
+      <span class="logo">${logoHTML(s,12)}</span>
+      <span class="grow" style="display:flex;flex-direction:column;gap:1px"><span style="font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(s.name)}</span><span class="small muted">${esc(s.meta||'')}</span></span>
+      <button class="heart" data-up="${i}" aria-label="Monter ${esc(s.name)}" ${i===0?'disabled style="opacity:.25"':''}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#CDBFE6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
+      <button class="heart" data-down="${i}" aria-label="Descendre ${esc(s.name)}" ${i===mine.length-1?'disabled style="opacity:.25"':''}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#CDBFE6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></li>`).join('')
+    || '<li class="muted">Aucune station.</li>';
+  requestAnimationFrame(() => fitAll());
+}
+$('#openEdit').onclick = () => { renderEdit(); openLayer('edit'); };
+$('#closeEdit').onclick = () => { closeLayer('edit'); render(); };
+$('#editAdd').onclick = () => { closeLayer('edit'); show('explore'); render(); setTimeout(()=>$('#q').focus(), 300); };
+$('#editList').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const d = b.dataset;
+  if (d.del!=null) mine.splice(+d.del,1);
+  else if (d.up!=null && +d.up>0) { const i=+d.up; [mine[i-1],mine[i]]=[mine[i],mine[i-1]]; }
+  else if (d.down!=null && +d.down<mine.length-1) { const i=+d.down; [mine[i+1],mine[i]]=[mine[i],mine[i+1]]; }
+  save(); renderEdit();
+});
+
+/* ---------- Explorer (annuaire Radio Browser) ---------- */
+$('#genres').innerHTML = GENRES.map(([l,t,a,b],i) => `<button data-g="${i}" style="background:linear-gradient(135deg,${a},${b});${t==='rock'?'color:var(--creme)':''}">${l.toUpperCase()}</button>`).join('');
+let results = [], qTimer = null, qSeq = 0;
+async function rb(path){
+  for (const h of RB_HOSTS){
+    try{ const r = await fetch(`https://${h}/json/${path}`); if (r.ok) return await r.json(); }catch(e){}
+  }
+  throw new Error('annuaire indisponible');
+}
+const OUTREMER = {GP:'Guadeloupe',MQ:'Martinique',GF:'Guyane',RE:'La Réunion',YT:'Mayotte',PM:'Saint-Pierre-et-Miquelon',MF:'Saint-Martin',BL:'Saint-Barthélemy',NC:'Nouvelle-Calédonie',PF:'Polynésie française',WF:'Wallis-et-Futuna'};
+const FR_CODES = new Set(['FR', ...Object.keys(OUTREMER)]);
+let omCache = null;
+async function outremer(){            // toutes les radios d'outre-mer, chargées une fois (une centaine)
+  if (omCache) return omCache;
+  const lists = await Promise.all(Object.keys(OUTREMER).map(c => rb(`stations/bycountrycodeexact/${c}?hidebroken=true`).catch(() => [])));
+  omCache = lists.flat();
+  return omCache;
+}
+function toStation(x){
+  const place = OUTREMER[x.countrycode] || x.state || 'France';
+  return { id:'rb:'+x.stationuuid, uuid:x.stationuuid, name:x.name.trim(), url:x.url_resolved, favicon:x.favicon,
+    meta:[place, (x.tags||'').split(',').filter(Boolean).slice(0,2).join(', ')].filter(Boolean).join(' · ') };
+}
+function clean(list){
+  const seen = new Set();
+  return list.filter(x => FR_CODES.has(x.countrycode) && x.url_resolved && x.url_resolved.startsWith('https://') && x.lastcheckok!==0)
+    .sort((p,q) => (q.clickcount||0) - (p.clickcount||0))
+    .map(toStation).filter(s => { const k=norm(s.name); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0,120);
+}
+const FRQ = 'countrycode=FR&hidebroken=true&order=clickcount&reverse=true&limit=60';
+async function runSearch(label, fetcher){
+  const seq = ++qSeq;
+  $('#resBack').hidden = true;
+  $('#exHome').hidden = true; $('#exRes').hidden = false;
+  $('#resTitle').textContent = label; $('#resCount').textContent = 'Recherche…';
+  $('#resList').innerHTML = '';
+  try{
+    const data = await fetcher();
+    if (seq!==qSeq) return;
+    results = clean(data);
+    renderResults(label);
+  }catch(e){
+    if (seq!==qSeq) return;
+    $('#resCount').textContent = '';
+    $('#resList').innerHTML = `<li class="empty"><h3>ANNUAIRE INJOIGNABLE</h3><p class="muted" style="margin:0">Vérifie ta connexion puis réessaie.</p></li>`;
+  }
+}
+function renderResults(label){
+  $('#resCount').textContent = results.length ? results.length + ' résultat' + (results.length>1?'s':'') : '';
+  $('#resList').innerHTML = results.length ? results.map((s,i) => `<li>
+      <button class="main" data-p="${i}"><span class="logo">${logoHTML(s,13)}</span><span style="min-width:0;display:flex;flex-direction:column;gap:2px"><span class="n">${esc(s.name)}</span><span class="m">${esc(s.meta)}</span></span></button>
+      <button class="heart" data-f="${i}" aria-label="${isMine(s)?'Retirer':'Ajouter'} ${esc(s.name)}">${HEART(isMine(s))}</button></li>`).join('')
+    : `<li class="empty"><h3>RIEN SUR CETTE FRÉQUENCE</h3><p class="muted" style="margin:0;line-height:21px">Aucune radio française pour « ${esc($('#q').value || label)} ». Essaie le nom de la ville ou un genre.</p></li>`;
+  requestAnimationFrame(() => fitAll());
+}
+const omMatch = (x, q) => norm([x.name, x.tags, x.state, OUTREMER[x.countrycode]].join(' ')).includes(norm(q));
+$('#genres').addEventListener('click', e => { const b=e.target.closest('[data-g]'); if (!b) return; const [l,t]=GENRES[+b.dataset.g];
+  if (t==='__local') return showRegions();
+  runSearch(l, async () => {
+    const [fr, om] = await Promise.all([rb(`stations/search?tag=${encodeURIComponent(t)}&${FRQ}`), outremer().catch(() => [])]);
+    return [...fr, ...om.filter(x => norm(x.tags||'').includes(norm(t)))];
+  }); });
+$('#q').addEventListener('input', () => {
+  const v = $('#q').value.trim(); $('#qClear').hidden = !v;
+  clearTimeout(qTimer);
+  if (!v){ qSeq++; $('#exHome').hidden=false; $('#exRes').hidden=true; return; }
+  qTimer = setTimeout(() => runSearch('Stations', async () => {
+    const e = encodeURIComponent(v);
+    const [byName, byTag, byPlace, om] = await Promise.all([
+      rb(`stations/search?name=${e}&${FRQ}`), rb(`stations/search?tag=${e}&${FRQ}`).catch(() => []),
+      rb(`stations/search?state=${e}&${FRQ}`).catch(() => []), outremer().catch(() => [])]);
+    return [...byName, ...byPlace, ...byTag, ...om.filter(x => omMatch(x, v))];
+  }), 350);
+});
+
+/* ---------- Radios locales par région ---------- */
+const REGIONS = [...new Set(LOCAL.map(r => r.r))].sort((a,b) => a.localeCompare(b,'fr'));
+let regionMode = false;
+function showRegions(){
+  qSeq++; regionMode = true;
+  $('#exHome').hidden = true; $('#exRes').hidden = false; $('#resBack').hidden = true;
+  $('#resTitle').textContent = 'Radios locales · par région'; $('#resCount').textContent = REGIONS.length + ' régions';
+  $('#resList').innerHTML = REGIONS.map((r,i) => { const c = LOCAL.filter(x => x.r===r).length;
+    return `<li><button class="main" data-reg="${i}" style="justify-content:space-between;min-height:52px"><span style="min-width:0;display:flex;flex-direction:column;gap:2px"><span class="n">${esc(r)}</span><span class="m">${c} radio${c>1?'s':''}</span></span><span class="muted" style="font-size:20px">›</span></button></li>`; }).join('');
+  $('#v-explore').scrollTop = 0;
+}
+function showRegion(r){
+  regionMode = false;
+  results = LOCAL.filter(x => x.r===r).map(x => ({ id:'rb:'+x.id, uuid:x.id, name:x.n, url:x.u, favicon:x.f, meta:x.m || r }));
+  $('#resTitle').textContent = r; $('#resBack').hidden = false;
+  renderResults(r);
+  $('#v-explore').scrollTop = 0;
+}
+$('#resBack').onclick = showRegions;
+$('#q').addEventListener('keydown', e => { if (e.key==='Enter') $('#q').blur(); });
+$('#qClear').onclick = e => { e.preventDefault(); $('#q').value=''; $('#q').dispatchEvent(new Event('input')); };
+$('#resList').addEventListener('click', e => {
+  const g = e.target.closest('[data-reg]'); if (g) return showRegion(REGIONS[+g.dataset.reg]);
+  const p = e.target.closest('[data-p]'), f = e.target.closest('[data-f]');
+  if (p){ connect(results[+p.dataset.p]); openPlayer(); }
+  if (f){ const s = results[+f.dataset.f];
+    if (isMine(s)) { mine = mine.filter(m => m.url!==s.url); toast('Retirée de mes stations'); } else { mine = [...mine, s]; toast('Ajoutée à mes stations'); }
+    save(); render(); renderResults($('#resTitle').textContent); }
+});
+
+/* ---------- démarrage ---------- */
+const last = store.get('last', null);
+if (resumeLast && last && last.url) { cur = last; status = 'stopped'; setMediaSession(); }
+render();
+</script>
+</body>
+</html>
