@@ -218,7 +218,12 @@ nav.tabs button.on{color:var(--magenta);font-weight:800}
         <button id="qClear" aria-label="Effacer" hidden style="width:28px;height:28px;border-radius:14px;background:#4A3768;font-size:13px;font-weight:800">✕</button>
       </label>
       <div id="exHome" class="stack" style="gap:10px">
-        <p class="lbl">Radios françaises · par genre</p>
+        <button id="topCard" class="card" style="display:flex;align-items:center;gap:14px;padding:14px 16px;text-align:left;box-shadow:inset 0 0 0 1.5px var(--soleil)">
+          <span style="font:400 40px/1 var(--display);background:var(--sunh);-webkit-background-clip:text;background-clip:text;color:transparent">#1</span>
+          <span class="grow" style="display:flex;flex-direction:column;gap:2px"><span style="font:400 22px/1 var(--display);letter-spacing:1px">TOP RADIOS DU MOIS</span><span class="small muted" id="topSub"></span></span>
+          <span class="muted" style="font-size:22px">›</span>
+        </button>
+        <p class="lbl" style="margin-top:6px">Radios françaises · par genre</p>
         <div class="genres" id="genres"></div>
       </div>
       <div id="exRes" hidden class="stack" style="gap:6px">
@@ -437,7 +442,16 @@ const ICON_PAUSE = s => `<svg width="${s}" height="${s}" viewBox="0 0 24 24"><re
 const HEART = on => `<svg width="24" height="24" viewBox="0 0 24 24" fill="${on?'#FF2E88':'none'}" stroke="${on?'#FF2E88':'#CDBFE6'}" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.5-7 10-7 10z"/></svg>`;
 
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.hidden=false; clearTimeout(toast.h); toast.h=setTimeout(()=>t.hidden=true, 2400); }
-function isMine(st){ return !!st && mine.some(m => m.id===st.id || m.url===st.url); }
+const skey = st => norm(String(st.name||'').replace(/^\s*radio\s+/i,''));
+function same(a, b){ return !!a && !!b && (a.id===b.id || a.url===b.url || skey(a)===skey(b)); }
+function isMine(st){ return !!st && mine.some(m => same(m, st)); }
+function toggleMine(st){
+  if (isMine(st)) { mine = mine.filter(m => !same(m, st)); toast('Retirée de mes stations'); }
+  else { mine = [...mine, st]; toast('Ajoutée à mes stations'); }
+  save(); render();
+}
+// nettoyage des doublons déjà enregistrés
+mine = mine.filter((m,i) => mine.findIndex(x => same(x, m)) === i); save();
 function save(){ store.set('mine', mine); store.set('recent', recent); }
 
 /* ---------- audio : pause = son coupé, le direct reste connecté ---------- */
@@ -619,7 +633,7 @@ $('#pPlay').onclick = toggle; $('#carPlay').onclick = toggle;
 $('#prev').onclick = () => step(-1); $('#next').onclick = () => step(1);
 $('#retry').onclick = () => cur && connect(cur);
 $('#pStrip').addEventListener('click', e => { const b=e.target.closest('[data-i]'); if (b) connect(mine[+b.dataset.i]); });
-$('#pFav').onclick = () => { if (!cur) return; if (isMine(cur)) { mine = mine.filter(m => m.url!==cur.url); toast('Retirée de mes stations'); } else { mine = [...mine, cur]; toast('Ajoutée à mes stations'); } save(); render(); };
+$('#pFav').onclick = () => { if (cur) toggleMine(cur); };
 $('#toCar').onclick = () => openLayer('car'); $('#closeCar').onclick = () => closeLayer('car');
 $('#carGrid').addEventListener('click', e => { const b=e.target.closest('[data-i]'); if (b) connect(mine[+b.dataset.i]); });
 $('#openTimer').onclick = () => { $('#timerSheet').hidden = false; };
@@ -733,6 +747,7 @@ function clean(list){
 }
 const FRQ = 'countrycode=FR&hidebroken=true&order=clickcount&reverse=true&limit=60';
 async function runSearch(label, fetcher){
+  resNote = '';
   const seq = ++qSeq;
   setBack('explore');
   $('#exHome').hidden = true; $('#exRes').hidden = false;
@@ -749,12 +764,14 @@ async function runSearch(label, fetcher){
     $('#resList').innerHTML = `<li class="empty"><h3>ANNUAIRE INJOIGNABLE</h3><p class="muted" style="margin:0">Vérifie ta connexion puis réessaie.</p></li>`;
   }
 }
+let resNote = '';
 function renderResults(label){
   $('#resCount').textContent = results.length ? results.length + ' résultat' + (results.length>1?'s':'') : '';
   $('#resList').innerHTML = results.length ? results.map((s,i) => `<li>
       <button class="main" data-p="${i}"><span class="logo">${logoHTML(s,13)}</span><span style="min-width:0;display:flex;flex-direction:column;gap:2px"><span class="n">${esc(s.name)}</span><span class="m">${esc(s.meta)}</span></span></button>
       <button class="heart" data-f="${i}" aria-label="${isMine(s)?'Retirer':'Ajouter'} ${esc(s.name)}">${HEART(isMine(s))}</button></li>`).join('')
     : `<li class="empty"><h3>RIEN SUR CETTE FRÉQUENCE</h3><p class="muted" style="margin:0;line-height:21px">Aucune radio française pour « ${esc($('#q').value || label)} ». Essaie le nom de la ville ou un genre.</p></li>`;
+  if (resNote && results.length) $('#resList').insertAdjacentHTML('beforeend', `<li class="small muted" style="display:block;line-height:19px;padding:14px 2px">${resNote}</li>`);
   requestAnimationFrame(() => fitAll());
 }
 const omMatch = (x, q) => norm([x.name, x.tags, x.state, OUTREMER[x.countrycode]].join(' ')).includes(norm(q));
@@ -789,12 +806,52 @@ function showRegions(){
   $('#v-explore').scrollTop = 0;
 }
 function showRegion(r){
-  regionMode = false;
+  regionMode = false; resNote = '';
   results = LOCAL.filter(x => x.r===r).map(x => ({ id:'rb:'+x.id, uuid:x.id, name:x.n, url:x.u, favicon:x.f, meta:x.m || r }));
   $('#resTitle').textContent = r; setBack('regions');
   renderResults(r);
   $('#v-explore').scrollTop = 0;
 }
+
+/* ---------- Top radios du mois (classement ACPM, écoute en ligne) ---------- */
+const TOP = { mois:'septembre 2026', src:'ACPM', rows:[
+  ['France Inter',33964486,'https://icecast.radiofrance.fr/franceinter-midfi.mp3'],
+  ['RTL',27533748,'https://icecast.rtl.fr/rtl-1-44-128'],
+  ['franceinfo',19613787,'https://icecast.radiofrance.fr/franceinfo-midfi.mp3'],
+  ['RMC',18764739,'https://audio.bfmtv.com/rmcradio_128.mp3'],
+  ['NRJ',12118779,'https://streaming.nrjaudio.fm/oumvmk8fnozc'],
+  ['Nostalgie',11099519,'https://streaming.nrjaudio.fm/oua8a3w2dqao'],
+  ['Europe 1',9972502,'https://stream.europe1.fr/europe1.aac'],
+  ['FIP',9677285,'https://icecast.radiofrance.fr/fip-midfi.mp3'],
+  ['Skyrock',7044258,'https://icecast.skyrock.net/s/natio_mp3_128k'],
+  ['ici',6792054,'https://icecast.radiofrance.fr/fb1071-midfi.mp3','ici Paris'],
+  ['Chérie FM',6429955,'https://cdnradio.streamakaci.com/cheriefm1.mp3'],
+  ['France Culture',6275224,'https://icecast.radiofrance.fr/franceculture-midfi.mp3'],
+  ['RTL2',6167093,'https://icecast.rtl.fr/rtl2-1-44-128'],
+  ['RFM',5919692,'https://stream.rfm.fr/rfm.mp3'],
+  ['Fun Radio',4387458,'https://icecast.funradio.fr/fun-1-44-128'],
+  ['Rire et Chansons',3673518,'https://streaming.nrjaudio.fm/ou8o8xgk7oiu'],
+  ['Europe 2',3553190,'https://europe2.lmn.fm/europe2.mp3'],
+  ['Radio Classique',3298336,'https://radioclassique.ice.infomaniak.ch/radioclassique-high.mp3'],
+  ['France Musique',2773277,'https://icecast.radiofrance.fr/francemusique-midfi.mp3'],
+  ['Radio FG',2727739,'https://radiofg.impek.com/fg.mp3']
+]};
+$('#topSub').textContent = 'Les 20 radios les plus écoutées en ligne · ' + TOP.mois;
+function showTop(){
+  qSeq++; regionMode = false;
+  $('#exHome').hidden = true; $('#exRes').hidden = false; setBack('explore');
+  $('#resTitle').textContent = 'Top radios · ' + TOP.mois;
+  results = TOP.rows.map(([name, n, url, play], i) => {
+    const d = DEFAULTS.find(x => skey(x) === skey({name}));
+    const millions = (n/1e6).toLocaleString('fr-FR', {maximumFractionDigits:1});
+    return { ...(d || {}), id: d ? d.id : 'top:'+skey({name}), name: d ? d.name : name, url: d ? d.url : url,
+      meta: `N°${i+1} · ${millions} M d’écoutes${play ? ' · joue ' + play : ''}` };
+  });
+  resNote = `Source : ${TOP.src}, écoutes actives en ligne en France (sessions de 30 s ou plus), ${TOP.mois}. Ce classement ne compte pas l’écoute sur un poste FM.`;
+  renderResults('Top');
+  $('#v-explore').scrollTop = 0;
+}
+$('#topCard').onclick = showTop;
 let backTo = 'explore';
 function setBack(to){ backTo = to; $('#resBack').textContent = to==='regions' ? '‹ Toutes les régions' : '‹ Explorer'; }
 /* Retour au début d'Explorer : recherche vidée, genres affichés, en haut de page */
@@ -812,7 +869,7 @@ $('#resList').addEventListener('click', e => {
   const p = e.target.closest('[data-p]'), f = e.target.closest('[data-f]');
   if (p){ connect(results[+p.dataset.p]); openPlayer(); }
   if (f){ const s = results[+f.dataset.f];
-    if (isMine(s)) { mine = mine.filter(m => m.url!==s.url); toast('Retirée de mes stations'); } else { mine = [...mine, s]; toast('Ajoutée à mes stations'); }
+    toggleMine(s);
     save(); render(); renderResults($('#resTitle').textContent); }
 });
 
