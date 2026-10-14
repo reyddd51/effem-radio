@@ -1,6 +1,6 @@
 # Effem Radio — prototype
 
-Toutes les radios françaises, sans pub dans l'app et sans pisteur.
+Toutes les radios françaises, sans pub dans l'app.
 
 - `index.html` : l'app (générée, ne pas modifier à la main)
 - `source/src.html` : le code de l'app

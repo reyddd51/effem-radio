@@ -189,7 +189,7 @@ nav.tabs button.on{color:var(--magenta);font-weight:800}
       </header>
       <button class="promise" id="openPromise" style="margin-top:-8px">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
-        0 pub dans l’app · 0 pisteur
+        0 pub dans l’app
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
       </button>
       <div class="row" style="justify-content:space-between;align-items:baseline">
@@ -218,7 +218,7 @@ nav.tabs button.on{color:var(--magenta);font-weight:800}
         <div class="genres" id="genres"></div>
       </div>
       <div id="exRes" hidden class="stack" style="gap:6px">
-        <button id="resBack" hidden class="muted" style="align-self:flex-start;min-height:40px;font-size:15px;font-weight:700">‹ Toutes les régions</button>
+        <button id="resBack" class="muted" style="align-self:flex-start;min-height:44px;font-size:15px;font-weight:700">‹ Explorer</button>
         <div class="row" style="justify-content:space-between"><p class="lbl" id="resTitle">Stations</p><span class="small muted" id="resCount"></span></div>
         <ul class="res" id="resList"></ul>
       </div>
@@ -248,7 +248,7 @@ nav.tabs button.on{color:var(--magenta);font-weight:800}
       <div class="stack" style="gap:8px">
         <p class="lbl">Effem</p>
         <div class="list">
-          <button id="promiseRow"><span>Notre promesse · 0 pisteur</span><span class="muted">›</span></button>
+          <button id="promiseRow"><span>Notre promesse</span><span class="muted">›</span></button>
           <div><span>Annuaire des stations</span><span class="small muted" style="font-weight:500">France et outre-mer</span></div>
           <div><span>Version</span><span class="small muted" style="font-weight:500">0.1 · prototype</span></div>
         </div>
@@ -351,7 +351,7 @@ nav.tabs button.on{color:var(--magenta);font-weight:800}
       <span class="grab"></span>
       <div class="row" style="justify-content:space-between"><h1>NOTRE PROMESSE</h1><button class="round" data-close aria-label="Fermer" style="font-weight:800">✕</button></div>
       <div class="prom"><span class="k">0</span><span><b>Aucune pub dans l’app</b><span class="hint">Pas de bannière, pas de vidéo, pas d’écran de pub entre deux stations.</span></span></div>
-      <div class="prom"><span class="k">0</span><span><b>Aucun pisteur</b><span class="hint">Pas de compte, pas de pub ciblée. Tes stations restent sur ton téléphone.</span></span></div>
+      <div class="prom"><span class="k">✓</span><span><b>Sans compte</b><span class="hint">Pas d’inscription. Tes stations restent sur ton téléphone.</span></span></div>
       <div class="prom"><span class="k">i</span><span><b>La pub à l’antenne, c’est la radio</b><span class="hint">Le son vient directement de chaque station. Si elle diffuse de la pub dans son programme, tu l’entends comme sur un poste FM.</span></span></div>
       <button class="cta" data-close>COMPRIS</button>
     </div>
@@ -599,7 +599,11 @@ const openLayer = id => { $('#'+id).hidden = false; requestAnimationFrame(() => 
 const closeLayer = id => { $('#'+id).hidden = true; };
 function openPlayer(){ if (cur) openLayer('player'); }
 
-$('#tabs').addEventListener('click', e => { const b=e.target.closest('button'); if (b) show(b.dataset.v); });
+$('#tabs').addEventListener('click', e => { const b=e.target.closest('button'); if (!b) return;
+  const again = !$('#v-'+b.dataset.v).hidden;   // retoucher l'onglet actif = revenir à son début
+  show(b.dataset.v);
+  if (b.dataset.v==='explore' && again) exploreHome();
+  else if (again) $('#v-'+b.dataset.v).scrollTop = 0; });
 $('#homeGrid').addEventListener('click', e => { const b=e.target.closest('[data-i]'); if (b) pick(mine[+b.dataset.i]); });
 $('#recent').addEventListener('click', e => { const b=e.target.closest('[data-r]'); if (b) pick(recent.filter(r=>!isMine(r))[+b.dataset.r]); });
 $('#mini').addEventListener('click', e => { if (e.target.closest('#miniPlay')) { e.stopPropagation(); toggle(); } else openPlayer(); });
@@ -635,7 +639,7 @@ function renderEdit(){
 }
 $('#openEdit').onclick = () => { renderEdit(); openLayer('edit'); };
 $('#closeEdit').onclick = () => { closeLayer('edit'); render(); };
-$('#editAdd').onclick = () => { closeLayer('edit'); show('explore'); render(); setTimeout(()=>$('#q').focus(), 300); };
+$('#editAdd').onclick = () => { closeLayer('edit'); show('explore'); exploreHome(); render(); setTimeout(()=>$('#q').focus(), 300); };
 $('#editList').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const d = b.dataset;
@@ -677,7 +681,7 @@ function clean(list){
 const FRQ = 'countrycode=FR&hidebroken=true&order=clickcount&reverse=true&limit=60';
 async function runSearch(label, fetcher){
   const seq = ++qSeq;
-  $('#resBack').hidden = true;
+  setBack('explore');
   $('#exHome').hidden = true; $('#exRes').hidden = false;
   $('#resTitle').textContent = label; $('#resCount').textContent = 'Recherche…';
   $('#resList').innerHTML = '';
@@ -710,7 +714,7 @@ $('#genres').addEventListener('click', e => { const b=e.target.closest('[data-g]
 $('#q').addEventListener('input', () => {
   const v = $('#q').value.trim(); $('#qClear').hidden = !v;
   clearTimeout(qTimer);
-  if (!v){ qSeq++; $('#exHome').hidden=false; $('#exRes').hidden=true; return; }
+  if (!v){ exploreHome(false); return; }
   qTimer = setTimeout(() => runSearch('Stations', async () => {
     const e = encodeURIComponent(v);
     const [byName, byTag, byPlace, om] = await Promise.all([
@@ -725,7 +729,7 @@ const REGIONS = [...new Set(LOCAL.map(r => r.r))].sort((a,b) => a.localeCompare(
 let regionMode = false;
 function showRegions(){
   qSeq++; regionMode = true;
-  $('#exHome').hidden = true; $('#exRes').hidden = false; $('#resBack').hidden = true;
+  $('#exHome').hidden = true; $('#exRes').hidden = false; setBack('explore');
   $('#resTitle').textContent = 'Radios locales · par région'; $('#resCount').textContent = REGIONS.length + ' régions';
   $('#resList').innerHTML = REGIONS.map((r,i) => { const c = LOCAL.filter(x => x.r===r).length;
     return `<li><button class="main" data-reg="${i}" style="justify-content:space-between;min-height:52px"><span style="min-width:0;display:flex;flex-direction:column;gap:2px"><span class="n">${esc(r)}</span><span class="m">${c} radio${c>1?'s':''}</span></span><span class="muted" style="font-size:20px">›</span></button></li>`; }).join('');
@@ -734,11 +738,20 @@ function showRegions(){
 function showRegion(r){
   regionMode = false;
   results = LOCAL.filter(x => x.r===r).map(x => ({ id:'rb:'+x.id, uuid:x.id, name:x.n, url:x.u, favicon:x.f, meta:x.m || r }));
-  $('#resTitle').textContent = r; $('#resBack').hidden = false;
+  $('#resTitle').textContent = r; setBack('regions');
   renderResults(r);
   $('#v-explore').scrollTop = 0;
 }
-$('#resBack').onclick = showRegions;
+let backTo = 'explore';
+function setBack(to){ backTo = to; $('#resBack').textContent = to==='regions' ? '‹ Toutes les régions' : '‹ Explorer'; }
+/* Retour au début d'Explorer : recherche vidée, genres affichés, en haut de page */
+function exploreHome(clear = true){
+  qSeq++; clearTimeout(qTimer); regionMode = false;
+  if (clear){ $('#q').value = ''; $('#qClear').hidden = true; }
+  $('#exHome').hidden = false; $('#exRes').hidden = true;
+  $('#v-explore').scrollTop = 0;
+}
+$('#resBack').onclick = () => backTo==='regions' ? showRegions() : exploreHome();
 $('#q').addEventListener('keydown', e => { if (e.key==='Enter') $('#q').blur(); });
 $('#qClear').onclick = e => { e.preventDefault(); $('#q').value=''; $('#q').dispatchEvent(new Event('input')); };
 $('#resList').addEventListener('click', e => {
