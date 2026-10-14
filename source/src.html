@@ -31,7 +31,7 @@ html,body{height:100%;margin:0;background:var(--nuit);color:var(--creme);font-fa
 button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--lagon);outline-offset:2px}
 img{display:block;max-width:100%}
-#app{position:relative;height:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;
+#app{position:fixed;top:0;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;
   background:radial-gradient(circle at 85% 0%,rgba(255,46,136,.32),rgba(255,46,136,0) 45%),var(--nuit)}
 .view{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
   padding:calc(env(safe-area-inset-top,0px) + 14px) max(20px,env(safe-area-inset-right,0px)) 16px max(20px,env(safe-area-inset-left,0px))}
@@ -89,7 +89,7 @@ h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
 .play svg{fill:var(--nuit)}
 .mini .play{width:48px;height:48px}
 nav.tabs{flex-shrink:0;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ligne);background:rgba(23,11,46,.92);
-  padding:6px max(8px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 6px) max(8px,env(safe-area-inset-left,0px))}
+  padding:4px max(8px,env(safe-area-inset-right,0px)) max(6px,calc(env(safe-area-inset-bottom,0px) - 6px)) max(8px,env(safe-area-inset-left,0px))}
 nav.tabs button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px;font-size:11px;font-weight:500;color:var(--lilas);min-height:44px}
 nav.tabs button svg{stroke:currentColor}
 nav.tabs button.on{color:var(--magenta);font-weight:800}
@@ -378,9 +378,9 @@ const DEFAULTS = [
   {id:'culture', name:'France Culture', url:'https://icecast.radiofrance.fr/franceculture-midfi.mp3', meta:'Culture, idées', logo:'culture'},
   {id:'fip', name:'FIP', url:'https://icecast.radiofrance.fr/fip-midfi.mp3', meta:'Musiques éclectiques', logo:'fip'},
   {id:'tsf', name:'TSF Jazz', url:'https://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3', meta:'Jazz', logo:'tsf'},
-  {id:'nova', name:'Radio Nova', url:'https://novazz.ice.infomaniak.ch/novazz-128.mp3', meta:'Musiques du monde', short:'NOVA'},
-  {id:'rtl', name:'RTL', url:'https://icecast.rtl.fr/rtl-1-44-128', meta:'Généraliste', short:'RTL'},
-  {id:'rmc', name:'RMC', url:'https://audio.bfmtv.com/rmcradio_128.mp3', meta:'Info, talk, sport', short:'RMC'}
+  {id:'nova', name:'Radio Nova', url:'https://novazz.ice.infomaniak.ch/novazz-128.mp3', meta:'Musiques du monde', logo:'nova'},
+  {id:'rtl', name:'RTL', url:'https://icecast.rtl.fr/rtl-1-44-128', meta:'Généraliste', logo:'rtl'},
+  {id:'rmc', name:'RMC', url:'https://audio.bfmtv.com/rmcradio_128.mp3', meta:'Info, talk, sport', logo:'rmc'}
 ];
 const FAV_N = 8;   // nombre de favoris mis en avant (accueil, voiture)
 const GENRES = [
@@ -408,7 +408,7 @@ let sleepEnd = 0, sleepTimer = null;
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const norm = s => String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');
-const KNOWN = {franceinter:'inter',franceinfo:'franceinfo',franceculture:'culture',fip:'fip',tsfjazz:'tsf',nostalgie:'nostalgie',skyrock:'skyrock',rfm:'rfm',europe1:'europe1'};
+const KNOWN = {franceinter:'inter',franceinfo:'franceinfo',franceculture:'culture',fip:'fip',tsfjazz:'tsf',nostalgie:'nostalgie',skyrock:'skyrock',rfm:'rfm',europe1:'europe1',rtl:'rtl',rmc:'rmc',rmcfr:'rmc',radionova:'nova',nova:'nova'};
 
 function logoSrc(st){
   if (st.logo && LOGOS[st.logo]) return LOGOS[st.logo];
