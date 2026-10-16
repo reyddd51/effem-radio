@@ -49,7 +49,7 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - **Grain** très léger sur tout l'écran (opacité 6 %), jamais plus.
 - **Teinte de la radio** (`--tint`) : couleur dominante du logo, calculée automatiquement. Elle colore la carte « en direct » de l'accueil, l'ombre du visuel et le fond flouté du lecteur. Le bouton lecture reste toujours au dégradé soleil.
 - **Carte « en direct »** (accueil) : 168 px, coins 30, ondes radio en filigrane, logo 76, nom en Anton, bouton crème 62 px.
-- **Top du mois** : grands chiffres en contour soleil derrière les logos ; page Top avec podium (1er au centre, liseré soleil) puis liste avec barres proportionnelles.
+- **Top du mois** (accueil, piste A validée le 16 octobre 2026) : logo 74 px, petite pastille de rang en Anton qui chevauche le coin bas gauche (verre nuit pour tous, dégradé soleil pour le n°1), nom en dessous puis audience en gris (« 34 M »). Plus de grands chiffres en contour ; page Top avec podium (1er au centre, liseré soleil) puis liste avec barres proportionnelles.
 - **Vignettes de genre** : dégradé de la couleur du genre, reflet en haut, motif fin propre au genre (lignes, cercles de vinyle, paillettes, zigzag, ondes, arcs, égaliseur), nom en Anton + nombre de radios.
 
 ## 4 ter. Podcasts et Autour de moi (16 octobre 2026)

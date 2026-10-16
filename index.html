@@ -119,9 +119,14 @@ nav.tabs button.on svg{stroke:var(--magenta)}
 .hero .hp svg{fill:rgb(var(--tint))}
 .toprow{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px}
 .toprow::-webkit-scrollbar{display:none}
-.toprow button{position:relative;width:100px;height:76px;flex-shrink:0}
-.toprow .rk{position:absolute;left:0;bottom:-8px;font:400 80px/1 var(--display);color:transparent;-webkit-text-stroke:1.5px rgba(255,209,102,.75)}
-.toprow .logo{position:absolute;right:0;top:4px;width:62px;height:62px;border-radius:16px;box-shadow:0 0 0 1px rgba(255,244,230,.08),0 8px 18px rgba(0,0,0,.35)}
+.toprow{gap:14px}
+.toprow button{width:76px;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left}
+.toprow .pl{position:relative;margin-bottom:10px}
+.toprow .logo{width:74px;height:74px;border-radius:20px;box-shadow:0 0 0 1px rgba(255,244,230,.08),0 8px 18px rgba(0,0,0,.35)}
+.toprow .pill{position:absolute;left:-4px;bottom:-9px;min-width:26px;height:26px;padding:0 7px;border-radius:13px;display:flex;align-items:center;justify-content:center;font:400 15px/1 var(--display);color:var(--creme);background:rgba(42,15,74,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 0 0 1px rgba(255,244,230,.16),0 4px 10px rgba(0,0,0,.4)}
+.toprow .pill.p1{background:linear-gradient(90deg,#FFD166,#FF8A3D 45%,#FF2E88);color:var(--nuit);box-shadow:0 4px 14px rgba(255,138,61,.5)}
+.toprow .tn{font-size:12.5px;font-weight:800;line-height:1.2;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toprow .tv{font-size:12px;font-weight:700;color:var(--gris)}
 
 /* Overlays */
 .layer{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;background:var(--nuit);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
@@ -794,7 +799,7 @@ function renderCore(){
   }
   $('#hero').hidden = !hs;
   $('#favCount').textContent = mine.length ? String(Math.min(mine.length, FAV_N)) : '';
-  $('#homeTop').innerHTML = topStations().slice(0,10).map((t,i) => `<button data-t="${i}" aria-label="N°${i+1} ${esc(t.name)}"><span class="rk">${i+1}</span><span class="logo">${logoHTML(t,13)}</span></button>`).join('');
+  $('#homeTop').innerHTML = topStations().slice(0,10).map((t,i) => `<button data-t="${i}" aria-label="N°${i+1} ${esc(t.name)}"><span class="pl"><span class="logo">${logoHTML(t,15)}</span><span class="pill ${i===0?'p1':''}">${i+1}</span></span><span class="tn">${esc(t.name)}</span><span class="tv">${t.mil} M</span></button>`).join('');
   $('#homeGrid').innerHTML = mine.map((s,i) => {
     const on = cur && cur.url===s.url;
     return `<button class="tile ${on?'cur':''}" data-i="${i}" aria-label="Écouter ${esc(s.name)}">
