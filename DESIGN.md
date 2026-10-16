@@ -38,7 +38,7 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - **Vignette de radio** : carré, logo plein cadre sur fond blanc si le logo en a un. Sans logo : dégradé mandarine → magenta, nom en Anton couleur nuit, qui rétrécit pour que chaque mot tienne sur une ligne (jamais de mot coupé).
 - **Radio en cours** : anneau intérieur crème 3 px + nuit 3 px (jamais d'anneau extérieur, il se fait couper) et petit égaliseur magenta en haut à droite.
 - **Mini-lecteur** : 64 px de haut, logo 48 px, nom en Anton 19 px, état en dessous (« ● EN DIRECT » magenta, pause en soleil), bouton soleil 48 px.
-- **Barre d'onglets** : 3 onglets (Accueil, Explorer, Réglages). Actif = magenta + graisse 800. Retoucher l'onglet actif ramène à son début.
+- **Barre d'onglets** : 4 onglets (Accueil, Explorer, Podcasts, Réglages). Actif = magenta + graisse 800. Retoucher l'onglet actif ramène à son début.
 - **Bouton principal** : pilule `--sunh`, texte Anton nuit. Un seul par écran.
 - **Bouton secondaire** : pilule `--nuit2`, texte Manrope 700 crème.
 - **Feuille (minuteur, promesse)** : monte du bas, coins 30 px, poignée grise, croix de fermeture 44 px, fond assombri derrière.
@@ -53,7 +53,7 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - **Vignettes de genre** : dégradé de la couleur du genre, reflet en haut, motif fin propre au genre (lignes, cercles de vinyle, paillettes, zigzag, ondes, arcs, égaliseur), nom en Anton + nombre de radios.
 
 ## 4 ter. Podcasts et Autour de moi (16 octobre 2026)
-- Carte « Podcasts » dans Explorer : dégradé lagon → violet, pile de 3 pochettes à droite, libellé « À réécouter » en lagon.
+- Onglet Podcasts : titre PODCASTS, recherche propre aux podcasts, « Mes podcasts » (pochettes en ligne), puis « Top des podcasts » : podium des 3 premiers comme le Top radios, puis liste numérotée avec pochette, nom, éditeur · thème.
 - Page d'émission : pochette 104 px (coins 20), nom en Anton, bouton « Suivre » en contour lagon (plein lagon quand suivi). Épisodes en liste : titre sur 2 lignes max, date + durée (ou « Reste … »), fine barre magenta de progression, rond lecture 44 px.
 - Lecteur en mode podcast : pas de « EN DIRECT » ni de point magenta, barre d'avancement magenta avec temps écoulé / restant, boutons −15 s et +30 s à la place de précédent / suivant, pas de cœur ni de bandeau de favoris.
 - « Autour de moi » : carte verre avec pastille lagon et repère de position ; les résultats affichent « à X km ».
