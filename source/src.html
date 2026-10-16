@@ -203,6 +203,23 @@ nav.tabs button.on svg{stroke:var(--magenta)}
 .res .logo{width:56px;height:56px;border-radius:14px}
 .res .n{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .res .m{font-size:13px;color:var(--lilas);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Podcasts */
+.excard.pod{background:linear-gradient(135deg,rgba(25,195,180,.20),rgba(139,43,217,.22) 60%,rgba(42,15,74,.6));box-shadow:inset 0 0 0 1px rgba(25,195,180,.35)}
+.res .ep .n{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15px;line-height:20px}
+.res .ep .pl{width:44px;height:44px;border-radius:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--nuit2);box-shadow:inset 0 0 0 1px rgba(255,244,230,.12)}
+.res .ep .pl svg{fill:var(--creme)}
+.res .done{color:var(--lagon)}
+.epbar{display:block;height:3px;border-radius:2px;background:rgba(255,244,230,.12);margin-top:6px;overflow:hidden}
+.epbar i{display:block;height:100%;background:var(--magenta)}
+.showhd{display:flex;gap:14px;align-items:flex-end;padding:4px 0 10px}
+.showhd .logo{width:104px;height:104px;border-radius:20px;flex-shrink:0;box-shadow:0 10px 26px rgba(0,0,0,.4)}
+.showhd h3{margin:0;font:400 24px/1.05 var(--display);letter-spacing:1px;text-transform:uppercase;overflow-wrap:anywhere}
+.follow{height:36px;padding:0 16px;border-radius:18px;font-size:14px;font-weight:800;background:var(--nuit2);box-shadow:inset 0 0 0 1.5px var(--lagon);color:var(--lagon);align-self:flex-start}
+.follow.on{background:var(--lagon);color:var(--nuit);box-shadow:none}
+.prog{display:flex;flex-direction:column;gap:4px;padding:10px 4px 0}
+.prog input{width:100%;height:28px;accent-color:#FF2E88;margin:0}
+.prog .tm{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:rgba(255,244,230,.72);font-variant-numeric:tabular-nums}
+.ctrls .side .sk{font:800 11px/1 var(--body);fill:#FFF4E6}
 .heart{width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:30px 10px}
 .empty h3{margin:0;font:400 28px/1.05 var(--display);letter-spacing:1px}
@@ -292,6 +309,10 @@ nav.tabs button.on svg{stroke:var(--magenta)}
           <span class="row" style="justify-content:space-between"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:800">Radios locales</span><span class="small muted" id="localSub"></span></span><span class="muted" style="font-size:20px">›</span></span>
           <span class="chips" id="localChips"></span>
         </button>
+        <button id="podCard" class="excard pod">
+          <span style="display:flex;flex-direction:column;gap:4px;max-width:170px"><span class="lbl" style="color:var(--lagon);font-size:11px">À réécouter</span><span style="font:400 23px/1 var(--display);letter-spacing:1px">PODCASTS</span><span style="font-size:12.5px;font-weight:600;color:rgba(255,244,230,.75)">Les émissions des radios, quand tu veux</span></span>
+          <span class="stack3" id="podStack"></span>
+        </button>
         <p class="lbl" style="margin-top:6px">Par genre</p>
         <div class="genres" id="genres"></div>
       </div>
@@ -363,6 +384,10 @@ nav.tabs button.on svg{stroke:var(--magenta)}
       <h1 id="pName"></h1>
       <span class="st" id="pSt" style="font-size:12px"></span>
       <span id="pMeta" style="font-size:16px;font-weight:600;color:rgba(255,244,230,.72)"></span>
+    </div>
+    <div class="prog" id="pProg" hidden>
+      <input type="range" id="pSeek" min="0" max="1000" value="0" step="1" aria-label="Avancer ou reculer dans l'épisode">
+      <span class="tm"><span id="pT1">0:00</span><span id="pT2"></span></span>
     </div>
     <div id="pErr" hidden class="stack" style="gap:8px;padding-top:12px">
       <div class="note"><b>La station ne répond pas.</b> Le flux est coupé ou le réseau est trop faible.</div>
