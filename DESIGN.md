@@ -52,6 +52,12 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - **Top du mois** : grands chiffres en contour soleil derrière les logos ; page Top avec podium (1er au centre, liseré soleil) puis liste avec barres proportionnelles.
 - **Vignettes de genre** : dégradé de la couleur du genre, reflet en haut, motif fin propre au genre (lignes, cercles de vinyle, paillettes, zigzag, ondes, arcs, égaliseur), nom en Anton + nombre de radios.
 
+## 4 ter. Podcasts et Autour de moi (16 octobre 2026)
+- Carte « Podcasts » dans Explorer : dégradé lagon → violet, pile de 3 pochettes à droite, libellé « À réécouter » en lagon.
+- Page d'émission : pochette 104 px (coins 20), nom en Anton, bouton « Suivre » en contour lagon (plein lagon quand suivi). Épisodes en liste : titre sur 2 lignes max, date + durée (ou « Reste … »), fine barre magenta de progression, rond lecture 44 px.
+- Lecteur en mode podcast : pas de « EN DIRECT » ni de point magenta, barre d'avancement magenta avec temps écoulé / restant, boutons −15 s et +30 s à la place de précédent / suivant, pas de cœur ni de bandeau de favoris.
+- « Autour de moi » : carte verre avec pastille lagon et repère de position ; les résultats affichent « à X km ».
+
 ## 5. Textes
 - Tutoiement, phrases courtes, verbes d'action (« Réessayer », « Ajouter une station »).
 - Dire ce qui se passe et quoi faire : « La station ne répond pas. Réessaie ou choisis-en une autre. »

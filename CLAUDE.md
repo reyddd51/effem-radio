@@ -8,6 +8,10 @@ Lire ce fichier en entier avant toute modification de l'app. Les règles de desi
 - Pause = **son coupé, flux gardé connecté** (durée réglable, 15 min par défaut) : à la reprise on retombe sur le direct sans nouveau préroll. Ne pas casser ce comportement.
 - Ne jamais contourner volontairement la publicité des radios (pas de modification des adresses de flux pour éviter les régies).
 - 8 favoris mis en avant (accueil en 4 × 2, mode voiture en 2 × 4). Une même radio sous deux noms (« France Info » / « franceinfo ») est la même radio : fonction `same()`.
+- Décision du 16 octobre 2026 : **on reste à zéro pub** pour l'instant (aucune bannière, aucun plein écran, aucun sponsor). Les revenus viendront d'**Effem+**.
+- **Effem+** (payant, à construire avec l'app native) : réveil radio, « Passeport monde » (radios des autres pays, rangées par pays), égaliseur. Prix proposé, pas encore validé : 1,99 €/mois, 14,99 €/an ou 29,99 € à vie, avec 7 jours d'essai. Tout le reste est gratuit pour tout le monde : écoute, 8 favoris, mode voiture, podcasts, Autour de moi.
+- **Podcasts** gratuits, comme chez AppMind : annuaire Apple Podcasts (`itunes.apple.com`, recherche et épisodes), épisodes lus directement chez l'éditeur. Pause = vraie pause, reprise là où on s'est arrêté. Sélection d'émissions dans `PODS`.
+- **Autour de moi** : radios à moins de 60 km (recherche par position de Radio Browser). Position arrondie à environ 1 km, jamais enregistrée.
 - Éditeur : CYCLONE (SASU, détenue par DLMD). Vendeur affiché sur l'App Store : CYCLONE.
 
 ## Le code

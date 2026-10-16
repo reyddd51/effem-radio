@@ -203,6 +203,23 @@ nav.tabs button.on svg{stroke:var(--magenta)}
 .res .logo{width:56px;height:56px;border-radius:14px}
 .res .n{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .res .m{font-size:13px;color:var(--lilas);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Podcasts */
+.excard.pod{background:linear-gradient(135deg,rgba(25,195,180,.20),rgba(139,43,217,.22) 60%,rgba(42,15,74,.6));box-shadow:inset 0 0 0 1px rgba(25,195,180,.35)}
+.res .ep .n{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15px;line-height:20px}
+.res .ep .pl{width:44px;height:44px;border-radius:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--nuit2);box-shadow:inset 0 0 0 1px rgba(255,244,230,.12)}
+.res .ep .pl svg{fill:var(--creme)}
+.res .done{color:var(--lagon)}
+.epbar{display:block;height:3px;border-radius:2px;background:rgba(255,244,230,.12);margin-top:6px;overflow:hidden}
+.epbar i{display:block;height:100%;background:var(--magenta)}
+.showhd{display:flex;gap:14px;align-items:flex-end;padding:4px 0 10px}
+.showhd .logo{width:104px;height:104px;border-radius:20px;flex-shrink:0;box-shadow:0 10px 26px rgba(0,0,0,.4)}
+.showhd h3{margin:0;font:400 24px/1.05 var(--display);letter-spacing:1px;text-transform:uppercase;overflow-wrap:anywhere}
+.follow{height:36px;padding:0 16px;border-radius:18px;font-size:14px;font-weight:800;background:var(--nuit2);box-shadow:inset 0 0 0 1.5px var(--lagon);color:var(--lagon);align-self:flex-start}
+.follow.on{background:var(--lagon);color:var(--nuit);box-shadow:none}
+.prog{display:flex;flex-direction:column;gap:4px;padding:10px 4px 0}
+.prog input{width:100%;height:28px;accent-color:#FF2E88;margin:0}
+.prog .tm{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:rgba(255,244,230,.72);font-variant-numeric:tabular-nums}
+.ctrls .side .sk{font:800 11px/1 var(--body);fill:#FFF4E6}
 .heart{width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:30px 10px}
 .empty h3{margin:0;font:400 28px/1.05 var(--display);letter-spacing:1px}
@@ -288,9 +305,18 @@ nav.tabs button.on svg{stroke:var(--magenta)}
           <span style="display:flex;flex-direction:column;gap:4px;max-width:165px"><span class="lbl" style="color:var(--soleil);font-size:11px" id="topSub"></span><span style="font:400 23px/1 var(--display);letter-spacing:1px">LES PLUS ÉCOUTÉES</span><span style="font-size:12.5px;font-weight:600;color:rgba(255,244,230,.75)">Les 20 radios du mois</span></span>
           <span class="stack3" id="topStack"></span>
         </button>
+        <button id="nearCard" class="excard glass" style="padding:12px 16px">
+          <span class="row" style="gap:12px"><span style="width:44px;height:44px;border-radius:22px;background:rgba(25,195,180,.16);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#19C3B4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg></span>
+          <span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:800">Autour de moi</span><span class="small muted">Les radios à moins de 60 km</span></span></span>
+          <span class="muted" style="font-size:20px">›</span>
+        </button>
         <button id="localCard" class="excard glass" style="flex-direction:column;align-items:stretch;padding:14px 16px">
           <span class="row" style="justify-content:space-between"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:800">Radios locales</span><span class="small muted" id="localSub"></span></span><span class="muted" style="font-size:20px">›</span></span>
           <span class="chips" id="localChips"></span>
+        </button>
+        <button id="podCard" class="excard pod">
+          <span style="display:flex;flex-direction:column;gap:4px;max-width:170px"><span class="lbl" style="color:var(--lagon);font-size:11px">À réécouter</span><span style="font:400 23px/1 var(--display);letter-spacing:1px">PODCASTS</span><span style="font-size:12.5px;font-weight:600;color:rgba(255,244,230,.75)">Les émissions des radios, quand tu veux</span></span>
+          <span class="stack3" id="podStack"></span>
         </button>
         <p class="lbl" style="margin-top:6px">Par genre</p>
         <div class="genres" id="genres"></div>
@@ -363,6 +389,10 @@ nav.tabs button.on svg{stroke:var(--magenta)}
       <h1 id="pName"></h1>
       <span class="st" id="pSt" style="font-size:12px"></span>
       <span id="pMeta" style="font-size:16px;font-weight:600;color:rgba(255,244,230,.72)"></span>
+    </div>
+    <div class="prog" id="pProg" hidden>
+      <input type="range" id="pSeek" min="0" max="1000" value="0" step="1" aria-label="Avancer ou reculer dans l'épisode">
+      <span class="tm"><span id="pT1">0:00</span><span id="pT2"></span></span>
     </div>
     <div id="pErr" hidden class="stack" style="gap:8px;padding-top:12px">
       <div class="note"><b>La station ne répond pas.</b> Le flux est coupé ou le réseau est trop faible.</div>
@@ -513,6 +543,7 @@ const logoAsked = new Set();
 function testImg(u){ return new Promise(ok => { const i = new Image(); const t = setTimeout(() => ok(false), 6000);
   i.onload = () => { clearTimeout(t); ok(i.naturalWidth >= 64 && i.naturalHeight >= 64); }; i.onerror = () => { clearTimeout(t); ok(false); }; i.src = u; }); }
 async function ensureLogo(st){
+  if (st.ep) return;
   const k = skey(st); if (!k || logoAsked.has(k) || logoSrc(st)) return;
   logoAsked.add(k);
   let cands = [];
@@ -576,16 +607,17 @@ A.preload = 'none';
 A.setAttribute('playsinline','');
 let ourPause = false, connSeq = 0;
 
-function setStatus(s){ status = s; render(); }
+function setStatus(s){ status = s; render(); if (resMode==='show') renderEps(); }
 
 function connect(st){
   clearKeep();
+  if (cur && cur.ep) savePos();
   cur = st;
-  recent = [st, ...recent.filter(r => r.url !== st.url)].slice(0, 8);
-  store.set('last', st); save();
+  if (!st.ep){ recent = [st, ...recent.filter(r => r.url !== st.url)].slice(0, 8); store.set('last', st); save(); }
   ourPause = true; try{ A.pause(); }catch(e){} ourPause = false;
   A.muted = false;
   A.src = st.url;
+  if (st.ep){ const p = epPos[st.url]; if (p > 5) A.addEventListener('loadedmetadata', () => { try{ A.currentTime = p; }catch(e){} }, {once:true}); }
   connected = true;
   setStatus('loading');
   setMediaSession();
@@ -596,6 +628,7 @@ function connect(st){
 }
 function hardStop(){
   clearKeep();
+  if (cur && cur.ep) savePos();
   ourPause = true;
   try{ A.pause(); A.removeAttribute('src'); A.load(); }catch(e){}
   ourPause = false;
@@ -604,6 +637,7 @@ function hardStop(){
 }
 function softPause(){
   if (!cur) return;
+  if (cur.ep){ ourPause = true; try{ A.pause(); }catch(e){} ourPause = false; savePos(); setStatus('stopped'); return; }   // podcast : vraie pause, on reprend au même endroit
   if (status==='loading' || status==='error' || keepMin===0 || !connected) { hardStop(); return; }
   A.muted = true;
   keepUntil = Date.now() + keepMin*60000;
@@ -614,12 +648,24 @@ function softPause(){
 function resume(){
   if (!cur) { const st = mine[0]; if (st) connect(st); return; }
   if (status==='muted' && connected && !A.paused) { clearKeep(); A.muted = false; setStatus('live'); return; }
+  if (cur.ep && A.getAttribute('src')===cur.url && A.readyState > 0) { setStatus('loading'); const p = A.play(); if (p && p.catch) p.catch(() => setStatus('stopped')); return; }
   connect(cur);
 }
+/* Podcasts : position d'écoute gardée par épisode */
+let epPos = store.get('epPos', {}), epDone = store.get('epDone', {}), lastPosSave = 0;
+function savePos(){
+  if (!cur || !cur.ep) return;
+  const t = A.currentTime || 0, d = isFinite(A.duration) ? A.duration : 0;
+  if (d && t > d - 20) { delete epPos[cur.url]; epDone[cur.url] = 1; } else if (t > 5) epPos[cur.url] = Math.floor(t);
+  const keys = Object.keys(epPos); if (keys.length > 200) keys.slice(0, keys.length-200).forEach(k => delete epPos[k]);
+  store.set('epPos', epPos); store.set('epDone', epDone);
+}
+function seekBy(s){ try{ const d = isFinite(A.duration) ? A.duration : 1e9; A.currentTime = Math.max(0, Math.min(d - 1, (A.currentTime||0) + s)); updateProg(); }catch(e){} }
 function clearKeep(){ clearTimeout(keepTimer); keepTimer=null; keepUntil=0; }
 function toggle(){ (status==='live' || status==='loading') ? softPause() : resume(); }
-function pick(st){ if (cur && cur.url===st.url && (status==='live'||status==='loading')) return openPlayer(); if (cur && cur.url===st.url && status==='muted') return resume(); connect(st); }
+function pick(st){ if (st.ep && cur && cur.url===st.url && status==='stopped') return resume(); if (cur && cur.url===st.url && (status==='live'||status==='loading')) return openPlayer(); if (cur && cur.url===st.url && status==='muted') return resume(); connect(st); }
 function step(d){
+  if (cur && cur.ep) return seekBy(d < 0 ? -15 : 30);
   const list = mine.length ? mine : DEFAULTS;
   let i = cur ? list.findIndex(m => m.url===cur.url) : -1;
   i = (i + d + list.length) % list.length;
@@ -630,18 +676,25 @@ A.addEventListener('playing', () => { if (!A.muted && cur) setStatus('live'); })
 A.addEventListener('waiting', () => { if (!A.muted && status==='live') setStatus('loading'); });
 A.addEventListener('error', () => { if (!A.getAttribute('src')) return; connected=false; clearKeep(); setStatus('error'); });
 A.addEventListener('pause', () => { if (ourPause) return; connected=false; clearKeep(); if (cur) setStatus('stopped'); }); // coupure système (appel…)
-A.addEventListener('ended', () => { connected=false; setStatus('error'); });
+A.addEventListener('ended', () => { connected=false;
+  if (cur && cur.ep){ delete epPos[cur.url]; epDone[cur.url] = 1; store.set('epPos', epPos); store.set('epDone', epDone); setStatus('stopped'); return; }
+  setStatus('error'); });
+A.addEventListener('timeupdate', () => { if (!cur || !cur.ep) return; updateProg(); if (Date.now() - lastPosSave > 5000){ lastPosSave = Date.now(); savePos(); } });
+A.addEventListener('durationchange', () => updateProg());
 
 function setMediaSession(){
   if (!('mediaSession' in navigator) || !cur) return;
   try{
     const src = logoSrc(cur);
-    navigator.mediaSession.metadata = new MediaMetadata({ title: cur.name, artist: 'En direct · Effem Radio', album: cur.meta || '', artwork: src ? [{src, sizes:'512x512'}] : [] });
-    navigator.mediaSession.setActionHandler('play', resume);
-    navigator.mediaSession.setActionHandler('pause', softPause);
-    navigator.mediaSession.setActionHandler('stop', hardStop);
-    navigator.mediaSession.setActionHandler('previoustrack', () => step(-1));
-    navigator.mediaSession.setActionHandler('nexttrack', () => step(1));
+    const ms = navigator.mediaSession, ep = !!cur.ep;
+    ms.metadata = new MediaMetadata({ title: cur.name, artist: ep ? cur.show : 'En direct · Effem Radio', album: ep ? 'Podcast' : (cur.meta || ''), artwork: src ? [{src, sizes:'512x512'}] : [] });
+    ms.setActionHandler('play', resume);
+    ms.setActionHandler('pause', softPause);
+    ms.setActionHandler('stop', hardStop);
+    ms.setActionHandler('previoustrack', () => step(-1));
+    ms.setActionHandler('nexttrack', () => step(1));
+    for (const [a, f] of [['seekbackward', () => seekBy(-15)], ['seekforward', () => seekBy(30)], ['seekto', e => { try{ A.currentTime = e.seekTime; }catch(x){} }]])
+      try{ ms.setActionHandler(a, ep ? f : null); }catch(e){}
   }catch(e){}
 }
 
@@ -658,6 +711,12 @@ function clock(t){ return new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit'
 
 /* ---------- rendu ---------- */
 function stLabel(){
+  if (cur && cur.ep) switch(status){
+    case 'loading': return ['Chargement…','load'];
+    case 'live': return ['PODCAST',''];
+    case 'stopped': return ['EN PAUSE','pause'];
+    case 'error': return ['ÉPISODE INDISPONIBLE','err'];
+  }
   switch(status){
     case 'loading': return ['Connexion…','load'];
     case 'live': return ['EN DIRECT',''];
@@ -694,13 +753,15 @@ const BARS = '<span class="bars" aria-hidden="true">' + [6,12,16,9,14,7,15,10].m
 function renderCore(){
   const playing = status==='live' || status==='loading';
   const [lbl, cls] = stLabel();
+  const isEp = !!(cur && cur.ep), liveNow = status==='live' && !isEp;
   // Accueil : carte « en direct » (ou suggestion)
   const hs = cur || store.get('last', null) || mine[0];
   applyTint(hs);
   if (hs){
-    const hb = !cur ? 'PRÊT À ÉCOUTER' : status==='live' ? 'EN DIRECT' : status==='loading' ? 'CONNEXION…' : status==='error' ? 'NE RÉPOND PAS' : 'EN PAUSE';
-    $('#hero').innerHTML = `${WAVES}<span class="hb">${status==='live'?'<span class="live"></span>':''}${hb}</span>
-      <span class="hl"><span class="logo">${logoHTML(hs,18)}</span><span style="min-width:0;display:flex;flex-direction:column;gap:4px;padding-bottom:4px"><span class="hn">${esc(String(hs.name).toUpperCase())}</span><span class="hm">${esc(hs.meta||'Radio en direct')}</span></span></span>
+    const hb = !cur ? 'PRÊT À ÉCOUTER' : isEp ? (status==='live' ? 'PODCAST EN COURS' : status==='loading' ? 'CHARGEMENT…' : 'PODCAST EN PAUSE') : status==='live' ? 'EN DIRECT' : status==='loading' ? 'CONNEXION…' : status==='error' ? 'NE RÉPOND PAS' : 'EN PAUSE';
+    const hn = hs.ep ? hs.show : hs.name, hm = hs.ep ? hs.name : (hs.meta||'Radio en direct');
+    $('#hero').innerHTML = `${WAVES}<span class="hb">${liveNow?'<span class="live"></span>':''}${hb}</span>
+      <span class="hl"><span class="logo">${logoHTML(hs,18)}</span><span style="min-width:0;display:flex;flex-direction:column;gap:4px;padding-bottom:4px"><span class="hn" style="${hs.ep?'font-size:26px':''}">${esc(String(hn).toUpperCase())}</span><span class="hm">${esc(hm)}</span></span></span>
       <span class="hp" id="heroPlay" role="button" aria-label="${playing?'Pause':'Lecture'}">${playing ? ICON_PAUSE(24) : ICON_PLAY(24)}</span>`;
   }
   $('#hero').hidden = !hs;
@@ -720,20 +781,26 @@ function renderCore(){
   if (cur){
     $('#miniLogo').innerHTML = logoHTML(cur,12);
     $('#miniName').textContent = cur.name;
-    $('#miniSt').innerHTML = (status==='live' ? '<span class="live" style="display:inline-block;margin-right:6px;vertical-align:-1px"></span>' : '') + esc(lbl); $('#miniSt').className = 'st '+cls;
+    $('#miniSt').innerHTML = (liveNow ? '<span class="live" style="display:inline-block;margin-right:6px;vertical-align:-1px"></span>' : '') + esc(lbl); $('#miniSt').className = 'st '+cls;
     $('#miniPlay').innerHTML = playing ? ICON_PAUSE(20) : ICON_PLAY(20);
     $('#miniPlay').setAttribute('aria-label', playing ? 'Pause' : 'Lecture');
   }
   // Lecteur
   if (cur){
     const idx = mine.findIndex(m => m.url===cur.url);
-    $('#pPos').textContent = idx>=0 ? `Mes favoris · ${idx+1} sur ${mine.length}` : 'Hors de mes favoris';
+    $('#pPos').textContent = isEp ? 'Podcast' : idx>=0 ? `Mes favoris · ${idx+1} sur ${mine.length}` : 'Hors de mes favoris';
     $('#pLogo').innerHTML = logoHTML(cur,64);
     const ls = logoSrc(cur); $('#pBg').style.backgroundImage = ls ? `url("${ls}")` : 'none';
     $('#pName').textContent = cur.name;
-    $('#pSt').innerHTML = (status==='live' ? '<span class="live" style="display:inline-block;margin-right:8px;vertical-align:middle"></span>' : '') + esc(lbl) + (status==='live' ? BARS : ''); $('#pSt').className = 'st '+cls;
-    $('#pMeta').textContent = status==='muted' ? 'Le son est coupé, la station reste branchée. Reprends : tu tombes direct sur l’antenne.' : (cur.meta || '');
-    $('#pBadge').hidden = status!=='live';
+    $('#pSt').innerHTML = (liveNow ? '<span class="live" style="display:inline-block;margin-right:8px;vertical-align:middle"></span>' : '') + esc(lbl) + (liveNow ? BARS : ''); $('#pSt').className = 'st '+cls;
+    $('#pMeta').textContent = status==='muted' ? 'Le son est coupé, la station reste branchée. Reprends : tu tombes direct sur l’antenne.' : isEp ? cur.show : (cur.meta || '');
+    $('#pName').style.fontSize = isEp ? (cur.name.length > 60 ? '24px' : '30px') : '';
+    $('#pBadge').hidden = !liveNow;
+    $('#pProg').hidden = !isEp; $('#pStrip').hidden = isEp; $('#pFav').style.visibility = isEp ? 'hidden' : '';
+    $('#prev').innerHTML = isEp ? SKIP(-15) : PREV_HTML; $('#next').innerHTML = isEp ? SKIP(30) : NEXT_HTML;
+    $('#prev').setAttribute('aria-label', isEp ? 'Reculer de 15 secondes' : 'Station précédente');
+    $('#next').setAttribute('aria-label', isEp ? 'Avancer de 30 secondes' : 'Station suivante');
+    if (isEp) updateProg();
     $('#pSpin').hidden = status!=='loading';
     $('#pErr').hidden = status!=='error';
     $('#pPlay').innerHTML = playing ? ICON_PAUSE(40) : ICON_PLAY(40);
@@ -747,7 +814,7 @@ function renderCore(){
   const six = mine.slice(0,FAV_N);
   $('#carGrid').innerHTML = six.map((s,i) => `<button class="${cur&&cur.url===s.url?'cur':''}" data-i="${i}" aria-label="Écouter ${esc(s.name)}"><span class="logo">${logoHTML(s,36)}</span><span class="num">${i+1}</span><span class="ring"></span></button>`).join('');
   $('#carName').textContent = cur ? cur.name : 'Aucune radio';
-  $('#carSt').innerHTML = (status==='live' ? '<span class="live" style="display:inline-block;margin-right:8px;vertical-align:-1px"></span>' : '') + esc(lbl); $('#carSt').className = 'st '+cls;
+  $('#carSt').innerHTML = (liveNow ? '<span class="live" style="display:inline-block;margin-right:8px;vertical-align:-1px"></span>' : '') + esc(lbl); $('#carSt').className = 'st '+cls;
   $('#carPlay').innerHTML = playing ? ICON_PAUSE(34) : ICON_PLAY(34);
   // Réglages
   $('#keepSeg').innerHTML = KEEP_OPTS.map(([v,l]) => `<button class="${v===keepMin?'on':''}" data-k="${v}">${l}</button>`).join('');
@@ -759,6 +826,20 @@ function renderCore(){
   if ('mediaSession' in navigator) try{ navigator.mediaSession.playbackState = playing ? 'playing' : (cur ? 'paused' : 'none'); }catch(e){}
 }
 setInterval(() => { if (status==='muted' || sleepEnd) render(); }, 1000);
+const PREV_HTML = $('#prev').innerHTML, NEXT_HTML = $('#next').innerHTML;
+const SKIP = n => `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFF4E6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${n<0 ? 'M4.5 12a7.5 7.5 0 1 0 2.3-5.4M5 3.5v3.6h3.6' : 'M19.5 12a7.5 7.5 0 1 1-2.3-5.4M19 3.5v3.6h-3.6'}"/><text x="12" y="15.2" text-anchor="middle" font-size="7.2" font-weight="800" fill="#FFF4E6" stroke="none" font-family="Manrope,sans-serif">${Math.abs(n)}</text></svg>`;
+let seeking = false;
+function epDur(){ return isFinite(A.duration) && A.duration > 0 ? A.duration : (cur && cur.dur ? cur.dur/1000 : 0); }
+function updateProg(){
+  if (!cur || !cur.ep) return;
+  const d = epDur(), t = A.getAttribute('src')===cur.url ? (A.currentTime||0) : (epPos[cur.url]||0);
+  if (!seeking) $('#pSeek').value = d ? Math.round(t/d*1000) : 0;
+  $('#pT1').textContent = fmt(t*1000); $('#pT2').textContent = d ? '−' + fmt(Math.max(0, d-t)*1000) : '';
+}
+$('#pSeek').addEventListener('input', () => { seeking = true; const d = epDur(); $('#pT1').textContent = fmt($('#pSeek').value/1000*d*1000); });
+$('#pSeek').addEventListener('change', () => { const d = epDur(), t = $('#pSeek').value/1000*d; seeking = false; if (!d) return;
+  if (A.getAttribute('src')===cur.url){ try{ A.currentTime = t; }catch(e){} savePos(); } else { epPos[cur.url] = Math.floor(t); store.set('epPos', epPos); }
+  updateProg(); });
 
 /* ---------- navigation ---------- */
 function show(v){
@@ -910,7 +991,7 @@ function clean(list){
 }
 const FRQ = 'countrycode=FR&hidebroken=true&order=clickcount&reverse=true&limit=60';
 async function runSearch(label, fetcher){
-  resNote = ''; resMode = '';
+  resNote = ''; resMode = ''; podRes = [];
   const seq = ++qSeq;
   setBack('explore');
   $('#exHome').hidden = true; $('#exRes').hidden = false;
@@ -927,14 +1008,16 @@ async function runSearch(label, fetcher){
     $('#resList').innerHTML = `<li class="empty"><h3>ANNUAIRE INJOIGNABLE</h3><p class="muted" style="margin:0">Vérifie ta connexion puis réessaie.</p></li>`;
   }
 }
-let resNote = '', resMode = '';
+let resNote = '', resMode = '', podRes = [], podTimer = null;
 function renderResults(label){
   if (resMode === 'top' && results.length > 3) return renderTop();
   $('#resCount').textContent = results.length ? results.length + ' résultat' + (results.length>1?'s':'') : '';
   $('#resList').innerHTML = results.length ? results.map((s,i) => `<li>
       <button class="main" data-p="${i}"><span class="logo">${logoHTML(s,13)}</span><span style="min-width:0;display:flex;flex-direction:column;gap:2px"><span class="n">${esc(s.name)}</span><span class="m">${esc(s.meta)}</span></span></button>
       <button class="heart" data-f="${i}" aria-label="${isMine(s)?'Retirer':'Ajouter'} ${esc(s.name)}">${HEART(isMine(s))}</button></li>`).join('')
+    : podRes.length ? `<li class="small muted" style="display:block;padding:6px 2px">Aucune radio pour « ${esc($('#q').value)} ».</li>`
     : `<li class="empty"><h3>RIEN SUR CETTE FRÉQUENCE</h3><p class="muted" style="margin:0;line-height:21px">Aucune radio française pour « ${esc($('#q').value || label)} ». Essaie le nom de la ville ou un genre.</p></li>`;
+  if (podRes.length && !resMode) $('#resList').insertAdjacentHTML('beforeend', `<li style="display:block;padding:16px 0 2px"><p class="lbl">Podcasts</p></li>` + podRes.map(showRow).join(''));
   if (resNote && results.length) $('#resList').insertAdjacentHTML('beforeend', `<li class="small muted" style="display:block;line-height:19px;padding:14px 2px">${resNote}</li>`);
   requestAnimationFrame(() => fitAll());
 }
@@ -957,6 +1040,15 @@ $('#q').addEventListener('input', () => {
       rb(`stations/search?state=${e}&${FRQ}`).catch(() => []), outremer().catch(() => [])]);
     return [...byName, ...byPlace, ...byTag, ...om.filter(x => omMatch(x, v))];
   }), 350);
+  clearTimeout(podTimer);
+  podTimer = setTimeout(async () => {
+    const seq = qSeq;
+    try{ const d = await itunes(`search?term=${encodeURIComponent(v)}&media=podcast&country=fr&limit=8`);
+      if (seq !== qSeq || $('#q').value.trim() !== v) return;
+      podRes = d.results.filter(x => x.collectionId).map(toShow); podRes.forEach(x => podIndex[x.id] = x);
+      if (!resMode && !$('#exRes').hidden && $('#resCount').textContent !== 'Recherche…') renderResults('Stations');
+    }catch(e){}
+  }, 450);
 });
 
 /* ---------- Radios locales par région ---------- */
@@ -1038,25 +1130,140 @@ function showTop(){
 }
 $('#topCard').onclick = showTop;
 let backTo = 'explore';
-function setBack(to){ backTo = to; $('#resBack').textContent = to==='regions' ? '‹ Toutes les régions' : '‹ Explorer'; }
+function setBack(to){ backTo = to; $('#resBack').textContent = to==='regions' ? '‹ Toutes les régions' : to==='pods' ? '‹ Podcasts' : '‹ Explorer'; }
 /* Retour au début d'Explorer : recherche vidée, genres affichés, en haut de page */
 function exploreHome(clear = true){
-  qSeq++; clearTimeout(qTimer); regionMode = false;
+  qSeq++; clearTimeout(qTimer); regionMode = false; resMode = ''; podRes = [];
   if (clear){ $('#q').value = ''; $('#qClear').hidden = true; }
   $('#exHome').hidden = false; $('#exRes').hidden = true;
   $('#v-explore').scrollTop = 0;
 }
-$('#resBack').onclick = () => backTo==='regions' ? showRegions() : exploreHome();
+$('#resBack').onclick = () => backTo==='regions' ? showRegions() : backTo==='pods' ? showPods() : exploreHome();
 $('#q').addEventListener('keydown', e => { if (e.key==='Enter') $('#q').blur(); });
 $('#qClear').onclick = e => { e.preventDefault(); $('#q').value=''; $('#q').dispatchEvent(new Event('input')); };
 $('#resList').addEventListener('click', e => {
   const g = e.target.closest('[data-reg]'); if (g) return showRegion(REGIONS[+g.dataset.reg]);
+  if (e.target.closest('#nbRegions')) return showRegions();
+  const sh = e.target.closest('[data-show]'); if (sh) return showShow(podIndex[sh.dataset.show]);
+  const fo = e.target.closest('[data-follow]'); if (fo) return toggleFollow(curShow);
+  const ep = e.target.closest('[data-e]'); if (ep){ const x = eps[+ep.dataset.e]; if (cur && cur.url===x.url && status==='live') return openPlayer(); pick(x); openPlayer(); return; }
   const p = e.target.closest('[data-p]'), f = e.target.closest('[data-f]');
   if (p){ connect(results[+p.dataset.p]); openPlayer(); }
   if (f){ const s = results[+f.dataset.f];
     toggleMine(s);
     save(); render(); renderResults($('#resTitle').textContent); }
 });
+
+
+/* ---------- Autour de moi : radios à moins de 60 km (position arrondie, jamais enregistrée) ---------- */
+async function showNearby(){
+  const seq = ++qSeq; regionMode = false; resMode = ''; resNote = ''; podRes = [];
+  $('#exHome').hidden = true; $('#exRes').hidden = false; setBack('explore');
+  $('#resTitle').textContent = 'Autour de moi'; $('#resCount').textContent = 'Localisation…'; $('#resList').innerHTML = '';
+  $('#v-explore').scrollTop = 0;
+  let pos;
+  try{ pos = await new Promise((ok, ko) => { if (!navigator.geolocation) return ko(); navigator.geolocation.getCurrentPosition(ok, ko, {timeout:15000, maximumAge:600000, enableHighAccuracy:false}); }); }
+  catch(e){ if (seq!==qSeq) return; $('#resCount').textContent = '';
+    $('#resList').innerHTML = `<li class="empty"><h3>POSITION INCONNUE</h3><p class="muted" style="margin:0;line-height:21px">Autorise la localisation pour Safari (Réglages › Confidentialité › Service de localisation), ou choisis ta région.</p><button class="ghost" id="nbRegions" style="margin-top:12px">Voir les radios par région</button></li>`; return; }
+  if (seq!==qSeq) return;
+  const la = pos.coords.latitude.toFixed(2), lo = pos.coords.longitude.toFixed(2);   // ~1 km près, ça suffit
+  $('#resCount').textContent = 'Recherche…';
+  try{
+    const data = await rb(`stations/search?geo_lat=${la}&geo_long=${lo}&geo_distance=60000&has_geo_info=true&hidebroken=true&order=clickcount&reverse=true&limit=300`);
+    if (seq!==qSeq) return;
+    const km = {}; data.forEach(x => km[x.stationuuid] = x.geo_distance);
+    results = clean(data).map(s => { const d = km[s.uuid]; return d!=null ? {...s, meta:`à ${Math.max(1, Math.round(d/1000))} km · ${s.meta}`} : s; });
+    resNote = 'Radios dont l’adresse est à moins de 60 km de toi. Ta position sert seulement à cette recherche : Effem ne la garde pas.';
+    renderResults('Autour de moi');
+  }catch(e){ if (seq!==qSeq) return; $('#resCount').textContent = '';
+    $('#resList').innerHTML = `<li class="empty"><h3>ANNUAIRE INJOIGNABLE</h3><p class="muted" style="margin:0">Vérifie ta connexion puis réessaie.</p></li>`; }
+}
+$('#nearCard').onclick = showNearby;
+
+/* ---------- Podcasts (annuaire Apple Podcasts, épisodes lus directement chez l'éditeur) ---------- */
+// Sélection : grandes émissions des radios françaises (identifiants Apple Podcasts)
+const PODS = [1146402624, 389542173, 369369012, 912451024, 160879442, 115156841, 295730824, 1581950528, 1148602643, 82354094, 1721570106, 1767375065, 1686554452];
+let follow = store.get('pods', []), podIndex = {}, curShow = null, eps = [], showSeq = 0;
+async function itunes(path){   // l'annuaire répond parfois sans autorisation d'accès : on réessaie une fois avec une adresse fraîche
+  for (const extra of ['', '&_=' + Date.now()]){ try{ const r = await fetch('https://itunes.apple.com/' + path + extra); if (r.ok) return await r.json(); }catch(e){} }
+  throw new Error('itunes');
+}
+const toShow = x => ({ id:String(x.collectionId), name:x.collectionName, artist:x.artistName, favicon:httpsUrl(x.artworkUrl600 || x.artworkUrl100) });
+follow.forEach(x => podIndex[x.id] = x);
+async function loadPodShows(){
+  const c = store.get('podShows', null);
+  if (c && c.t > Date.now() - 864e5 && c.list.length) { c.list.forEach(x => podIndex[x.id] = x); return c.list; }
+  const d = await itunes(`lookup?id=${PODS.join(',')}&country=fr`);
+  const list = d.results.filter(x => x.collectionId).map(toShow).sort((a,b) => PODS.indexOf(+a.id) - PODS.indexOf(+b.id));
+  store.set('podShows', {t:Date.now(), list}); list.forEach(x => podIndex[x.id] = x);
+  return list;
+}
+const showRow = s => `<li><button class="main" data-show="${esc(s.id)}"><span class="logo">${logoHTML(s,12)}</span><span style="min-width:0;flex:1;display:flex;flex-direction:column;gap:2px"><span class="n">${esc(s.name)}</span><span class="m">${esc(s.artist||'')}</span></span><span class="muted" style="font-size:20px">›</span></button></li>`;
+function podStack(list){
+  $('#podStack').innerHTML = list.slice(0,3).reverse().map((t,j) => { const pos = [['right:0;top:10px;transform:rotate(8deg)',52],['right:34px;top:4px;transform:rotate(-4deg)',56],['right:64px;top:0',62]][j];
+    return `<span class="logo" style="${pos[0]};width:${pos[1]}px;height:${pos[1]}px">${logoHTML(t,10)}</span>`; }).join('');
+}
+loadPodShows().then(podStack).catch(() => {});
+async function showPods(){
+  const seq = ++qSeq; regionMode = false; resMode = 'pods'; resNote = ''; podRes = [];
+  $('#exHome').hidden = true; $('#exRes').hidden = false; setBack('explore');
+  $('#resTitle').textContent = 'Podcasts'; $('#resCount').textContent = '';
+  $('#v-explore').scrollTop = 0;
+  const head = follow.length ? `<li style="display:block;padding:4px 0 2px"><p class="lbl">Mes podcasts</p></li>` + follow.map(showRow).join('') : '';
+  $('#resList').innerHTML = head + `<li style="display:block;padding:${follow.length?16:4}px 0 2px"><p class="lbl">Les émissions à réécouter</p></li><li class="small muted">Chargement…</li>`;
+  try{
+    const list = await loadPodShows(); if (seq!==qSeq) return;
+    $('#resList').innerHTML = head + `<li style="display:block;padding:${follow.length?16:4}px 0 2px"><p class="lbl">Les émissions à réécouter</p></li>` + list.map(showRow).join('')
+      + `<li class="small muted" style="display:block;line-height:19px;padding:14px 2px">Cherche n’importe quelle émission avec la barre de recherche en haut d’Explorer.</li>`;
+  }catch(e){ if (seq!==qSeq) return; $('#resList').innerHTML = head + `<li class="empty"><h3>PODCASTS INJOIGNABLES</h3><p class="muted" style="margin:0">Vérifie ta connexion puis réessaie.</p></li>`; }
+  requestAnimationFrame(() => fitAll());
+}
+$('#podCard').onclick = showPods;
+const isFollow = s => !!s && follow.some(x => x.id === s.id);
+function toggleFollow(s){
+  if (!s) return;
+  if (isFollow(s)) { follow = follow.filter(x => x.id !== s.id); toast('Tu ne suis plus ce podcast'); }
+  else { follow = [s, ...follow]; toast('Ajouté à mes podcasts'); }
+  store.set('pods', follow);
+  const b = document.querySelector('[data-follow]'); if (b){ b.classList.toggle('on', isFollow(s)); b.textContent = isFollow(s) ? 'Suivi' : 'Suivre'; }
+}
+function epDate(d){ const t = new Date(d), now = new Date(), days = Math.floor((now - t) / 864e5);
+  if (days < 1 && t.getDate()===now.getDate()) return 'Aujourd’hui'; if (days < 2) return 'Hier';
+  return t.toLocaleDateString('fr-FR', {day:'numeric', month:'short', year: t.getFullYear()===now.getFullYear() ? undefined : 'numeric'}); }
+function epLen(ms){ const m = Math.round((ms||0)/60000); return m >= 60 ? `${Math.floor(m/60)} h ${String(m%60).padStart(2,'0')}` : m ? `${m} min` : ''; }
+async function showShow(s){
+  if (!s) return;
+  const seq = ++qSeq, from = resMode === 'pods' ? 'pods' : $('#q').value.trim() ? 'explore' : 'pods';
+  curShow = s; regionMode = false; resMode = 'show'; resNote = ''; eps = []; ++showSeq;
+  $('#exHome').hidden = true; $('#exRes').hidden = false; setBack(from);
+  $('#resTitle').textContent = 'Podcast'; $('#resCount').textContent = '';
+  $('#v-explore').scrollTop = 0;
+  renderEps('Chargement des épisodes…');
+  try{
+    const d = await itunes(`lookup?id=${encodeURIComponent(s.id)}&entity=podcastEpisode&limit=60&country=fr`); if (seq!==qSeq) return;
+    eps = d.results.filter(x => x.wrapperType==='podcastEpisode' && x.episodeUrl).map(x => ({ ep:true, id:'ep:'+x.trackId, name:String(x.trackName||'').trim(), show:s.name, showId:s.id,
+      url:httpsUrl(x.episodeUrl), favicon:s.favicon, dur:x.trackTimeMillis||0, date:x.releaseDate, meta:s.name }));
+    renderEps(eps.length ? '' : 'Aucun épisode disponible pour le moment.');
+  }catch(e){ if (seq!==qSeq) return; renderEps('Les épisodes ne se chargent pas. Vérifie ta connexion puis réessaie.'); }
+}
+function renderEps(msg){
+  if (resMode !== 'show' || !curShow) return;
+  if (msg === undefined) msg = eps.length ? '' : null;
+  if (msg === null) return;   // chargement en cours : on ne touche à rien
+  const s = curShow, on = isFollow(s);
+  const head = `<li style="display:block;padding:0"><div class="showhd"><span class="logo">${logoHTML(s,16)}</span><span style="min-width:0;display:flex;flex-direction:column;gap:6px"><h3>${esc(s.name)}</h3><span class="small muted">${esc(s.artist||'')}</span><button class="follow ${on?'on':''}" data-follow>${on?'Suivi':'Suivre'}</button></span></div></li>`;
+  const rowsHTML = eps.map((x,i) => {
+    const playing = cur && cur.url===x.url, done = epDone[x.url], p = epPos[x.url], d = x.dur/1000;
+    const left = p && d ? `Reste ${epLen((d-p)*1000) || '1 min'}` : epLen(x.dur);
+    const icon = playing && (status==='live'||status==='loading') ? ICON_PAUSE(18) : ICON_PLAY(18);
+    return `<li class="ep"><button class="main" data-e="${i}" aria-label="Écouter ${esc(x.name)}"><span style="min-width:0;flex:1;display:flex;flex-direction:column;gap:3px">
+      <span class="n" style="${playing?'color:var(--magenta)':''}">${esc(x.name)}</span>
+      <span class="m">${esc(epDate(x.date))}${left ? ' · ' + esc(left) : ''}${done ? ' · <span class="done">Écouté</span>' : ''}</span>
+      ${p && d ? `<span class="epbar"><i style="width:${Math.min(100, Math.round(p/d*100))}%"></i></span>` : ''}</span>
+      <span class="pl">${icon}</span></button></li>`; }).join('');
+  $('#resList').innerHTML = head + (msg ? `<li class="small muted" style="display:block;line-height:19px;padding:10px 2px">${esc(msg)}</li>` : rowsHTML);
+  requestAnimationFrame(() => fitAll());
+}
 
 /* ---------- démarrage ---------- */
 document.getElementById('app').dataset.view = 'home';
