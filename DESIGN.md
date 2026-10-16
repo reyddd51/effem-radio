@@ -23,6 +23,7 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 ## 2. Typographie
 - **Anton** (titres, noms de radio dans le lecteur et le mode voiture, chiffres) : toujours en MAJUSCULES, interlettrage +1 px. Jamais pour du texte courant.
 - **Yellowtail** : uniquement le mot « radio » du logo. Nulle part ailleurs.
+- **Logo (validé le 16 octobre 2026, option 1)** : EFFEM en Anton au dégradé soleil ; « radio » en Yellowtail lagon, posé en bas à droite, incliné de −9°, qui mord un peu sur le M, détouré d'un fin liseré de la couleur du fond. Ne plus jamais mettre « radio » à la suite d'EFFEM.
 - **Manrope** : tout le reste. Graisses : 500 (texte), 700 (boutons, lignes de liste), 800 (noms de radio dans les listes, libellés).
 - Échelle : titre d'écran 40 px · titre de section 22–26 px · nom de radio (lecteur) 44 px · texte 15–17 px · secondaire 13 px · libellé 12 px majuscules, interlettrage 1,6 px, mandarine.
 - Pas de texte sous 12 px. Pas de texte en gris sur fond gris.
@@ -57,6 +58,11 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - Page d'émission : pochette 104 px (coins 20), nom en Anton, bouton « Suivre » en contour lagon (plein lagon quand suivi). Épisodes en liste : titre sur 2 lignes max, date + durée (ou « Reste … »), fine barre magenta de progression, rond lecture 44 px.
 - Lecteur en mode podcast : pas de « EN DIRECT » ni de point magenta, barre d'avancement magenta avec temps écoulé / restant, boutons −15 s et +30 s à la place de précédent / suivant, pas de cœur ni de bandeau de favoris.
 - Raccourcis d'Explorer, juste sous la recherche : pastilles verre de 44 px qui défilent (Autour de moi en lagon, Récentes en soleil, Info en continu en magenta, Outre-mer en mandarine, icône fine + texte Manrope 800). « Autour de moi » affiche « à X km » dans les résultats.
+
+## 4 quater. Écran d'ouverture (intro 1 « Crépuscule », validée pour l'instant)
+- Fond ciel de crépuscule (nuit en haut → mandarine en bas), la radio de l'icône au centre, le logo dessous.
+- Animation : la radio se pose, l'aiguille magenta trouve la station, l'antenne émet deux ondes lagon, le logo monte. 1,6 s en tout, un toucher pour passer, quasi immédiat si « Réduire les animations ».
+- Piste à l'étude : « le soleil sur l'eau » (soleil qui se lève sur l'horizon puis reflets sur la mer), 5 versions proposées.
 
 ## 5. Textes
 - Tutoiement, phrases courtes, verbes d'action (« Réessayer », « Ajouter une station »).
