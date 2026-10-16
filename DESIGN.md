@@ -56,7 +56,7 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - Onglet Podcasts : titre PODCASTS, recherche propre aux podcasts, « Mes podcasts » (pochettes en ligne), puis « Top des podcasts » : podium des 3 premiers comme le Top radios, puis liste numérotée avec pochette, nom, éditeur · thème.
 - Page d'émission : pochette 104 px (coins 20), nom en Anton, bouton « Suivre » en contour lagon (plein lagon quand suivi). Épisodes en liste : titre sur 2 lignes max, date + durée (ou « Reste … »), fine barre magenta de progression, rond lecture 44 px.
 - Lecteur en mode podcast : pas de « EN DIRECT » ni de point magenta, barre d'avancement magenta avec temps écoulé / restant, boutons −15 s et +30 s à la place de précédent / suivant, pas de cœur ni de bandeau de favoris.
-- « Autour de moi » : carte verre avec pastille lagon et repère de position ; les résultats affichent « à X km ».
+- Raccourcis d'Explorer, juste sous la recherche : pastilles verre de 44 px qui défilent (Autour de moi en lagon, Récentes en soleil, Info en continu en magenta, Outre-mer en mandarine, icône fine + texte Manrope 800). « Autour de moi » affiche « à X km » dans les résultats.
 
 ## 5. Textes
 - Tutoiement, phrases courtes, verbes d'action (« Réessayer », « Ajouter une station »).
