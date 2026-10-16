@@ -1,6 +1,6 @@
 # Effem Radio — règles de design
 
-Direction : **Sunset**. Une nuit violette, un coucher de soleil réservé aux actions, les logos des radios comme héros. L'app doit se lire en une seconde, d'une main, même en marchant.
+Direction : **Sunset Premium** (validée le 16 octobre 2026). Une nuit violette, un coucher de soleil réservé aux actions, les logos des radios comme héros. L'app doit se lire en une seconde, d'une main, même en marchant.
 
 ## 1. Couleurs (jetons)
 | Jeton | Valeur | Usage |
@@ -44,6 +44,14 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - **Feuille (minuteur, promesse)** : monte du bas, coins 30 px, poignée grise, croix de fermeture 44 px, fond assombri derrière.
 - **États** : chaque écran a son état chargement, erreur (avec « Réessayer »), vide et hors ligne. Jamais d'écran blanc.
 
+## 4 bis. Finition Premium (validée)
+- **Verre dépoli** pour la barre d'onglets et le mini-lecteur : capsules flottantes, fond `rgba(42,15,74,.55)` + flou 24 px + liseré clair 1 px. Barre d'onglets à `--tabB` du bas, mini-lecteur 74 px au-dessus. Sur l'accueil, la carte « en direct » remplace le mini-lecteur.
+- **Grain** très léger sur tout l'écran (opacité 6 %), jamais plus.
+- **Teinte de la radio** (`--tint`) : couleur dominante du logo, calculée automatiquement. Elle colore la carte « en direct » de l'accueil, l'ombre du visuel et le fond flouté du lecteur. Le bouton lecture reste toujours au dégradé soleil.
+- **Carte « en direct »** (accueil) : 168 px, coins 30, ondes radio en filigrane, logo 76, nom en Anton, bouton crème 62 px.
+- **Top du mois** : grands chiffres en contour soleil derrière les logos ; page Top avec podium (1er au centre, liseré soleil) puis liste avec barres proportionnelles.
+- **Vignettes de genre** : dégradé de la couleur du genre, reflet en haut, motif fin propre au genre (lignes, cercles de vinyle, paillettes, zigzag, ondes, arcs, égaliseur), nom en Anton + nombre de radios.
+
 ## 5. Textes
 - Tutoiement, phrases courtes, verbes d'action (« Réessayer », « Ajouter une station »).
 - Dire ce qui se passe et quoi faire : « La station ne répond pas. Réessaie ou choisis-en une autre. »
@@ -53,6 +61,7 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 ## 6. Interdits
 - Aucune bannière, aucun écran plein de pub, aucune fenêtre surgissante au lancement.
 - Pas de dégradé violet → bleu « IA générique », pas d'émojis comme icônes, pas de police système pour les titres.
+- Pas d'icônes épaisses dans des pastilles sur les vignettes de genre (jugées pas assez premium).
 - Pas plus de 3 couleurs vives sur un même écran (hors logos).
 - Pas de logo de radio déformé, recoloré ou recadré au point de le rendre illisible.
 - Pas de faux logo : si on n'a pas le vrai, on affiche la vignette avec le nom.

@@ -32,9 +32,15 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--lagon);outline-offset:2px}
 img{display:block;max-width:100%}
 #app{position:fixed;top:0;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;
-  background:radial-gradient(circle at 85% 0%,rgba(255,46,136,.32),rgba(255,46,136,0) 45%),var(--nuit)}
+  --tint:229,0,126; --tabB:max(12px,calc(env(safe-area-inset-bottom,0px) - 8px));
+  background:radial-gradient(120% 55% at 50% -12%,rgba(255,138,61,.34),rgba(255,46,136,.16) 38%,rgba(23,11,46,0) 66%),linear-gradient(180deg,#1C0D38 0%,#130827 58%,#0C0619 100%)}
+/* Premium : grain très léger et surfaces en verre dépoli */
+#app::after{content:"";position:absolute;inset:0;z-index:60;pointer-events:none;opacity:.06;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.glass{background:rgba(42,15,74,.55);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:inset 0 0 0 1px rgba(255,244,230,.10),inset 0 1px 0 rgba(255,255,255,.10),0 12px 32px rgba(0,0,0,.35)}
+.live{width:8px;height:8px;border-radius:4px;background:var(--magenta);animation:pulse 1.8s infinite;flex-shrink:0}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,46,136,.6)}70%{box-shadow:0 0 0 8px rgba(255,46,136,0)}100%{box-shadow:0 0 0 0 rgba(255,46,136,0)}}
 .view{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:calc(env(safe-area-inset-top,0px) + 14px) max(20px,env(safe-area-inset-right,0px)) 16px max(20px,env(safe-area-inset-left,0px))}
+  padding:calc(env(safe-area-inset-top,0px) + 14px) max(20px,env(safe-area-inset-right,0px)) calc(var(--tabB) + 160px) max(20px,env(safe-area-inset-left,0px))}
 .view[hidden]{display:none}
 h1.big{margin:0;font:400 40px/1 var(--display);letter-spacing:1px}
 h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
@@ -46,9 +52,9 @@ h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
 .small{font-size:13px}
 .pill{height:44px;padding:0 16px;border-radius:22px;border:1.5px solid rgba(255,244,230,.25);display:inline-flex;align-items:center;font-size:15px;font-weight:600;white-space:nowrap;flex-shrink:0}
 .pill.on{background:var(--sunh);color:var(--nuit);border-color:transparent;font-weight:800}
-.round{width:44px;height:44px;border-radius:22px;background:var(--nuit2);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.round{width:44px;height:44px;border-radius:22px;background:rgba(42,15,74,.55);box-shadow:inset 0 0 0 1px rgba(255,244,230,.10);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
 .cta{height:56px;border-radius:28px;background:var(--sunh);color:var(--nuit);font:400 22px/1 var(--display);letter-spacing:1px;display:flex;align-items:center;justify-content:center;width:100%}
-.ghost{height:48px;border-radius:24px;background:var(--nuit2);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.ghost{height:50px;border-radius:25px;background:rgba(42,15,74,.55);box-shadow:inset 0 0 0 1px rgba(255,244,230,.10);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
 .card{border-radius:20px;background:var(--nuit2)}
 .scrollx{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px}
 .scrollx::-webkit-scrollbar{display:none}
@@ -66,11 +72,13 @@ h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
 .promise{min-height:32px;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--lagon)}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 10px}
 .tile{display:flex;flex-direction:column;gap:6px;text-align:left;min-width:0}
-.tile .logo{width:100%;aspect-ratio:1;border-radius:18px}
-.tile .nm{font-size:12px;font-weight:500;color:var(--lilas);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .logo{width:100%;aspect-ratio:1;border-radius:20px;box-shadow:0 0 0 1px rgba(255,244,230,.08),0 8px 18px rgba(0,0,0,.35)}
+.tile{align-items:center}
+.tile .nm{font-size:11.5px;font-weight:600;max-width:100%;color:var(--lilas);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tile.cur .nm{font-weight:800;color:var(--creme)}
 .ring{position:absolute;inset:0;border-radius:inherit;pointer-events:none}
 .cur .ring{box-shadow:inset 0 0 0 3px var(--creme),inset 0 0 0 6px var(--nuit)}
+.tile.cur .logo{box-shadow:0 0 0 2px var(--magenta),0 10px 24px rgba(255,46,136,.35)}
 .eq{position:absolute;top:8px;right:8px;height:24px;padding:0 7px 6px;border-radius:12px;background:var(--magenta);display:flex;align-items:flex-end;gap:2px}
 .eq i{width:3px;border-radius:2px;background:var(--creme);animation:eq 1s ease-in-out infinite}
 .eq i:nth-child(1){height:8px}.eq i:nth-child(2){height:12px;animation-delay:.2s}.eq i:nth-child(3){height:6px;animation-delay:.4s}
@@ -80,36 +88,63 @@ h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
 .recent .logo{width:60px;height:60px;border-radius:14px}
 
 /* Mini-lecteur + onglets */
-.mini{margin:0 16px 8px;height:64px;border-radius:20px;background:var(--nuit2);box-shadow:0 0 0 1.5px var(--magenta),0 8px 24px rgba(255,46,136,.3);padding:8px;display:flex;align-items:center;gap:12px;text-align:left;flex-shrink:0}
-.mini .logo{width:48px;height:48px;border-radius:12px}
+.mini{position:absolute;z-index:12;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));bottom:calc(var(--tabB) + 74px);height:60px;border-radius:22px;padding:6px 6px 6px 8px;display:flex;align-items:center;gap:12px;text-align:left;
+  background:rgba(42,15,74,.6);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:inset 0 0 0 1px rgba(255,244,230,.10),inset 0 1px 0 rgba(255,255,255,.10),0 12px 32px rgba(0,0,0,.4)}
+#app[data-view=home] .mini{display:none}
+.mini .logo{width:46px;height:46px;border-radius:13px}
 .mini .t{font:400 19px/1 var(--display);letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .st{font-size:10px;font-weight:800;letter-spacing:1.2px;color:var(--magenta);white-space:nowrap}
 .st.pause{color:var(--soleil)}.st.err{color:var(--soleil)}.st.load{color:var(--lilas)}
 .play{border-radius:50%;background:var(--sun);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .play svg{fill:var(--nuit)}
-.mini .play{width:48px;height:48px}
-nav.tabs{flex-shrink:0;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ligne);background:rgba(23,11,46,.92);
-  padding:4px max(8px,env(safe-area-inset-right,0px)) max(6px,calc(env(safe-area-inset-bottom,0px) - 6px)) max(8px,env(safe-area-inset-left,0px))}
-nav.tabs button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px;font-size:11px;font-weight:500;color:var(--lilas);min-height:44px}
-nav.tabs button svg{stroke:currentColor}
-nav.tabs button.on{color:var(--magenta);font-weight:800}
+.mini .play{width:48px;height:48px;box-shadow:0 6px 16px rgba(255,46,136,.45)}
+nav.tabs{position:absolute;z-index:12;left:max(20px,env(safe-area-inset-left,0px));right:max(20px,env(safe-area-inset-right,0px));bottom:var(--tabB);height:64px;border-radius:32px;padding:6px;display:flex;gap:4px;
+  background:rgba(42,15,74,.6);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:inset 0 0 0 1px rgba(255,244,230,.10),inset 0 1px 0 rgba(255,255,255,.10),0 12px 32px rgba(0,0,0,.4)}
+nav.tabs button{flex:1;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10.5px;font-weight:600;color:var(--lilas)}
+nav.tabs button svg{stroke:currentColor;width:22px;height:22px}
+nav.tabs button.on{color:var(--creme);font-weight:800;background:rgba(255,46,136,.18);box-shadow:inset 0 0 0 1px rgba(255,46,136,.35)}
+nav.tabs button.on svg{stroke:var(--magenta)}
+/* Accueil premium */
+.hero{position:relative;height:168px;border-radius:30px;overflow:hidden;text-align:left;width:100%;
+  background:linear-gradient(140deg,rgb(var(--tint)) 0%,rgba(var(--tint),.62) 48%,#3A1270 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 22px 48px rgba(var(--tint),.32)}
+.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(12,6,25,.28))}
+.hero .waves{position:absolute;inset:0}
+.hero .hb{position:absolute;left:20px;top:18px;display:flex;align-items:center;gap:8px;height:28px;padding:0 12px;border-radius:14px;background:rgba(12,6,25,.35);font-size:11px;font-weight:800;letter-spacing:1.4px}
+.hero .hb .live{background:var(--creme)}
+.hero .hl{position:absolute;left:20px;bottom:18px;right:96px;display:flex;align-items:flex-end;gap:14px}
+.hero .hl .logo{width:76px;height:76px;border-radius:20px;box-shadow:0 0 0 1px rgba(255,255,255,.18),0 14px 30px rgba(0,0,0,.35)}
+.hero .hn{font:400 34px/.95 var(--display);letter-spacing:1px;overflow-wrap:anywhere}
+.hero .hm{font-size:13px;font-weight:600;color:rgba(255,244,230,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero .hp{position:absolute;right:18px;bottom:18px;width:62px;height:62px;border-radius:31px;background:var(--creme);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(12,6,25,.45)}
+.hero .hp svg{fill:rgb(var(--tint))}
+.toprow{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px}
+.toprow::-webkit-scrollbar{display:none}
+.toprow button{position:relative;width:100px;height:76px;flex-shrink:0}
+.toprow .rk{position:absolute;left:0;bottom:-8px;font:400 80px/1 var(--display);color:transparent;-webkit-text-stroke:1.5px rgba(255,209,102,.75)}
+.toprow .logo{position:absolute;right:0;top:4px;width:62px;height:62px;border-radius:16px;box-shadow:0 0 0 1px rgba(255,244,230,.08),0 8px 18px rgba(0,0,0,.35)}
 
 /* Overlays */
 .layer{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;background:var(--nuit);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
 .layer[hidden]{display:flex!important;transform:translateY(105%);pointer-events:none;visibility:hidden;transition:transform .28s ease-in,visibility 0s .28s}
-.layer.player{background:radial-gradient(circle at 50% 28%,rgba(255,46,136,.45),rgba(255,46,136,0) 55%),var(--nuit);
+.layer.player{background:#0C0619;overflow:hidden;
   padding:calc(env(safe-area-inset-top,0px) + 8px) 20px calc(env(safe-area-inset-bottom,0px) + 18px)}
-.player .art{position:relative;margin:10px auto 0;width:min(290px,72vw);aspect-ratio:1;border-radius:32px;box-shadow:0 24px 60px rgba(255,46,136,.35);flex-shrink:0}
-.player .art .logo{width:100%;height:100%;border-radius:32px}
+.player>*{position:relative;z-index:1}
+.player .pbg{position:absolute;z-index:0;inset:-90px;background-size:140%;background-position:center 30%;background-repeat:no-repeat;filter:blur(70px) saturate(1.5);opacity:.7;transition:background-image .4s}
+.player .pshade{position:absolute;z-index:0;inset:0;background:linear-gradient(180deg,rgba(12,6,25,.15) 0%,rgba(12,6,25,.55) 55%,#0C0619 100%)}
+.player .art{position:relative;margin:14px auto 0;width:min(300px,74vw);aspect-ratio:1;border-radius:40px;box-shadow:0 0 0 1px rgba(255,255,255,.16),0 34px 80px rgba(var(--tint),.5);flex-shrink:0}
+.player .art .logo{width:100%;height:100%;border-radius:40px}
+.bars{display:inline-flex;align-items:center;gap:2px;height:16px;margin-left:6px;vertical-align:middle}
+.bars i{width:3px;border-radius:2px;background:var(--magenta);animation:eq 1s ease-in-out infinite}
+.bars i:nth-child(2n){animation-delay:.25s}.bars i:nth-child(3n){animation-delay:.5s}
 .player .badge{position:absolute;top:14px;left:14px;height:30px;padding:0 12px;border-radius:15px;background:rgba(23,11,46,.82);display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:1.4px}
 .player .badge i{width:8px;height:8px;border-radius:4px;background:var(--magenta)}
 .spin{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(23,11,46,.45);border-radius:32px}
 .spin span{width:64px;height:64px;border-radius:50%;border:6px solid rgba(255,244,230,.25);border-top-color:var(--creme);animation:sp 0.9s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-.player h1{margin:0;font:400 44px/1 var(--display);letter-spacing:1px;overflow-wrap:anywhere}
+.player h1{margin:0;font:400 46px/.95 var(--display);letter-spacing:1px;overflow-wrap:anywhere}
 .ctrls{display:flex;align-items:center;justify-content:space-between;padding:0 12px}
-.ctrls .side{width:64px;height:64px;border-radius:32px;background:var(--nuit2);display:flex;align-items:center;justify-content:center}
-.ctrls .play{width:96px;height:96px;box-shadow:0 12px 34px rgba(255,46,136,.5)}
+.ctrls .side{width:62px;height:62px;border-radius:31px;background:rgba(42,15,74,.55);box-shadow:inset 0 0 0 1px rgba(255,244,230,.10);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center}
+.ctrls .play{width:96px;height:96px;box-shadow:0 16px 40px rgba(255,46,136,.55),inset 0 1px 0 rgba(255,255,255,.4)}
 .strip{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:4px 2px}
 .strip button{position:relative;border-radius:14px;flex-shrink:0}
 .strip .logo{width:52px;height:52px;border-radius:14px}
@@ -135,7 +170,33 @@ nav.tabs button.on{color:var(--magenta);font-weight:800}
 .search input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--creme);font:600 17px var(--body)}
 .search input::placeholder{color:var(--gris);font-weight:500}
 .genres{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.genres button{height:68px;border-radius:18px;display:flex;align-items:flex-end;padding:0 0 10px 14px;font:400 23px/1 var(--display);letter-spacing:1px;color:var(--nuit);text-align:left}
+.genres button{position:relative;height:66px;border-radius:18px;overflow:hidden;display:flex;align-items:center;padding:0 14px;text-align:left;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 0 0 1px rgba(255,255,255,.10),0 8px 20px rgba(0,0,0,.28)}
+.genres button::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(12,6,25,.22))}
+.genres svg{position:absolute;right:0;top:0;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 55%);mask-image:linear-gradient(90deg,transparent 0%,#000 55%)}
+.genres .gl{position:relative;display:flex;flex-direction:column;gap:3px}
+.genres .gn{font:400 19px/1 var(--display);letter-spacing:1px;text-transform:uppercase;color:var(--creme);text-shadow:0 1px 2px rgba(12,6,25,.35)}
+.genres .gc{font-size:11.5px;font-weight:700;color:rgba(255,244,230,.85)}
+.excard{position:relative;border-radius:24px;overflow:hidden;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;width:100%}
+.excard.top{background:linear-gradient(135deg,rgba(255,209,102,.22),rgba(255,46,136,.18) 55%,rgba(42,15,74,.6));box-shadow:inset 0 0 0 1px rgba(255,209,102,.35)}
+.stack3{position:relative;width:112px;height:66px;flex-shrink:0}
+.stack3 .logo{position:absolute;border-radius:15px;box-shadow:0 0 0 1px rgba(255,244,230,.08),0 8px 18px rgba(0,0,0,.4)}
+.chips{display:flex;gap:6px;overflow:hidden}
+.chips span{flex-shrink:0;height:30px;padding:0 12px;border-radius:15px;display:flex;align-items:center;font-size:12.5px;font-weight:700;background:rgba(255,244,230,.07)}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;padding:8px 0 4px}
+.podium button{display:flex;flex-direction:column;align-items:center;width:104px}
+.podium .pl{position:relative}
+.podium .logo{border-radius:22%;box-shadow:0 0 0 1px rgba(255,244,230,.08),0 10px 24px rgba(0,0,0,.4)}
+.podium .first .logo{box-shadow:0 0 0 2px var(--soleil),0 0 40px rgba(255,209,102,.45),0 14px 30px rgba(0,0,0,.4)}
+.podium .rk{position:absolute;left:50%;bottom:-12px;margin-left:-14px;width:28px;height:28px;border-radius:14px;display:flex;align-items:center;justify-content:center;font:400 15px/1 var(--display);background:var(--nuit2);box-shadow:0 0 0 3px #130827}
+.podium .first .rk{background:linear-gradient(180deg,#FFE29A,#FFB547);color:var(--nuit)}
+.podium .base{width:100%;margin-top:12px;border-radius:16px 16px 6px 6px;background:linear-gradient(180deg,rgba(255,244,230,.09),rgba(255,244,230,.02));display:flex;flex-direction:column;align-items:center;padding-top:12px;gap:2px}
+.podium .first .base{background:linear-gradient(180deg,rgba(255,244,230,.15),rgba(255,244,230,.02))}
+.podium .bn{font-size:13px;font-weight:800;text-align:center}
+.podium .bv{font-size:12px;font-weight:700;color:var(--lilas)}
+.share{display:block;height:4px;border-radius:2px;background:rgba(255,244,230,.08);margin-top:6px}
+.share i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--mandarine),var(--magenta))}
+.res .rank{width:24px;text-align:right;font:400 20px/1 var(--display);color:var(--gris);flex-shrink:0}
 .res{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
 .res li{display:flex;align-items:center;gap:12px;padding:6px 0}
 .res .main{display:flex;align-items:center;gap:14px;flex:1;min-width:0;text-align:left}
@@ -169,11 +230,12 @@ nav.tabs button.on{color:var(--magenta);font-weight:800}
 /* Voiture */
 .car{background:#0E0620;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px calc(env(safe-area-inset-bottom,0px) + 16px);gap:14px}
 .car .cgrid{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,1fr);gap:10px}
-.car .cgrid button{position:relative;border-radius:24px;overflow:hidden}
+.car .cgrid button{position:relative;border-radius:26px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,244,230,.08)}
 .car .cgrid .logo{position:absolute;inset:0;width:100%;height:100%}
-.car .num{position:absolute;top:10px;left:10px;width:34px;height:34px;border-radius:17px;background:var(--nuit);display:flex;align-items:center;justify-content:center;font:400 18px/1 var(--display)}
+.car .num{position:absolute;top:10px;left:10px;width:32px;height:32px;border-radius:16px;background:rgba(11,5,24,.75);display:flex;align-items:center;justify-content:center;font:400 18px/1 var(--display)}
+.car .cur{box-shadow:0 0 0 3px var(--magenta),0 0 32px rgba(255,46,136,.45)!important}
 .car .cur .ring{box-shadow:inset 0 0 0 4px var(--creme),inset 0 0 0 8px #0E0620}
-.car .bar{height:104px;border-radius:30px;background:var(--nuit2);box-shadow:0 0 0 1.5px var(--magenta);display:flex;align-items:center;gap:14px;padding:0 12px 0 22px;flex-shrink:0}
+.car .bar{height:100px;border-radius:32px;background:rgba(42,15,74,.6);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:inset 0 0 0 1px rgba(255,46,136,.45),0 12px 32px rgba(0,0,0,.4);display:flex;align-items:center;gap:14px;padding:0 12px 0 22px;flex-shrink:0}
 .car .bar .play{width:80px;height:80px}
 
 .toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%);z-index:50;background:var(--creme);color:var(--nuit);font-size:14px;font-weight:700;padding:10px 16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:calc(100% - 40px);text-align:center}
@@ -187,20 +249,24 @@ nav.tabs button.on{color:var(--magenta);font-weight:800}
   <!-- ACCUEIL -->
   <section class="view" id="v-home">
     <div class="stack" style="gap:14px">
-      <header class="row">
-        <div class="brand grow"><span class="w">EFFEM</span><span class="s">radio</span></div>
+      <header class="row" style="align-items:flex-end">
+        <div class="grow" style="display:flex;flex-direction:column;gap:2px">
+          <button class="promise" id="openPromise" style="min-height:24px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase">0 pub dans l’app
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></button>
+          <div class="brand"><span class="w" style="font-size:32px">EFFEM</span><span class="s" style="font-size:21px;margin-top:12px">radio</span></div>
+        </div>
         <button class="round" id="toCar" aria-label="Mode voiture"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFF4E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.5-4.5A2 2 0 018.4 5h7.2a2 2 0 011.9 1.5L19 11M4 11h16v5H4zM6.5 16v2M17.5 16v2"/></svg></button>
       </header>
-      <button class="promise" id="openPromise" style="margin-top:-8px">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
-        0 pub dans l’app
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
-      </button>
-      <div class="row" style="justify-content:space-between;align-items:baseline">
-        <h2 class="sec" style="font-size:26px">MES STATIONS</h2>
+      <button class="hero" id="hero" aria-label="Lecteur"></button>
+      <div class="row" style="justify-content:space-between;align-items:baseline;margin-top:2px">
+        <h2 class="sec" style="font-size:22px">MES FAVORIS <span id="favCount" style="font:800 12px var(--body);color:var(--gris);letter-spacing:0"></span></h2>
         <button class="muted" id="openEdit" style="min-height:44px;font-size:14px;font-weight:700">Modifier</button>
       </div>
       <div class="grid" id="homeGrid"></div>
+      <div class="stack" style="gap:10px;margin-top:4px">
+        <div class="row" style="justify-content:space-between;align-items:baseline"><h2 class="sec" style="font-size:22px">TOP DU MOIS</h2><button class="small muted" id="homeTopAll" style="font-weight:700;min-height:32px">Tout voir</button></div>
+        <div class="toprow" id="homeTop"></div>
+      </div>
       <div class="stack" id="recentWrap" style="gap:10px;margin-top:4px">
         <h2 class="sec" style="font-size:22px">RÉCEMMENT</h2>
         <div class="recent" id="recent"></div>
@@ -218,12 +284,15 @@ nav.tabs button.on{color:var(--magenta);font-weight:800}
         <button id="qClear" aria-label="Effacer" hidden style="width:28px;height:28px;border-radius:14px;background:#4A3768;font-size:13px;font-weight:800">✕</button>
       </label>
       <div id="exHome" class="stack" style="gap:10px">
-        <button id="topCard" class="card" style="display:flex;align-items:center;gap:14px;padding:14px 16px;text-align:left;box-shadow:inset 0 0 0 1.5px var(--soleil)">
-          <span style="font:400 40px/1 var(--display);background:var(--sunh);-webkit-background-clip:text;background-clip:text;color:transparent">#1</span>
-          <span class="grow" style="display:flex;flex-direction:column;gap:2px"><span style="font:400 22px/1 var(--display);letter-spacing:1px">TOP RADIOS DU MOIS</span><span class="small muted" id="topSub"></span></span>
-          <span class="muted" style="font-size:22px">›</span>
+        <button id="topCard" class="excard top">
+          <span style="display:flex;flex-direction:column;gap:4px;max-width:165px"><span class="lbl" style="color:var(--soleil);font-size:11px" id="topSub"></span><span style="font:400 23px/1 var(--display);letter-spacing:1px">LES PLUS ÉCOUTÉES</span><span style="font-size:12.5px;font-weight:600;color:rgba(255,244,230,.75)">Les 20 radios du mois</span></span>
+          <span class="stack3" id="topStack"></span>
         </button>
-        <p class="lbl" style="margin-top:6px">Radios françaises · par genre</p>
+        <button id="localCard" class="excard glass" style="flex-direction:column;align-items:stretch;padding:14px 16px">
+          <span class="row" style="justify-content:space-between"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:800">Radios locales</span><span class="small muted" id="localSub"></span></span><span class="muted" style="font-size:20px">›</span></span>
+          <span class="chips" id="localChips"></span>
+        </button>
+        <p class="lbl" style="margin-top:6px">Par genre</p>
         <div class="genres" id="genres"></div>
       </div>
       <div id="exRes" hidden class="stack" style="gap:6px">
@@ -283,16 +352,17 @@ nav.tabs button.on{color:var(--magenta);font-weight:800}
 
   <!-- LECTEUR -->
   <div class="layer player" id="player" hidden role="dialog" aria-label="Lecteur">
+    <div class="pbg" id="pBg" aria-hidden="true"></div><div class="pshade" aria-hidden="true"></div>
     <div class="row" style="justify-content:space-between">
-      <button class="round" id="closePlayer" aria-label="Réduire le lecteur" style="background:transparent"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFF4E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
-      <span class="small muted" style="font-weight:700" id="pPos"></span>
-      <button class="round" id="pFav" aria-label="Ajouter à mes stations" style="background:transparent"></button>
+      <button class="round" id="closePlayer" aria-label="Réduire le lecteur"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFF4E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <span class="small" style="font-weight:800;color:rgba(255,244,230,.8)" id="pPos"></span>
+      <button class="round" id="pFav" aria-label="Ajouter à mes stations"></button>
     </div>
     <div class="art"><span class="logo" id="pLogo"></span><span class="badge" id="pBadge"><i></i>EN DIRECT</span><span class="spin" id="pSpin" hidden><span></span></span></div>
     <div class="stack" style="gap:6px;padding:20px 4px 0">
       <h1 id="pName"></h1>
       <span class="st" id="pSt" style="font-size:12px"></span>
-      <span class="muted" id="pMeta" style="font-size:15px"></span>
+      <span id="pMeta" style="font-size:16px;font-weight:600;color:rgba(255,244,230,.72)"></span>
     </div>
     <div id="pErr" hidden class="stack" style="gap:8px;padding-top:12px">
       <div class="note"><b>La station ne répond pas.</b> Le flux est coupé ou le réseau est trop faible.</div>
@@ -383,10 +453,26 @@ const DEFAULTS = [
   {id:'rmc', name:'RMC', url:'https://audio.bfmtv.com/rmcradio_128.mp3', meta:'Info, talk, sport', logo:'rmc'}
 ];
 const FAV_N = 8;   // nombre de favoris mis en avant (accueil, voiture)
+// [nom, mot-clé de l'annuaire, couleur 1, couleur 2, nombre de radios (relevé), motif]
 const GENRES = [
-  ['Info','news','#FFD166','#FF8A3D'],['Jazz','jazz','#19C3B4','#0E8F86'],['Pop','pop','#FF2E88','#8B2BD9'],['Classique','classical','#FFF4E6','#CDBFE6'],
-  ['Rap','hip-hop','#FF8A3D','#FF2E88'],['Rock','rock','#8B2BD9','#5A1FA0'],['Électro','electronic','#7FE3D8','#19C3B4'],['Années 80','80s','#FFD166','#FF2E88'],['Sport','sport','#FF8A3D','#FFD166'],['Radios locales','__local','#19C3B4','#FF8A3D']
+  ['Info','news','#FFB547','#E8552F',65,'lines'],['Pop','pop','#FF3D91','#8B2BD9',170,'dots'],
+  ['Rock','rock','#8B6CFF','#3A1FA0',135,'zig'],['Chanson','chanson','#FF7A59','#B8323C',56,'arcs2'],
+  ['Jazz','jazz','#1FC9B8','#0B6C7C',73,'rings'],['Électro','electronic','#4FE0D0','#2F5FE0',51,'sine'],
+  ['Classique','classical','#A797FF','#4634A8',27,'arcs'],['Rap','hip-hop','#FF8A3D','#D6266E',20,'bars']
 ];
+function motif(kind){
+  const s = 'stroke="#FFFFFF" stroke-opacity="0.38" stroke-width="1.1" fill="none"';
+  let g = '';
+  if (kind==='lines') for (let i=0;i<6;i++) g += `<line x1="${20+i*4}" y1="${10+i*9}" x2="96" y2="${10+i*9}" ${s}/>`;
+  if (kind==='rings') for (let r=6;r<46;r+=6) g += `<circle cx="80" cy="40" r="${r}" ${s}/>`;
+  if (kind==='dots') [[30,14,2],[52,30,3],[70,12,1.6],[84,40,4],[62,52,2],[40,46,1.5],[90,18,2.2]].forEach(([x,y,r]) => g += `<circle cx="${x}" cy="${y}" r="${r}" fill="#FFFFFF" fill-opacity="0.35"/>`);
+  if (kind==='arcs') for (let i=0;i<6;i++) g += `<path d="M${10+i*8} 70 Q 55 ${-10+i*6} ${100-i*8} 70" ${s}/>`;
+  if (kind==='arcs2') for (let i=0;i<5;i++) g += `<path d="M${40+i*11} 8 Q ${56+i*11} 32 ${40+i*11} 56" ${s}/>`;
+  if (kind==='bars') [14,30,22,44,26,38,18,48,28].forEach((h,i) => g += `<rect x="${18+i*9}" y="${62-h}" width="4" height="${h}" rx="2" fill="#FFFFFF" fill-opacity="0.32"/>`);
+  if (kind==='zig') for (let i=0;i<4;i++) g += `<polyline points="${[0,1,2,3,4,5,6].map(k => `${20+k*13},${12+i*12+(k%2?10:0)}`).join(' ')}" ${s}/>`;
+  if (kind==='sine') for (let i=0;i<4;i++){ let p=''; for (let x=0;x<=100;x+=2) p += `${x},${(30+(12-i*3)*Math.sin(x/7+i)).toFixed(1)} `; g += `<polyline points="${p}" ${s}/>`; }
+  return `<svg aria-hidden="true" width="100" height="66" viewBox="0 0 100 66">${g}</svg>`;
+}
 const KEEP_OPTS = [[0,'Non'],[5,'5 min'],[15,'15 min'],[30,'30 min']];
 const RB_HOSTS = ['de1.api.radio-browser.info','de2.api.radio-browser.info','fi1.api.radio-browser.info','at1.api.radio-browser.info'];
 
@@ -574,7 +660,7 @@ function clock(t){ return new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit'
 function stLabel(){
   switch(status){
     case 'loading': return ['Connexion…','load'];
-    case 'live': return ['● EN DIRECT',''];
+    case 'live': return ['EN DIRECT',''];
     case 'muted': return ['❚❚ PAUSE · DIRECT GARDÉ ' + fmt(keepUntil-Date.now()),'pause'];
     case 'stopped': return ['EN PAUSE','pause'];
     case 'error': return ['LA STATION NE RÉPOND PAS','err'];
@@ -582,10 +668,44 @@ function stLabel(){
   }
 }
 function render(){ renderCore(); requestAnimationFrame(() => fitAll()); setTimeout(ensureLogos, 0); }
+/* Couleur dominante d'un logo : sert de teinte au lecteur et à la carte « en direct » */
+const tintCache = {}; let tintKey = '';
+function applyTint(st){
+  const k = st ? skey(st) : ''; if (k === tintKey) return; tintKey = k;
+  const set = rgb => document.getElementById('app').style.setProperty('--tint', rgb);
+  if (!st) return set('229,0,126');
+  if (tintCache[k]) return set(tintCache[k]);
+  const src = logoSrc(st); if (!src) return set(tintCache[k] = '229,0,126');
+  const img = new Image(); if (!src.startsWith('data:')) img.crossOrigin = 'anonymous';
+  img.onload = () => { try{
+    const c = document.createElement('canvas'); c.width = c.height = 24; const x = c.getContext('2d'); x.drawImage(img,0,0,24,24);
+    const d = x.getImageData(0,0,24,24).data; let r=0,g=0,b=0,w=0;
+    for (let i=0;i<d.length;i+=4){ const R=d[i],G=d[i+1],B=d[i+2],A=d[i+3]; if (A<128) continue;
+      const mx=Math.max(R,G,B), mn=Math.min(R,G,B), sat=mx?(mx-mn)/mx:0; if (mx<40 || (sat<.25 && mx>200)) continue;   // ignore noir et blanc
+      const wt = sat*sat + .02; r+=R*wt; g+=G*wt; b+=B*wt; w+=wt; }
+    const rgb = w ? `${Math.round(r/w)},${Math.round(g/w)},${Math.round(b/w)}` : '229,0,126';
+    tintCache[k] = rgb; if (tintKey === k) set(rgb);
+  }catch(e){ tintCache[k] = '229,0,126'; if (tintKey === k) set('229,0,126'); } };
+  img.onerror = () => { tintCache[k] = '229,0,126'; if (tintKey === k) set('229,0,126'); };
+  img.src = src;
+}
+const WAVES = '<svg class="waves" viewBox="0 0 350 168" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">' + [40,72,104,136,168].map((r,i) => `<circle cx="300" cy="40" r="${r}" fill="none" stroke="#FFF4E6" stroke-opacity="${(.12*(1-i*.18)).toFixed(2)}" stroke-width="1.5"/>`).join('') + '</svg>';
+const BARS = '<span class="bars" aria-hidden="true">' + [6,12,16,9,14,7,15,10].map(h => `<i style="height:${h}px"></i>`).join('') + '</span>';
 function renderCore(){
   const playing = status==='live' || status==='loading';
   const [lbl, cls] = stLabel();
-  // Accueil
+  // Accueil : carte « en direct » (ou suggestion)
+  const hs = cur || store.get('last', null) || mine[0];
+  applyTint(hs);
+  if (hs){
+    const hb = !cur ? 'PRÊT À ÉCOUTER' : status==='live' ? 'EN DIRECT' : status==='loading' ? 'CONNEXION…' : status==='error' ? 'NE RÉPOND PAS' : 'EN PAUSE';
+    $('#hero').innerHTML = `${WAVES}<span class="hb">${status==='live'?'<span class="live"></span>':''}${hb}</span>
+      <span class="hl"><span class="logo">${logoHTML(hs,18)}</span><span style="min-width:0;display:flex;flex-direction:column;gap:4px;padding-bottom:4px"><span class="hn">${esc(String(hs.name).toUpperCase())}</span><span class="hm">${esc(hs.meta||'Radio en direct')}</span></span></span>
+      <span class="hp" id="heroPlay" role="button" aria-label="${playing?'Pause':'Lecture'}">${playing ? ICON_PAUSE(24) : ICON_PLAY(24)}</span>`;
+  }
+  $('#hero').hidden = !hs;
+  $('#favCount').textContent = mine.length ? String(Math.min(mine.length, FAV_N)) : '';
+  $('#homeTop').innerHTML = topStations().slice(0,10).map((t,i) => `<button data-t="${i}" aria-label="N°${i+1} ${esc(t.name)}"><span class="rk">${i+1}</span><span class="logo">${logoHTML(t,13)}</span></button>`).join('');
   $('#homeGrid').innerHTML = mine.map((s,i) => {
     const on = cur && cur.url===s.url;
     return `<button class="tile ${on?'cur':''}" data-i="${i}" aria-label="Écouter ${esc(s.name)}">
@@ -600,17 +720,18 @@ function renderCore(){
   if (cur){
     $('#miniLogo').innerHTML = logoHTML(cur,12);
     $('#miniName').textContent = cur.name;
-    $('#miniSt').textContent = lbl; $('#miniSt').className = 'st '+cls;
+    $('#miniSt').innerHTML = (status==='live' ? '<span class="live" style="display:inline-block;margin-right:6px;vertical-align:-1px"></span>' : '') + esc(lbl); $('#miniSt').className = 'st '+cls;
     $('#miniPlay').innerHTML = playing ? ICON_PAUSE(20) : ICON_PLAY(20);
     $('#miniPlay').setAttribute('aria-label', playing ? 'Pause' : 'Lecture');
   }
   // Lecteur
   if (cur){
     const idx = mine.findIndex(m => m.url===cur.url);
-    $('#pPos').textContent = idx>=0 ? `Mes stations · ${idx+1}/${mine.length}` : 'Hors de mes stations';
+    $('#pPos').textContent = idx>=0 ? `Mes favoris · ${idx+1} sur ${mine.length}` : 'Hors de mes favoris';
     $('#pLogo').innerHTML = logoHTML(cur,64);
+    const ls = logoSrc(cur); $('#pBg').style.backgroundImage = ls ? `url("${ls}")` : 'none';
     $('#pName').textContent = cur.name;
-    $('#pSt').textContent = lbl; $('#pSt').className = 'st '+cls;
+    $('#pSt').innerHTML = (status==='live' ? '<span class="live" style="display:inline-block;margin-right:8px;vertical-align:middle"></span>' : '') + esc(lbl) + (status==='live' ? BARS : ''); $('#pSt').className = 'st '+cls;
     $('#pMeta').textContent = status==='muted' ? 'Le son est coupé, la station reste branchée. Reprends : tu tombes direct sur l’antenne.' : (cur.meta || '');
     $('#pBadge').hidden = status!=='live';
     $('#pSpin').hidden = status!=='loading';
@@ -626,7 +747,7 @@ function renderCore(){
   const six = mine.slice(0,FAV_N);
   $('#carGrid').innerHTML = six.map((s,i) => `<button class="${cur&&cur.url===s.url?'cur':''}" data-i="${i}" aria-label="Écouter ${esc(s.name)}"><span class="logo">${logoHTML(s,36)}</span><span class="num">${i+1}</span><span class="ring"></span></button>`).join('');
   $('#carName').textContent = cur ? cur.name : 'Aucune radio';
-  $('#carSt').textContent = lbl; $('#carSt').className = 'st '+cls;
+  $('#carSt').innerHTML = (status==='live' ? '<span class="live" style="display:inline-block;margin-right:8px;vertical-align:-1px"></span>' : '') + esc(lbl); $('#carSt').className = 'st '+cls;
   $('#carPlay').innerHTML = playing ? ICON_PAUSE(34) : ICON_PLAY(34);
   // Réglages
   $('#keepSeg').innerHTML = KEEP_OPTS.map(([v,l]) => `<button class="${v===keepMin?'on':''}" data-k="${v}">${l}</button>`).join('');
@@ -642,6 +763,7 @@ setInterval(() => { if (status==='muted' || sleepEnd) render(); }, 1000);
 /* ---------- navigation ---------- */
 function show(v){
   for (const id of ['home','explore','settings']) $('#v-'+id).hidden = id!==v;
+  document.getElementById('app').dataset.view = v;
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.v===v));
   if (v==='explore' && !$('#q').value) $('#q').blur();
   requestAnimationFrame(() => fitAll($('#v-'+v)));
@@ -655,6 +777,13 @@ $('#tabs').addEventListener('click', e => { const b=e.target.closest('button'); 
   show(b.dataset.v);
   if (b.dataset.v==='explore' && again) exploreHome();
   else if (again) $('#v-'+b.dataset.v).scrollTop = 0; });
+$('#hero').addEventListener('click', e => {
+  const hs = cur || store.get('last', null) || mine[0]; if (!hs) return;
+  if (e.target.closest('#heroPlay')) { if (cur) toggle(); else connect(hs); return; }
+  if (cur) openPlayer(); else { connect(hs); openPlayer(); }
+});
+$('#homeTop').addEventListener('click', e => { const b=e.target.closest('[data-t]'); if (b) pick(topStations()[+b.dataset.t]); });
+$('#homeTopAll').onclick = () => { show('explore'); showTop(); };
 $('#homeGrid').addEventListener('click', e => { const b=e.target.closest('[data-i]'); if (b) pick(mine[+b.dataset.i]); });
 $('#recent').addEventListener('click', e => { const b=e.target.closest('[data-r]'); if (b) pick(recent.filter(r=>!isMine(r))[+b.dataset.r]); });
 $('#mini').addEventListener('click', e => { if (e.target.closest('#miniPlay')) { e.stopPropagation(); toggle(); } else openPlayer(); });
@@ -747,7 +876,11 @@ list.addEventListener('mousedown', e => {
 });
 
 /* ---------- Explorer (annuaire Radio Browser) ---------- */
-$('#genres').innerHTML = GENRES.map(([l,t,a,b],i) => `<button data-g="${i}" style="background:linear-gradient(135deg,${a},${b});${t==='rock'?'color:var(--creme)':''}">${l.toUpperCase()}</button>`).join('');
+const genreCount = store.get('genreCount', {});
+function renderGenres(){
+  $('#genres').innerHTML = GENRES.map(([l,t,a,b,n,m],i) => `<button data-g="${i}" style="background:linear-gradient(135deg,${a} 0%,${b} 100%)" aria-label="${l}">${motif(m)}<span class="gl"><span class="gn">${l}</span><span class="gc">${genreCount[t]||n} radios</span></span></button>`).join('');
+}
+renderGenres();
 let results = [], qTimer = null, qSeq = 0;
 async function rb(path){
   for (const h of RB_HOSTS){
@@ -773,11 +906,11 @@ function clean(list){
   const seen = new Set();
   return list.filter(x => FR_CODES.has(x.countrycode) && x.url_resolved && x.url_resolved.startsWith('https://') && x.lastcheckok!==0)
     .sort((p,q) => (q.clickcount||0) - (p.clickcount||0))
-    .map(toStation).filter(s => { const k=norm(s.name); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0,120);
+    .map(toStation).filter(s => { const k=norm(s.name); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0,400);
 }
 const FRQ = 'countrycode=FR&hidebroken=true&order=clickcount&reverse=true&limit=60';
 async function runSearch(label, fetcher){
-  resNote = '';
+  resNote = ''; resMode = '';
   const seq = ++qSeq;
   setBack('explore');
   $('#exHome').hidden = true; $('#exRes').hidden = false;
@@ -794,8 +927,9 @@ async function runSearch(label, fetcher){
     $('#resList').innerHTML = `<li class="empty"><h3>ANNUAIRE INJOIGNABLE</h3><p class="muted" style="margin:0">Vérifie ta connexion puis réessaie.</p></li>`;
   }
 }
-let resNote = '';
+let resNote = '', resMode = '';
 function renderResults(label){
+  if (resMode === 'top' && results.length > 3) return renderTop();
   $('#resCount').textContent = results.length ? results.length + ' résultat' + (results.length>1?'s':'') : '';
   $('#resList').innerHTML = results.length ? results.map((s,i) => `<li>
       <button class="main" data-p="${i}"><span class="logo">${logoHTML(s,13)}</span><span style="min-width:0;display:flex;flex-direction:column;gap:2px"><span class="n">${esc(s.name)}</span><span class="m">${esc(s.meta)}</span></span></button>
@@ -806,10 +940,11 @@ function renderResults(label){
 }
 const omMatch = (x, q) => norm([x.name, x.tags, x.state, OUTREMER[x.countrycode]].join(' ')).includes(norm(q));
 $('#genres').addEventListener('click', e => { const b=e.target.closest('[data-g]'); if (!b) return; const [l,t]=GENRES[+b.dataset.g];
-  if (t==='__local') return showRegions();
   runSearch(l, async () => {
-    const [fr, om] = await Promise.all([rb(`stations/search?tag=${encodeURIComponent(t)}&${FRQ}`), outremer().catch(() => [])]);
-    return [...fr, ...om.filter(x => norm(x.tags||'').includes(norm(t)))];
+    const [fr, om] = await Promise.all([rb(`stations/search?tag=${encodeURIComponent(t)}&countrycode=FR&hidebroken=true&order=clickcount&reverse=true&limit=400`), outremer().catch(() => [])]);
+    const all = [...fr, ...om.filter(x => norm(x.tags||'').includes(norm(t)))];
+    setTimeout(() => { if ($('#resTitle').textContent===l && results.length){ genreCount[t] = results.length; store.set('genreCount', genreCount); renderGenres(); } }, 0);
+    return all;
   }); });
 $('#q').addEventListener('input', () => {
   const v = $('#q').value.trim(); $('#qClear').hidden = !v;
@@ -826,9 +961,24 @@ $('#q').addEventListener('input', () => {
 
 /* ---------- Radios locales par région ---------- */
 const REGIONS = [...new Set(LOCAL.map(r => r.r))].sort((a,b) => a.localeCompare(b,'fr'));
+$('#localSub').textContent = REGIONS.length + ' régions, outre-mer compris';
+$('#localChips').innerHTML = ['Bretagne','Guadeloupe','Occitanie','La Réunion',"Provence-Alpes-Côte d'Azur"].filter(r => REGIONS.includes(r)).map(r => `<span>${esc(r.replace("Provence-Alpes-Côte d'Azur",'Provence'))}</span>`).join('');
+$('#localCard').onclick = showRegions;
 let regionMode = false;
+function renderTop(){
+  const max = results[0].plays || 1;
+  const pod = [1,0,2].map(i => { const s = results[i], big = i===0, sz = big ? 96 : i===1 ? 76 : 70;
+    return `<button data-p="${i}" class="${big?'first':''}" aria-label="N°${i+1} ${esc(s.name)}"><span class="pl"><span class="logo" style="width:${sz}px;height:${sz}px">${logoHTML(s,16)}</span><span class="rk">${i+1}</span></span><span class="base" style="height:${big?84:i===1?60:46}px"><span class="bn">${esc(s.name)}</span><span class="bv">${s.mil} M</span></span></button>`; }).join('');
+  $('#resCount').textContent = '';
+  $('#resList').innerHTML = `<li style="display:block;padding:0"><div class="podium">${pod}</div></li>` + results.slice(3).map((s,j) => { const i = j+3; return `<li>
+      <span class="rank">${s.rank}</span>
+      <button class="main" data-p="${i}"><span class="logo" style="width:46px;height:46px;border-radius:12px">${logoHTML(s,12)}</span><span style="flex:1;min-width:0;display:flex;flex-direction:column"><span class="row" style="justify-content:space-between;gap:8px"><span class="n" style="font-size:15px">${esc(s.name)}</span><span class="small muted" style="font-weight:700;font-variant-numeric:tabular-nums">${s.mil} M</span></span><span class="share"><i style="width:${Math.round(s.plays/max*100)}%"></i></span></span></button>
+      <button class="heart" data-f="${i}" aria-label="${isMine(s)?'Retirer':'Ajouter'} ${esc(s.name)}">${HEART(isMine(s))}</button></li>`; }).join('')
+    + `<li class="small muted" style="display:block;line-height:19px;padding:14px 2px">${resNote}</li>`;
+  requestAnimationFrame(() => fitAll());
+}
 function showRegions(){
-  qSeq++; regionMode = true;
+  qSeq++; regionMode = true; resMode = ''; resNote = '';
   $('#exHome').hidden = true; $('#exRes').hidden = false; setBack('explore');
   $('#resTitle').textContent = 'Radios locales · par région'; $('#resCount').textContent = REGIONS.length + ' régions';
   $('#resList').innerHTML = REGIONS.map((r,i) => { const c = LOCAL.filter(x => x.r===r).length;
@@ -836,7 +986,7 @@ function showRegions(){
   $('#v-explore').scrollTop = 0;
 }
 function showRegion(r){
-  regionMode = false; resNote = '';
+  regionMode = false; resNote = ''; resMode = '';
   results = LOCAL.filter(x => x.r===r).map(x => ({ id:'rb:'+x.id, uuid:x.id, name:x.n, url:x.u, favicon:x.f, meta:x.m || r }));
   $('#resTitle').textContent = r; setBack('regions');
   renderResults(r);
@@ -866,17 +1016,22 @@ const TOP = { mois:'septembre 2026', src:'ACPM', rows:[
   ['France Musique',2773277,'https://icecast.radiofrance.fr/francemusique-midfi.mp3'],
   ['Radio FG',2727739,'https://radiofg.impek.com/fg.mp3']
 ]};
-$('#topSub').textContent = 'Les 20 radios les plus écoutées en ligne · ' + TOP.mois;
-function showTop(){
-  qSeq++; regionMode = false;
-  $('#exHome').hidden = true; $('#exRes').hidden = false; setBack('explore');
-  $('#resTitle').textContent = 'Top radios · ' + TOP.mois;
-  results = TOP.rows.map(([name, n, url, play], i) => {
+$('#topSub').textContent = 'Top · ' + TOP.mois.split(' ')[0];
+$('#topStack').innerHTML = topStations().slice(0,3).reverse().map((t,j) => { const pos = [['right:0;top:10px;transform:rotate(8deg)',52],['right:34px;top:4px;transform:rotate(-4deg)',56],['right:64px;top:0',62]][j];
+  return `<span class="logo" style="${pos[0]};width:${pos[1]}px;height:${pos[1]}px${j===2?';box-shadow:0 0 0 2px var(--soleil),0 10px 24px rgba(0,0,0,.4)':''}">${logoHTML(t,12)}</span>`; }).join('');
+function topStations(){
+  return TOP.rows.map(([name, n, url, play], i) => {
     const d = DEFAULTS.find(x => skey(x) === skey({name}));
     const millions = (n/1e6).toLocaleString('fr-FR', {maximumFractionDigits:1});
-    return { ...(d || {}), id: d ? d.id : 'top:'+skey({name}), name: d ? d.name : name, url: d ? d.url : url,
+    return { ...(d || {}), id: d ? d.id : 'top:'+skey({name}), name: d ? d.name : name, url: d ? d.url : url, rank: i+1, plays: n, mil: millions,
       meta: `N°${i+1} · ${millions} M d’écoutes${play ? ' · joue ' + play : ''}` };
   });
+}
+function showTop(){
+  qSeq++; regionMode = false; resMode = 'top';
+  $('#exHome').hidden = true; $('#exRes').hidden = false; setBack('explore');
+  $('#resTitle').textContent = 'Top radios · ' + TOP.mois;
+  results = topStations();
   resNote = `Source : ${TOP.src}, écoutes actives en ligne en France (sessions de 30 s ou plus), ${TOP.mois}. Ce classement ne compte pas l’écoute sur un poste FM.`;
   renderResults('Top');
   $('#v-explore').scrollTop = 0;
@@ -904,6 +1059,7 @@ $('#resList').addEventListener('click', e => {
 });
 
 /* ---------- démarrage ---------- */
+document.getElementById('app').dataset.view = 'home';
 const last = store.get('last', null);
 if (resumeLast && last && last.url) { cur = last; status = 'stopped'; setMediaSession(); }
 render();
