@@ -70,19 +70,27 @@ h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
 .brand{position:relative;display:inline-block;align-self:flex-start;line-height:1;--fs:38px;margin:0 calc(var(--fs)*.32) calc(var(--fs)*.26) 0}
 .brand .w{display:block;font:400 var(--fs)/.9 Anton,Impact,"Arial Narrow",sans-serif;letter-spacing:calc(var(--fs)*.03);background:var(--sun);-webkit-background-clip:text;background-clip:text;color:transparent}
 .brand .s{position:absolute;right:calc(var(--fs)*-.30);bottom:calc(var(--fs)*-.30);font:calc(var(--fs)*.56)/1 var(--script);color:var(--lagon);transform:rotate(-9deg);white-space:nowrap;paint-order:stroke fill;-webkit-text-stroke:calc(var(--fs)*.07) var(--nuit)}
-/* Écran d'ouverture (intro 1, Crépuscule) : la radio de l'icône se pose, l'aiguille trouve la station, l'antenne émet */
-#splash{position:absolute;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;background:linear-gradient(180deg,#170B2E 0%,#2A0F4A 38%,#5B1663 62%,#C2286F 82%,#FF8A3D 100%);transition:opacity .3s ease}
+/* Écran d'ouverture « Palmiers et néon » : 3 versions en test (Néon XL, Sur le soleil, Enseigne), l'enseigne s'allume en grésillant */
+#splash{position:fixed;inset:0;z-index:100;overflow:hidden;container-type:inline-size;background:linear-gradient(180deg,#2A0F4A 0%,#8B2BD9 35%,#FF2E88 62%,#FF8A3D 82%,#FFD166 100%);transition:opacity .3s ease}
 #splash.out{opacity:0;pointer-events:none}
-#splash svg{width:46%;max-width:190px;overflow:visible;filter:drop-shadow(0 16px 30px rgba(0,0,0,.45));animation:spLand .55s cubic-bezier(.2,.9,.3,1.15) both}
-#splash .needle{transform-box:fill-box;animation:spTune .9s .35s cubic-bezier(.3,0,.1,1) both}
-#splash .wv{fill:none;stroke:var(--lagon);stroke-width:7;stroke-linecap:round;transform-box:fill-box;transform-origin:0% 100%;animation:spEmit 1.1s .9s ease-out both}
-#splash .wv.b{animation-delay:1.1s}
-#splash .brand{--fs:46px;align-self:center;margin-left:calc(var(--fs)*.32);animation:spUp .5s .6s ease-out both}
-#splash .brand .s{-webkit-text-stroke-color:#3E1258}
-@keyframes spLand{from{opacity:0;transform:translateY(16px) scale(.94)}to{opacity:1;transform:none}}
-@keyframes spTune{0%{transform:translateX(-90px)}70%{transform:translateX(10px)}85%{transform:translateX(-4px)}100%{transform:none}}
-@keyframes spEmit{0%{opacity:0;transform:scale(.6)}30%{opacity:1}100%{opacity:0;transform:scale(1.25)}}
-@keyframes spUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+#splash .sunball{position:absolute;left:50%;top:var(--sy,60%);width:var(--sw,64cqw);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:linear-gradient(180deg,#FFF4E6,#FFD166 40%,#FF8A3D);opacity:.92;animation:spSun 1.4s cubic-bezier(.2,.8,.2,1) both;
+  -webkit-mask:linear-gradient(180deg,#000 0 55%,transparent 55% 60%,#000 60% 68%,transparent 68% 75%,#000 75% 82%,transparent 82% 90%,#000 90%);mask:linear-gradient(180deg,#000 0 55%,transparent 55% 60%,#000 60% 68%,transparent 68% 75%,#000 75% 82%,transparent 82% 90%,#000 90%)}
+#splash .palms{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;z-index:2}
+#splash .place{position:absolute;left:0;right:0;top:var(--ly,15%);display:flex;justify-content:center;z-index:3}
+#splash .nlg{position:relative;display:inline-block;line-height:1;--fs:28cqw;margin-right:calc(var(--fs)*.22)}
+#splash .nlg .w{display:block;font:400 var(--fs)/.88 Anton,Impact,sans-serif;letter-spacing:calc(var(--fs)*.03);animation:spFlick 1.3s .25s steps(1) both}
+#splash .nlg .s{position:absolute;right:calc(var(--fs)*-.24);bottom:calc(var(--fs)*-.26);font:calc(var(--fs)*.5)/1 var(--script);transform:rotate(-9deg);white-space:nowrap;color:#C8FFF8;text-shadow:0 0 calc(var(--fs)*.05) #19C3B4,0 0 calc(var(--fs)*.14) #19C3B4,0 0 calc(var(--fs)*.28) rgba(25,195,180,.6);animation:spFlick 1s 1.1s steps(1) both}
+#splash .tube .w{color:transparent;-webkit-text-stroke:calc(var(--fs)*.018) #FFF4E6;text-shadow:0 0 calc(var(--fs)*.06) #FF2E88,0 0 calc(var(--fs)*.18) #FF2E88,0 0 calc(var(--fs)*.35) rgba(255,46,136,.6)}
+#splash .solid .w{color:#FFF4E6;text-shadow:0 0 calc(var(--fs)*.05) #FF2E88,0 0 calc(var(--fs)*.16) #FF2E88,0 0 calc(var(--fs)*.4) rgba(255,46,136,.55)}
+#splash.v2{--sy:46%;--sw:84cqw;--ly:37%}#splash.v2 .nlg{--fs:31cqw}
+#splash.v4 .place{top:13%}
+#splash .frame{position:relative;padding:6cqw 8cqw 9cqw 7cqw;border-radius:8cqw;border:.9cqw solid #FFF4E6;box-shadow:0 0 2cqw #19C3B4,0 0 6cqw #19C3B4,inset 0 0 2cqw #19C3B4;background:rgba(23,11,46,.35);animation:spFlick 1.2s .1s steps(1) both}
+#splash .frame .nlg{--fs:23cqw}
+#splash .open{position:absolute;left:50%;bottom:-4.4cqw;transform:translateX(-50%);padding:1.4cqw 3.4cqw;border-radius:2cqw;background:#170B2E;font:800 3.2cqw/1 var(--body);letter-spacing:.8cqw;color:#FFD166;box-shadow:0 0 0 .4cqw #FFD166,0 0 3cqw rgba(255,209,102,.7);white-space:nowrap}
+#splash .tag{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 7cqw);z-index:4;text-align:center;font:800 3cqw/1 var(--body);letter-spacing:.6cqw;color:rgba(23,11,46,.75)}
+@keyframes spFlick{0%{opacity:0}10%{opacity:1}15%{opacity:.15}25%{opacity:1}30%{opacity:.3}40%,100%{opacity:1}}
+@keyframes spSun{from{transform:translate(-50%,-20%)}to{transform:translate(-50%,-50%)}}
+@media (prefers-reduced-motion:reduce){#splash *{animation:none!important}}
 .promise{min-height:32px;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--lagon)}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 10px}
 .tile{display:flex;flex-direction:column;gap:6px;text-align:left;min-width:0}
@@ -286,20 +294,7 @@ nav.tabs button.on svg{stroke:var(--magenta)}
 </head>
 <body>
 <div id="app">
-  <div id="splash" aria-hidden="true">
-    <svg viewBox="80 60 360 390">
-      <path class="wv a" d="M408 92 a40 40 0 0 1 24 32"/><path class="wv b" d="M414 70 a64 64 0 0 1 40 54"/>
-      <line x1="330" y1="222" x2="385" y2="124" stroke="#FFF4E6" stroke-width="18" stroke-linecap="round"/>
-      <circle cx="385" cy="122" r="23" fill="#19C3B4"/>
-      <rect x="97" y="212" width="318" height="218" rx="52" fill="#FFF4E6"/>
-      <clipPath id="spSun"><circle cx="192" cy="320" r="65"/></clipPath>
-      <g clip-path="url(#spSun)"><rect x="120" y="250" width="150" height="150" fill="#FF8A3D"/><rect x="120" y="340" width="150" height="8" fill="#FFF4E6"/><rect x="120" y="356" width="150" height="8" fill="#FFF4E6"/></g>
-      <rect x="279" y="256" width="134" height="46" rx="20" fill="#170B2E"/>
-      <rect class="needle" x="315" y="259" width="9" height="40" rx="4.5" fill="#FF2E88"/>
-      <circle cx="332" cy="370" r="27" fill="#170B2E"/>
-    </svg>
-    <div class="brand"><span class="w">EFFEM</span><span class="s">radio</span></div>
-  </div>
+  <div id="splash" aria-hidden="true"></div>
 
   <!-- ACCUEIL -->
   <section class="view" id="v-home">
@@ -407,6 +402,13 @@ nav.tabs button.on svg{stroke:var(--magenta)}
         <div class="list">
           <button id="resumeRow"><span>Reprendre au lancement<span class="hint">Remet ta dernière station en avant</span></span><span id="resumeVal" style="font-size:15px;color:var(--soleil)"></span></button>
           <button id="resetRow"><span>Réinitialiser mes stations<span class="hint">Revient aux 8 stations de départ</span></span><span class="muted">›</span></button>
+        </div>
+      </div>
+      <div class="stack" style="gap:8px">
+        <p class="lbl">Écran d’ouverture (en test)</p>
+        <div class="list">
+          <div class="seg" id="introSeg" style="border-bottom:0"></div>
+          <button id="introReplay"><span>Revoir l’écran d’ouverture</span><span class="muted">›</span></button>
         </div>
       </div>
       <div class="stack" style="gap:8px">
@@ -575,6 +577,7 @@ const store = {
 let mine = store.get('mine', DEFAULTS);
 let recent = store.get('recent', []);
 let keepMin = store.get('keepMin', 15);
+let introPick = store.get('intro', 'rand');   // écran d'ouverture en test : 'rand', '1', '2' ou '4'
 let resumeLast = store.get('resumeLast', true);
 let cur = null;               // station en cours (objet)
 let status = 'idle';          // idle | loading | live | muted | stopped | error
@@ -880,6 +883,7 @@ function renderCore(){
   // Réglages
   $('#keepSeg').innerHTML = KEEP_OPTS.map(([v,l]) => `<button class="${v===keepMin?'on':''}" data-k="${v}">${l}</button>`).join('');
   $('#resumeVal').textContent = resumeLast ? 'Oui' : 'Non';
+  $('#introSeg').innerHTML = [['rand','Au hasard'],['1','Néon XL'],['2','Soleil'],['4','Enseigne']].map(([v,l]) => `<button class="${v===introPick?'on':''}" data-intro="${v}">${l}</button>`).join('');
   // Minuteur
   $('#tOpts').innerHTML = [15,30,60,120].map(m => `<button data-m="${m}">${m<60?m+' min':(m/60)+' h'}</button>`).join('');
   $('#tRun').hidden = !sleepEnd; $('#tActions').hidden = !sleepEnd;
@@ -947,6 +951,8 @@ const openPromise = () => { $('#promiseSheet').hidden = false; };
 $('#openPromise').onclick = openPromise; $('#promiseRow').onclick = openPromise;
 document.querySelectorAll('.scrim').forEach(s => s.addEventListener('click', e => { if (e.target===s || e.target.closest('[data-close]')) s.hidden = true; }));
 $('#keepSeg').addEventListener('click', e => { const b=e.target.closest('[data-k]'); if (!b) return; keepMin=+b.dataset.k; store.set('keepMin', keepMin); if (status==='muted'){ if (!keepMin) hardStop(); else { clearTimeout(keepTimer); keepUntil=Date.now()+keepMin*60000; keepTimer=setTimeout(hardStop, keepMin*60000);} } render(); });
+$('#introSeg').addEventListener('click', e => { const b = e.target.closest('[data-intro]'); if (!b) return; introPick = b.dataset.intro; store.set('intro', introPick); render(); showIntro(); });
+$('#introReplay').onclick = () => showIntro();
 $('#resumeRow').onclick = () => { resumeLast=!resumeLast; store.set('resumeLast', resumeLast); render(); };
 $('#resetRow').onclick = () => { mine = DEFAULTS.slice(); save(); render(); toast('Stations de départ remises'); };
 
@@ -1369,13 +1375,26 @@ $('#v-pods').addEventListener('click', e => {
 });
 
 /* ---------- démarrage ---------- */
-(function(){   // écran d'ouverture : 1,6 s, un toucher pour passer, quasi immédiat si « Réduire les animations »
-  const sp = $('#splash'); if (!sp) return;
+/* Écran d'ouverture : 3 versions en test, choisies dans Réglages (ou au hasard) */
+const PALMS = `<svg class="palms" viewBox="0 0 300 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><g fill="#170B2E"><rect x="0" y="232" width="300" height="28"/>
+  <path d="M48 240 C52 180 58 130 70 92 L74 94 C64 132 60 182 58 240Z"/><path d="M71 92 c-18-14-40-16-58-6 c20-2 36 4 52 14z M72 92 c-6-20-24-32-44-32 c18 8 30 18 40 34z M72 92 c10-18 30-24 50-18 c-20 2-34 10-46 20z M72 92 c20-6 40 2 52 18 c-16-10-32-14-50-14z M72 92 c-22 0-38 12-44 30 c10-14 26-22 42-26z"/>
+  <path d="M236 240 C232 170 226 120 214 70 L210 72 C220 122 224 172 226 240Z"/><path d="M213 70 c18-14 40-16 58-6 c-20-2-36 4-52 14z M212 70 c6-20 24-32 44-32 c-18 8-30 18-40 34z M212 70 c-10-18-30-24-50-18 c20 2 34 10 46 20z M212 70 c-20-6-40 2-52 18 c16-10 32-14 50-14z M212 70 c22 0 38 12 44 30 c-10-14-26-22-42-26z"/>
+  <path d="M268 240 C268 200 272 170 280 146 L283 147 C276 172 274 202 276 240Z"/><path d="M281 146 c12-10 28-10 40-2 c-14-2-26 2-38 8z M281 146 c-8-12-24-16-36-10 c14 0 24 4 34 12z M281 146 c-14 2-24 10-26 22 c6-10 16-16 26-18z"/></g></svg>`;
+const NLG = cls => `<span class="nlg ${cls}"><span class="w">EFFEM</span><span class="s">radio</span></span>`;
+const INTROS = { '1':['Néon XL', () => `<span class="sunball"></span>${PALMS}<div class="place">${NLG('tube')}</div>`],
+                 '2':['Sur le soleil', () => `<span class="sunball"></span>${PALMS}<div class="place">${NLG('solid')}</div>`],
+                 '4':['Enseigne', () => `<span class="sunball"></span>${PALMS}<div class="place"><div class="frame">${NLG('solid')}<span class="open">● EN DIRECT</span></div></div>`] };
+function showIntro(){
+  let sp = $('#splash');
+  if (!sp){ sp = document.createElement('div'); sp.id = 'splash'; sp.setAttribute('aria-hidden','true'); document.getElementById('app').appendChild(sp); }
+  const keys = Object.keys(INTROS), k = introPick === 'rand' ? keys[Math.floor(Math.random()*keys.length)] : introPick;
+  sp.className = 'v' + k; sp.innerHTML = INTROS[k][1]();
   const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   const done = () => { if (sp.classList.contains('out')) return; sp.classList.add('out'); setTimeout(() => sp.remove(), 350); };
   sp.addEventListener('click', done);
-  setTimeout(done, reduce ? 500 : 1600);
-})();
+  setTimeout(done, reduce ? 500 : 2100);
+}
+showIntro();
 document.getElementById('app').dataset.view = 'home';
 const last = store.get('last', null);
 if (resumeLast && last && last.url) { cur = last; status = 'stopped'; setMediaSession(); }

@@ -59,10 +59,10 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - Lecteur en mode podcast : pas de « EN DIRECT » ni de point magenta, barre d'avancement magenta avec temps écoulé / restant, boutons −15 s et +30 s à la place de précédent / suivant, pas de cœur ni de bandeau de favoris.
 - Raccourcis d'Explorer, juste sous la recherche : pastilles verre de 44 px qui défilent (Autour de moi en lagon, Récentes en soleil, Info en continu en magenta, Outre-mer en mandarine, icône fine + texte Rethink Sans 800). « Autour de moi » affiche « à X km » dans les résultats.
 
-## 4 quater. Écran d'ouverture (intro 1 « Crépuscule », validée pour l'instant)
-- Fond ciel de crépuscule (nuit en haut → mandarine en bas), la radio de l'icône au centre, le logo dessous.
-- Animation : la radio se pose, l'aiguille magenta trouve la station, l'antenne émet deux ondes lagon, le logo monte. 1,6 s en tout, un toucher pour passer, quasi immédiat si « Réduire les animations ».
-- Piste à l'étude : « le soleil sur l'eau » (soleil qui se lève sur l'horizon puis reflets sur la mer), 5 versions proposées.
+## 4 quater. Écran d'ouverture « Palmiers et néon » (en test depuis le 17 octobre 2026)
+- Ciel de coucher de soleil (violet → magenta → mandarine → soleil), soleil rayé, palmiers en ombre nuit, logo en enseigne néon qui s'allume en grésillant (le logo garde Anton et « radio » signé en bas à droite).
+- Trois versions en test, choisies dans Réglages › Écran d'ouverture (ou au hasard) : Néon XL (logo en tube rose en haut), Sur le soleil (logo plein qui traverse le soleil), Enseigne (cadre néon lagon + plaque « ● EN DIRECT »).
+- 2,1 s, un toucher pour passer, quasi immédiat si « Réduire les animations ».
 
 ## 5. Textes
 - Tutoiement, phrases courtes, verbes d'action (« Réessayer », « Ajouter une station »).
