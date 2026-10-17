@@ -82,7 +82,9 @@ h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
 #splash .nlg .s{position:absolute;right:calc(var(--fs)*-.24);bottom:calc(var(--fs)*-.26);font:calc(var(--fs)*.5)/1 var(--script);transform:rotate(-9deg);white-space:nowrap;color:#C8FFF8;text-shadow:0 0 calc(var(--fs)*.05) #19C3B4,0 0 calc(var(--fs)*.14) #19C3B4,0 0 calc(var(--fs)*.28) rgba(25,195,180,.6);animation:spFlick 2s 2.2s steps(1) both}
 #splash .tube .w{color:transparent;-webkit-text-stroke:calc(var(--fs)*.018) #FFF4E6;text-shadow:0 0 calc(var(--fs)*.06) #FF2E88,0 0 calc(var(--fs)*.18) #FF2E88,0 0 calc(var(--fs)*.35) rgba(255,46,136,.6)}
 #splash .solid .w{color:#FFF4E6;text-shadow:0 0 calc(var(--fs)*.05) #FF2E88,0 0 calc(var(--fs)*.16) #FF2E88,0 0 calc(var(--fs)*.4) rgba(255,46,136,.55)}
-#splash.v2{--sy:46%;--sw:84cqw;--ly:37%}#splash.v2 .nlg{--fs:31cqw}
+#splash.v2{--sy:46%;--sw:79.8cqw;--ly:37%}#splash.v2 .nlg{--fs:31cqw}
+#splash.v2 .nlg .w{animation:spFade 1.2s .4s ease-out both}   /* Sur le soleil : EFFEM apparaît en douceur, seul « radio » grésille */
+@keyframes spFade{from{opacity:0}to{opacity:1}}
 #splash.v4 .place{top:13%}
 #splash .frame{position:relative;padding:6cqw 8cqw 9cqw 7cqw;border-radius:8cqw;border:.9cqw solid #FFF4E6;box-shadow:0 0 2cqw #19C3B4,0 0 6cqw #19C3B4,inset 0 0 2cqw #19C3B4;background:rgba(23,11,46,.35);animation:spFlick 2.4s .2s steps(1) both}
 #splash .frame .nlg{--fs:23cqw}
@@ -1377,7 +1379,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261017135401';
+const BUILD = '20261017135504';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
