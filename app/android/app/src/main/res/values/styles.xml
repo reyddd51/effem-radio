@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Couleurs d'Effem : fond nuit, barres système sombres avec icônes claires -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">#170B2E</item>
+        <item name="colorPrimaryDark">#170B2E</item>
+        <item name="colorAccent">#FF2E88</item>
+        <item name="android:windowBackground">@color/effemNuit</item>
+        <item name="android:statusBarColor">@color/effemNuit</item>
+        <item name="android:navigationBarColor">@color/effemBarre</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <!-- Écran de lancement : fond nuit et icône d'Effem, puis l'intro « Palmiers et néon » de l'app -->
+    <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/effemNuit</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
+    </style>
+</resources>

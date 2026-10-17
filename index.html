@@ -777,7 +777,27 @@ A.addEventListener('ended', () => { connected=false;
 A.addEventListener('timeupdate', () => { if (!cur || !cur.ep) return; updateProg(); if (Date.now() - lastPosSave > 5000){ lastPosSave = Date.now(); savePos(); } });
 A.addEventListener('durationchange', () => updateProg());
 
+/* App Android : la notification de lecture et le service qui garde le son écran éteint passent par le module natif MediaSession */
+const NMS = (() => { try{ const C = window.Capacitor; return C && C.getPlatform && C.getPlatform()==='android' && C.Plugins && C.Plugins.MediaSession || null; }catch(e){ return null; } })();
+let nmsReady = false, nmsState = '';
+function nativeSession(){
+  if (!NMS || !cur) return;
+  try{
+    const src = logoSrc(cur), ep = !!cur.ep;
+    NMS.setMetadata({ title: cur.name, artist: ep ? (cur.show || 'Podcast') : 'En direct · Effem Radio', album: ep ? 'Podcast' : (cur.meta || ''), artwork: src ? [{src, sizes:'512x512', type: src.startsWith('data:image/svg') ? 'image/svg+xml' : 'image/png'}] : [] });
+    if (!nmsReady){
+      nmsReady = true;
+      const on = (action, f) => { try{ NMS.setActionHandler({action}, d => { try{ f(d); }catch(e){} }); }catch(e){} };
+      on('play', () => resume()); on('pause', () => softPause()); on('stop', () => hardStop());
+      on('previoustrack', () => step(-1)); on('nexttrack', () => step(1));
+      on('seekbackward', () => { if (cur && cur.ep) seekBy(-15); }); on('seekforward', () => { if (cur && cur.ep) seekBy(30); });
+    }
+  }catch(e){}
+}
+function nativeState(st){ if (!NMS || st === nmsState) return; nmsState = st; try{ NMS.setPlaybackState({playbackState: st}); }catch(e){} }
+
 function setMediaSession(){
+  nativeSession();
   if (!('mediaSession' in navigator) || !cur) return;
   try{
     const src = logoSrc(cur);
@@ -919,6 +939,7 @@ function renderCore(){
   $('#tRun').hidden = !sleepEnd; $('#tActions').hidden = !sleepEnd;
   if (sleepEnd){ $('#tLeft').textContent = fmt(sleepEnd-Date.now()); $('#tEnd').textContent = 'La radio s’arrête à ' + clock(sleepEnd); }
   if ('mediaSession' in navigator) try{ navigator.mediaSession.playbackState = playing ? 'playing' : (cur ? 'paused' : 'none'); }catch(e){}
+  nativeState(playing ? 'playing' : (cur && status!=='stopped' && status!=='error' ? 'paused' : 'none'));   // pause « son coupé » : le service reste actif, le flux reste connecté
 }
 setInterval(() => { if (status==='muted' || sleepEnd) render(); }, 1000);
 const PREV_HTML = $('#prev').innerHTML, NEXT_HTML = $('#next').innerHTML;
@@ -1405,7 +1426,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261017184434';
+const BUILD = '20261017184852';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
