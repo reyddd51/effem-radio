@@ -12,7 +12,8 @@ Lire ce fichier en entier avant toute modification de l'app. Les règles de desi
 - **Effem+** (payant, à construire avec l'app native) : réveil radio, « Passeport monde » (radios des autres pays, rangées par pays), égaliseur. Prix proposé, pas encore validé : 1,99 €/mois, 14,99 €/an ou 29,99 € à vie, avec 7 jours d'essai. Tout le reste est gratuit pour tout le monde : écoute, 8 favoris, mode voiture, podcasts, Autour de moi.
 - **Podcasts** gratuits, dans leur propre onglet de la barre du bas. Page d'arrivée = **Top des podcasts** (classement Apple Podcasts France du jour, `itunes.apple.com/fr/rss/toppodcasts`), puis Mes podcasts (émissions suivies) et une recherche dédiée. Épisodes via l'annuaire Apple Podcasts, lus directement chez l'éditeur. Pause = vraie pause, reprise là où on s'est arrêté.
 - **Autour de moi** : radios à moins de 60 km (recherche par position de Radio Browser). Position arrondie à environ 1 km, jamais enregistrée.
-- Éditeur : CYCLONE (SASU, détenue par DLMD). Vendeur affiché sur l'App Store : CYCLONE.
+- Éditeur : CYCLONE (SAS au capital de 1 000 €, RCS Bobigny 951 659 655, siège 10 rue Paul Bert 93170 Bagnolet, présidée par DLMD). Vendeur affiché sur l'App Store : CYCLONE.
+- Contact public : **contact@effemradio.fr** (domaine effemradio.fr acheté le 17 octobre 2026). Pages légales dans `legal/` : confidentialité, mentions légales, assistance (liens dans Réglages et sur la fiche App Store).
 
 ## Le code
 - `source/src.html` : tout le code de l'app (HTML, CSS, JS dans un seul fichier).
