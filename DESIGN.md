@@ -64,6 +64,12 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - Trois versions en test, choisies dans Réglages › Écran d'ouverture (ou au hasard) : Néon XL (logo en tube rose en haut), Sur le soleil (logo plein qui traverse le soleil), Enseigne (cadre néon lagon + plaque « ● EN DIRECT »).
 - 4,2 s (doublé le 17 octobre 2026 à la demande de Johanna), un toucher pour passer, 0,8 s si « Réduire les animations ».
 
+## 4 quinquies. Version ordinateur (écran de 900 px et plus, 17 octobre 2026)
+- Même app, même code : seule la mise en page change au-delà de 900 px de large.
+- Barre d'onglets à gauche (232 px, fond `#150A2A`, logo EFFEM en haut), contenu centré jusqu'à 1080 px, favoris sur une ligne de 8, genres sur 4 colonnes, Top du mois sans défilement.
+- Lecteur et « Modifier » en panneau de 440 px qui glisse depuis la droite ; minuteur et promesse en fenêtre centrée ; mode voiture en plein écran 4 × 2.
+- Écran d'ouverture : le ciel prend toute la largeur, le soleil, les palmiers et le néon gardent des proportions de téléphone au centre.
+
 ## 5. Textes
 - Tutoiement, phrases courtes, verbes d'action (« Réessayer », « Ajouter une station »).
 - Dire ce qui se passe et quoi faire : « La station ne répond pas. Réessaie ou choisis-en une autre. »

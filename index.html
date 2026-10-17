@@ -292,6 +292,39 @@ nav.tabs button.on svg{stroke:var(--magenta)}
 
 .toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%);z-index:50;background:var(--creme);color:var(--nuit);font-size:14px;font-weight:700;padding:10px 16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:calc(100% - 40px);text-align:center}
 .toast[hidden]{display:none}
+/* ---------- Ordinateur (écran large) : même app, mise en page élargie ----------
+   Barre d'onglets à gauche, contenu centré et plus large, lecteur en panneau à droite. */
+@media (min-width:900px){
+  #app{max-width:none;--side:232px;--tabH:0px}
+  nav.tabs{left:0;top:0;bottom:0;right:auto;width:var(--side);height:auto;flex-direction:column;justify-content:flex-start;gap:6px;border-radius:0;
+    padding:calc(28px + 64px) 14px 24px;background:#150A2A;box-shadow:inset -1px 0 0 rgba(255,244,230,.08)}
+  nav.tabs::before{content:"EFFEM";position:absolute;left:24px;top:26px;font:400 34px/1 Anton,Impact,sans-serif;letter-spacing:1px;background:var(--sun);-webkit-background-clip:text;background-clip:text;color:transparent}
+  nav.tabs button{flex:0 0 auto;height:52px;flex-direction:row;justify-content:flex-start;gap:14px;padding:0 18px;font-size:15px;border-radius:16px}
+  nav.tabs button:hover{background:rgba(255,244,230,.06);color:var(--creme)}
+  nav.tabs button svg{width:22px;height:22px}
+  .view{margin-left:var(--side);padding:40px 48px 140px}
+  .view>.stack{max-width:1080px;margin:0 auto}
+  .view .brand{display:none}
+  .grid{grid-template-columns:repeat(8,minmax(0,1fr));gap:14px}
+  .genres{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .toprow{margin:0;padding:0;flex-wrap:wrap;overflow:visible;gap:18px 22px}
+  .short{margin:0;padding:0}
+  .hero{max-width:720px}
+  .mini{left:calc(var(--side) + 24px);right:24px;bottom:20px;max-width:1080px;margin:0 auto}
+  /* Lecteur et « Modifier » : panneau à droite */
+  .layer{left:auto;right:0;width:440px;box-shadow:-20px 0 60px rgba(0,0,0,.5)}
+  .layer[hidden]{transform:translateX(105%)}
+  .layer.car{left:0;width:auto}
+  .car .cgrid{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr)}
+  /* Feuilles (minuteur, promesse) : fenêtre centrée */
+  .scrim{justify-content:center;align-items:center}
+  .sheet{width:460px;border-radius:30px;padding-bottom:24px}
+  /* Écran d'ouverture : la scène garde des proportions de téléphone au centre */
+  #splash{padding-inline:calc((100% - 520px) / 2)}
+  #splash .palms{left:50%;right:auto;width:560px;height:auto;transform:translateX(-50%)}
+  #splash::before{content:"";position:absolute;left:0;right:0;bottom:0;height:7%;background:#170B2E;z-index:1}
+  ::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:rgba(255,244,230,.12);border-radius:5px}
+}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -1383,7 +1416,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261017145353';
+const BUILD = '20261017150524';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
