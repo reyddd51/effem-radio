@@ -619,7 +619,8 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const norm = s => String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');
 const KNOWN = {franceinter:'inter',franceinfo:'franceinfo',franceculture:'culture',fip:'fip',tsfjazz:'tsf',nostalgie:'nostalgie',nostalgiehq:'nostalgie',skyrock:'skyrock',rfm:'rfm',europe1:'europe1',rtl:'rtl',rmc:'rmc',rmcfr:'rmc',radionova:'nova',nova:'nova',
-  cheriefm:'cheriefm',radioclassique:'radioclassique',europe2:'europe2',radiofg:'radiofg',fg:'radiofg',funradio:'funradio',ici:'ici',iciparis:'ici',jazzradio:'jazzradio',latina:'latina',mfm:'mfm',mouv:'mouv',francemusique:'francemusique',sudradio:'sudradio',chantefrance:'chantefrance',rtl2:'rtl2'};
+  cheriefm:'cheriefm',radioclassique:'radioclassique',europe2:'europe2',radiofg:'radiofg',fg:'radiofg',funradio:'funradio',ici:'ici',iciparis:'ici',jazzradio:'jazzradio',latina:'latina',mfm:'mfm',mouv:'mouv',francemusique:'francemusique',sudradio:'sudradio',chantefrance:'chantefrance',rtl2:'rtl2',
+  nrj:'nrj',rireetchansons:'rireetchansons',bfmradio:'bfmradio',bfmbusiness:'bfmbusiness',rfi:'rfi',rfimonde:'rfi',rfiafrique:'rfi'};
 
 /* Logo d'une station, dans l'ordre : logo intégré à l'app, logo retrouvé et mémorisé, logo de l'annuaire */
 let logoCache = store.get('logos', {});           // nom de station → adresse d'un logo qui s'affiche bien
