@@ -26,3 +26,9 @@ Lire ce fichier en entier avant toute modification de l'app. Les règles de desi
 ## Façon de travailler
 - Johanna teste sur iPhone (Safari, app ajoutée à l'écran d'accueil). Vérifier chaque changement dans un navigateur à 390 × 844 avant de publier, et penser aux zones sûres de l'iPhone (barre d'état, trait du bas).
 - Expliquer les changements en français simple, sans jargon technique.
+
+## App native iPhone
+- Dossier `app/` : projet Capacitor 7 (gestionnaire de paquets Swift, pas de CocoaPods). Identifiant d'app `fr.cyclone.effem`, nom affiché « Effem », iPhone uniquement, portrait.
+- L'app embarque la même page que la version web : `python3 source/build.py`, puis `cd app && node copy-web.js && npx cap sync ios`.
+- Réglages natifs : lecture en arrière-plan (`UIBackgroundModes` audio + catégorie audio « playback » dans `AppDelegate.swift`), phrase d'autorisation de position pour « Autour de moi », icône 1024 px et écran de lancement au ciel de l'intro.
+- Fabrication et envoi sur TestFlight : `.github/workflows/ios-testflight.yml`, lancé à la main depuis l'onglet Actions de GitHub, sur un Mac de GitHub. Secrets nécessaires : `APPLE_TEAM_ID`, `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8` (Johanna les saisit elle-même dans GitHub ; ne jamais les écrire dans le dépôt).

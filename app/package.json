@@ -1,0 +1,15 @@
+{
+  "name": "effem-radio-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Effem Radio : app native iPhone (et Android) construite à partir de la même page que la version web",
+  "scripts": {
+    "web": "node copy-web.js",
+    "sync": "node copy-web.js && npx cap sync"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/ios": "^7.0.0",
+    "@capacitor/cli": "^7.0.0"
+  }
+}

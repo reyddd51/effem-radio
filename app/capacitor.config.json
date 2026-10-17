@@ -1,0 +1,11 @@
+{
+  "appId": "fr.cyclone.effem",
+  "appName": "Effem",
+  "webDir": "www",
+  "backgroundColor": "#170B2E",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#170B2E",
+    "limitsNavigationsToAppBoundDomains": false
+  }
+}
