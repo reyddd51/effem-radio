@@ -1374,6 +1374,22 @@ $('#v-pods').addEventListener('click', e => {
   const ep = e.target.closest('[data-e]'); if (ep){ const x = eps[+ep.dataset.e]; if (cur && cur.url===x.url && status==='live') return openPlayer(); pick(x); openPlayer(); }
 });
 
+/* ---------- hauteur réelle de l'écran ----------
+   Sur iPhone (iOS 26/27), une app ajoutée à l'écran d'accueil reçoit parfois une hauteur trop courte :
+   le bas de l'écran (zone du trait) reste vide et la barre d'onglets est coupée. On étire alors l'app
+   jusqu'à la vraie hauteur de l'écran. */
+function fitApp(){
+  const app = document.getElementById('app');
+  const standalone = navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+  const portrait = window.innerHeight > window.innerWidth;
+  const full = portrait ? Math.max(screen.height, screen.width) : Math.min(screen.height, screen.width);
+  if (standalone && window.innerHeight < full - 2){ app.style.bottom = 'auto'; app.style.height = full + 'px'; }
+  else { app.style.bottom = ''; app.style.height = ''; }
+}
+fitApp();
+addEventListener('resize', fitApp); addEventListener('orientationchange', () => setTimeout(fitApp, 300));
+document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(fitApp, 100); });
+
 /* ---------- démarrage ---------- */
 /* Écran d'ouverture : 3 versions en test, choisies dans Réglages (ou au hasard) */
 const PALMS = `<svg class="palms" viewBox="0 0 300 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><g fill="#170B2E"><rect x="0" y="232" width="300" height="28"/>
