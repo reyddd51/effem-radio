@@ -78,7 +78,7 @@ h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
 #splash .palms{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;z-index:2}
 #splash .place{position:absolute;left:0;right:0;top:var(--ly,15%);display:flex;justify-content:center;z-index:3}
 #splash .nlg{position:relative;display:inline-block;line-height:1;--fs:28cqw;margin-right:calc(var(--fs)*.22)}
-#splash .nlg .w{display:block;font:400 var(--fs)/.88 Anton,Impact,sans-serif;letter-spacing:calc(var(--fs)*.03);animation:spFlick 2.6s .5s steps(1) both}
+#splash .nlg .w{display:block;font:400 var(--fs)/.88 Anton,Impact,sans-serif;letter-spacing:calc(var(--fs)*.03);animation:spFade 1.2s .4s ease-out both}   /* EFFEM apparaît en douceur, seul « radio » grésille */
 #splash .nlg .s{position:absolute;right:calc(var(--fs)*-.24);bottom:calc(var(--fs)*-.26);font:calc(var(--fs)*.5)/1 var(--script);transform:rotate(-9deg);white-space:nowrap;color:#C8FFF8;text-shadow:0 0 calc(var(--fs)*.05) #19C3B4,0 0 calc(var(--fs)*.14) #19C3B4,0 0 calc(var(--fs)*.28) rgba(25,195,180,.6);animation:spFlick 2s 2.2s steps(1) both}
 #splash .tube .w{color:transparent;-webkit-text-stroke:calc(var(--fs)*.018) #FFF4E6;text-shadow:0 0 calc(var(--fs)*.06) #FF2E88,0 0 calc(var(--fs)*.18) #FF2E88,0 0 calc(var(--fs)*.35) rgba(255,46,136,.6)}
 #splash .solid .w{color:#FFF4E6;text-shadow:0 0 calc(var(--fs)*.05) #FF2E88,0 0 calc(var(--fs)*.16) #FF2E88,0 0 calc(var(--fs)*.4) rgba(255,46,136,.55)}
@@ -86,7 +86,7 @@ h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
 #splash.v2 .nlg .w{animation:spFade 1.2s .4s ease-out both}   /* Sur le soleil : EFFEM apparaît en douceur, seul « radio » grésille */
 @keyframes spFade{from{opacity:0}to{opacity:1}}
 #splash.v4 .place{top:13%}
-#splash .frame{position:relative;padding:6cqw 8cqw 9cqw 7cqw;border-radius:8cqw;border:.9cqw solid #FFF4E6;box-shadow:0 0 2cqw #19C3B4,0 0 6cqw #19C3B4,inset 0 0 2cqw #19C3B4;background:rgba(23,11,46,.35);animation:spFlick 2.4s .2s steps(1) both}
+#splash .frame{position:relative;padding:6cqw 8cqw 9cqw 7cqw;border-radius:8cqw;border:.9cqw solid #FFF4E6;box-shadow:0 0 2cqw #19C3B4,0 0 6cqw #19C3B4,inset 0 0 2cqw #19C3B4;background:rgba(23,11,46,.35);animation:spFade 1.2s .2s ease-out both}
 #splash .frame .nlg{--fs:23cqw}
 #splash .open{position:absolute;left:50%;bottom:-4.4cqw;transform:translateX(-50%);padding:1.4cqw 3.4cqw;border-radius:2cqw;background:#170B2E;font:800 3.2cqw/1 var(--body);letter-spacing:.8cqw;color:#FFD166;box-shadow:0 0 0 .4cqw #FFD166,0 0 3cqw rgba(255,209,102,.7);white-space:nowrap}
 #splash .tag{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 7cqw);z-index:4;text-align:center;font:800 3cqw/1 var(--body);letter-spacing:.6cqw;color:rgba(23,11,46,.75)}
