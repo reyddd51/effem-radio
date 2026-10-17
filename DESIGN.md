@@ -46,7 +46,7 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - **États** : chaque écran a son état chargement, erreur (avec « Réessayer »), vide et hors ligne. Jamais d'écran blanc.
 
 ## 4 bis. Finition Premium (validée)
-- **Verre dépoli** pour la barre d'onglets et le mini-lecteur : capsules flottantes, fond `rgba(42,15,74,.55)` + flou 24 px + liseré clair 1 px. Barre d'onglets à `--tabB` du bas, mini-lecteur 74 px au-dessus. Sur l'accueil, la carte « en direct » remplace le mini-lecteur.
+- **Verre dépoli** pour la barre d'onglets et le mini-lecteur : fond `rgba(42,15,74,.55)` + flou 24 px + liseré clair 1 px. **Barre d'onglets collée au bas de l'écran** (corrigé le 17 octobre 2026 à la demande de Johanna) : pleine largeur, coins arrondis en haut seulement, hauteur `--tabH` = 66 px + zone du trait iPhone. Mini-lecteur en capsule flottante 10 px au-dessus. Sur l'accueil, la carte « en direct » remplace le mini-lecteur.
 - **Grain** très léger sur tout l'écran (opacité 6 %), jamais plus.
 - **Teinte de la radio** (`--tint`) : couleur dominante du logo, calculée automatiquement. Elle colore la carte « en direct » de l'accueil, l'ombre du visuel et le fond flouté du lecteur. Le bouton lecture reste toujours au dégradé soleil.
 - **Carte « en direct »** (accueil) : 168 px, coins 30, ondes radio en filigrane, logo 76, nom en Bebas Neue, bouton crème 62 px.
@@ -62,7 +62,7 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 ## 4 quater. Écran d'ouverture « Palmiers et néon » (en test depuis le 17 octobre 2026)
 - Ciel de coucher de soleil (violet → magenta → mandarine → soleil), soleil rayé, palmiers en ombre nuit, logo en enseigne néon qui s'allume en grésillant (le logo garde Anton et « radio » signé en bas à droite).
 - Trois versions en test, choisies dans Réglages › Écran d'ouverture (ou au hasard) : Néon XL (logo en tube rose en haut), Sur le soleil (logo plein qui traverse le soleil), Enseigne (cadre néon lagon + plaque « ● EN DIRECT »).
-- 2,1 s, un toucher pour passer, quasi immédiat si « Réduire les animations ».
+- 4,2 s (doublé le 17 octobre 2026 à la demande de Johanna), un toucher pour passer, 0,8 s si « Réduire les animations ».
 
 ## 5. Textes
 - Tutoiement, phrases courtes, verbes d'action (« Réessayer », « Ajouter une station »).
