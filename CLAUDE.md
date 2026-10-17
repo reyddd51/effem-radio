@@ -22,7 +22,7 @@ Lire ce fichier en entier avant toute modification de l'app. Les règles de desi
 - `source/data/local.json` : radios locales par région (relevé Radio Browser).
 - Annuaire en direct : Radio Browser (`de1.api.radio-browser.info`), uniquement les flux en `https://`.
 - Top radios : classement ACPM du mois (écoutes actives en ligne en France), dans `TOP` ; autorisation de réutilisation à demander à l'ACPM avant le lancement public.
-- Publication : GitHub Pages, dépôt `reyddd51/effem-radio`, branche `main`. L'app en ligne : https://reyddd51.github.io/effem-radio/
+- Publication : GitHub Pages, dépôt `reyddd51/effem-radio`, branche `main`, domaine **effemradio.fr** (fichier `CNAME`, zone DNS chez OVH). L’app en ligne : https://effemradio.fr/
 
 ## Façon de travailler
 - Johanna teste sur iPhone (Safari, app ajoutée à l'écran d'accueil). Vérifier chaque changement dans un navigateur à 390 × 844 avant de publier, et penser aux zones sûres de l'iPhone (barre d'état, trait du bas).
