@@ -21,7 +21,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Version web à jour
-        run: python3 source/build.py
+        run: |
+          python3 -m pip install --quiet pillow || python3 -m pip install --quiet --break-system-packages pillow
+          python3 source/build.py
 
       - uses: actions/setup-node@v4
         with:
