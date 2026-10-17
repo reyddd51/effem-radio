@@ -14,7 +14,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Yellowtail&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Yellowtail&family=Rethink+Sans:wght@400;500;600;700;800&display=swap">
 <style>
 /* Sunset : nuit violette, dégradé coucher de soleil sur les actions, lagon pour les infos */
 :root{
@@ -22,7 +22,7 @@
   --soleil:#FFD166; --lagon:#19C3B4; --creme:#FFF4E6; --lilas:#CDBFE6; --gris:#8E7FAA; --ligne:rgba(255,244,230,.09);
   --sun:linear-gradient(180deg,#FFD166 0%,#FF8A3D 45%,#FF2E88 75%,#8B2BD9 100%);
   --sunh:linear-gradient(90deg,#FFD166,#FF8A3D 45%,#FF2E88);
-  --display:Anton,Impact,"Arial Narrow",sans-serif; --script:Yellowtail,"Brush Script MT",cursive; --body:Manrope,system-ui,-apple-system,sans-serif;
+  --display:"Bebas Neue",Anton,Impact,"Arial Narrow",sans-serif; --script:Yellowtail,"Brush Script MT",cursive; --body:"Rethink Sans",system-ui,-apple-system,sans-serif;
   color-scheme:dark;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -888,7 +888,7 @@ function renderCore(){
 }
 setInterval(() => { if (status==='muted' || sleepEnd) render(); }, 1000);
 const PREV_HTML = $('#prev').innerHTML, NEXT_HTML = $('#next').innerHTML;
-const SKIP = n => `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFF4E6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${n<0 ? 'M4.5 12a7.5 7.5 0 1 0 2.3-5.4M5 3.5v3.6h3.6' : 'M19.5 12a7.5 7.5 0 1 1-2.3-5.4M19 3.5v3.6h-3.6'}"/><text x="12" y="15.2" text-anchor="middle" font-size="7.2" font-weight="800" fill="#FFF4E6" stroke="none" font-family="Manrope,sans-serif">${Math.abs(n)}</text></svg>`;
+const SKIP = n => `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFF4E6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${n<0 ? 'M4.5 12a7.5 7.5 0 1 0 2.3-5.4M5 3.5v3.6h3.6' : 'M19.5 12a7.5 7.5 0 1 1-2.3-5.4M19 3.5v3.6h-3.6'}"/><text x="12" y="15.2" text-anchor="middle" font-size="7.2" font-weight="800" fill="#FFF4E6" stroke="none" font-family="Rethink Sans,sans-serif">${Math.abs(n)}</text></svg>`;
 let seeking = false;
 function epDur(){ return isFinite(A.duration) && A.duration > 0 ? A.duration : (cur && cur.dur ? cur.dur/1000 : 0); }
 function updateProg(){

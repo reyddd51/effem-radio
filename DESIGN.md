@@ -21,10 +21,10 @@ Direction : **Sunset Premium** (validée le 16 octobre 2026). Une nuit violette,
 Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en aplats.
 
 ## 2. Typographie
-- **Anton** (titres, noms de radio dans le lecteur et le mode voiture, chiffres) : toujours en MAJUSCULES, interlettrage +1 px. Jamais pour du texte courant.
+- **Bebas Neue** (validée le 17 octobre 2026, remplace Anton) : titres, logo EFFEM, noms de radio dans le lecteur et le mode voiture, chiffres. Toujours en MAJUSCULES, interlettrage +1 px. Jamais pour du texte courant.
 - **Yellowtail** : uniquement le mot « radio » du logo. Nulle part ailleurs.
-- **Logo (validé le 16 octobre 2026, option 1)** : EFFEM en Anton au dégradé soleil ; « radio » en Yellowtail lagon, posé en bas à droite, incliné de −9°, qui mord un peu sur le M, détouré d'un fin liseré de la couleur du fond. Ne plus jamais mettre « radio » à la suite d'EFFEM.
-- **Manrope** : tout le reste. Graisses : 500 (texte), 700 (boutons, lignes de liste), 800 (noms de radio dans les listes, libellés).
+- **Logo (validé le 16 octobre 2026, option 1)** : EFFEM en Bebas Neue au dégradé soleil ; « radio » en Yellowtail lagon, posé en bas à droite, incliné de −9°, qui mord un peu sur le M, détouré d'un fin liseré de la couleur du fond. Ne plus jamais mettre « radio » à la suite d'EFFEM.
+- **Rethink Sans** (validée le 17 octobre 2026, remplace Manrope) : tout le reste. Graisses : 500 (texte), 700 (boutons, lignes de liste), 800 (noms de radio dans les listes, libellés).
 - Échelle : titre d'écran 40 px · titre de section 22–26 px · nom de radio (lecteur) 44 px · texte 15–17 px · secondaire 13 px · libellé 12 px majuscules, interlettrage 1,6 px, mandarine.
 - Pas de texte sous 12 px. Pas de texte en gris sur fond gris.
 
