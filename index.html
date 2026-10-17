@@ -191,6 +191,34 @@ nav.tabs button.on svg{stroke:var(--magenta)}
 .prom{display:flex;gap:12px;align-items:flex-start}
 .prom span.k{width:40px;height:40px;border-radius:12px;background:var(--nuit2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font:400 18px/1 var(--display);color:var(--lagon)}
 
+/* Effem+ */
+.pbadge{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:10px;background:var(--sunh);color:var(--nuit);font:800 11px/1 var(--body);letter-spacing:.6px;vertical-align:2px}
+.plus-card{position:relative;overflow:hidden;width:100%;border-radius:24px;padding:18px;text-align:left;display:flex;flex-direction:column;gap:10px;
+  background:radial-gradient(circle at 92% 0%,rgba(255,209,102,.35),transparent 46%),linear-gradient(135deg,#5B1F8F,#2A0F4A 70%);box-shadow:inset 0 0 0 1px rgba(255,209,102,.35)}
+.plus-card .pt{font:400 34px/.9 Anton,Impact,sans-serif;letter-spacing:1px;background:var(--sun);-webkit-background-clip:text;background-clip:text;color:transparent}
+.plus-card .pf{display:flex;flex-wrap:wrap;gap:6px}
+.plus-card .pf span{height:28px;padding:0 10px;border-radius:14px;background:rgba(23,11,46,.5);display:inline-flex;align-items:center;font-size:13px;font-weight:700}
+.plus-card .go{position:absolute;right:16px;top:18px;font-size:13px;font-weight:800;color:var(--soleil)}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.plans button{position:relative;border-radius:18px;background:var(--nuit2);padding:14px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.plans button.on{box-shadow:inset 0 0 0 2px var(--soleil);background:rgba(255,209,102,.10)}
+.plans b{font:400 24px/1 var(--display);letter-spacing:.5px}
+.plans small{font-size:12px;font-weight:600;color:var(--lilas)}
+.plans i{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-style:normal;height:18px;padding:0 7px;border-radius:9px;background:var(--magenta);font-size:10.5px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
+.cta[disabled]{opacity:.55}
+.soon{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--lagon);text-transform:uppercase}
+.excard.world{background:linear-gradient(135deg,rgba(25,195,180,.22),rgba(91,31,143,.35) 60%,rgba(42,15,74,.6));box-shadow:inset 0 0 0 1px rgba(25,195,180,.35)}
+.excard.world .globe{font-size:40px;line-height:1}
+.alarm-time{align-self:center;background:transparent;border:0;color:var(--creme);font:400 76px/1 var(--display);letter-spacing:2px;text-align:center;font-variant-numeric:tabular-nums;color-scheme:dark;width:100%;max-width:260px}
+.alarm-time::-webkit-calendar-picker-indicator{display:none}
+.alarm-st{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.alarm-st button{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--lilas);min-width:0}
+.alarm-st button .logo{width:100%;aspect-ratio:1;border-radius:18px;overflow:hidden}
+.alarm-st button.on{color:var(--creme);font-weight:800}
+.alarm-st button.on .logo{box-shadow:0 0 0 3px var(--soleil)}
+.alarm-st button span.nm{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flag{width:44px;height:44px;border-radius:14px;background:var(--nuit2);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+
 /* Explorer */
 .search{height:52px;border-radius:26px;background:var(--nuit2);display:flex;align-items:center;gap:10px;padding:0 18px}
 .search:focus-within{box-shadow:0 0 0 1.5px var(--lagon)}
@@ -383,6 +411,10 @@ nav.tabs button.on svg{stroke:var(--magenta)}
           <span class="row" style="justify-content:space-between"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:800">Radios locales</span><span class="small muted" id="localSub"></span></span><span class="muted" style="font-size:20px">›</span></span>
           <span class="chips" id="localChips"></span>
         </button>
+        <button id="worldCard" class="excard world">
+          <span style="display:flex;flex-direction:column;gap:4px"><span class="lbl" style="color:var(--lagon);font-size:11px">Effem+ · Passeport monde</span><span style="font:400 23px/1 var(--display);letter-spacing:1px">LES RADIOS DU MONDE</span><span style="font-size:12.5px;font-weight:600;color:rgba(255,244,230,.75)">Plus de 200 pays, rangés par pays</span></span>
+          <span class="globe" aria-hidden="true">🌍</span>
+        </button>
         <p class="lbl" style="margin-top:6px">Par genre</p>
         <div class="genres" id="genres"></div>
       </div>
@@ -423,6 +455,18 @@ nav.tabs button.on svg{stroke:var(--magenta)}
   <section class="view" id="v-settings" hidden>
     <div class="stack" style="gap:16px">
       <h1 class="big">RÉGLAGES</h1>
+      <button class="plus-card" id="plusCard">
+        <span class="pt">EFFEM+</span>
+        <span class="go" id="plusGo">Découvrir ›</span>
+        <span class="small" style="color:rgba(255,244,230,.85);line-height:19px">Toujours 0 pub. Trois fonctions en plus pour aller plus loin.</span>
+        <span class="pf"><span>⏰ Réveil radio</span><span>🌍 Passeport monde</span><span>🎚️ Égaliseur</span></span>
+      </button>
+      <div class="stack" style="gap:8px">
+        <p class="lbl">Réveil <span class="pbadge">EFFEM+</span></p>
+        <div class="list">
+          <button id="alarmRow"><span>Réveil radio<span class="hint" id="alarmHint">Réveille-toi avec ta radio préférée</span></span><span id="alarmVal" style="font-size:15px;color:var(--soleil)"></span></button>
+        </div>
+      </div>
       <div class="stack" style="gap:8px">
         <p class="lbl">Pause sans nouvelle pub</p>
         <div class="list">
@@ -557,6 +601,43 @@ nav.tabs button.on svg{stroke:var(--magenta)}
       <div class="prom"><span class="k">✓</span><span><b>Sans compte</b><span class="hint">Pas d’inscription. Tes stations restent sur ton téléphone.</span></span></div>
       <div class="prom"><span class="k">i</span><span><b>La pub à l’antenne, c’est la radio</b><span class="hint">Le son vient directement de chaque station. Si elle diffuse de la pub dans son programme, tu l’entends comme sur un poste FM.</span></span></div>
       <button class="cta" data-close>COMPRIS</button>
+    </div>
+  </div>
+
+  <!-- FEUILLE EFFEM+ -->
+  <div class="scrim" id="plusSheet" hidden>
+    <div class="sheet" role="dialog" aria-label="Effem+">
+      <span class="grab"></span>
+      <div class="row" style="justify-content:space-between"><h1 style="font-family:Anton,Impact,sans-serif;background:var(--sun);-webkit-background-clip:text;background-clip:text;color:transparent">EFFEM+</h1><button class="round" data-close aria-label="Fermer" style="font-weight:800">✕</button></div>
+      <p class="muted" style="margin:0;line-height:21px">Toujours 0 pub, avec ou sans Effem+. L’écoute, tes 8 favoris, le mode voiture, les podcasts et Autour de moi restent gratuits pour tout le monde.</p>
+      <div class="prom"><span class="k">⏰</span><span><b>Réveil radio</b><span class="hint">Réveille-toi avec ta radio, à l’heure que tu veux, une fois ou tous les jours.</span></span></div>
+      <div class="prom"><span class="k">🌍</span><span><b>Passeport monde</b><span class="hint">Les radios de plus de 200 pays, rangées par pays. Pour voyager ou garder le lien avec chez toi.</span></span></div>
+      <div class="prom"><span class="k">🎚️</span><span><b>Égaliseur <span class="soon">· bientôt</span></b><span class="hint">Plus de basses, voix plus claires : arrive avec la prochaine version de l’app.</span></span></div>
+      <div class="plans" id="plans">
+        <button data-plan="m"><small>Mensuel</small><b>1,99 €</b><small>par mois</small></button>
+        <button data-plan="y" class="on"><i>−37 %</i><small>Annuel</small><b>14,99 €</b><small>par an</small></button>
+        <button data-plan="l"><small>À vie</small><b>29,99 €</b><small>une fois</small></button>
+      </div>
+      <button class="cta" id="plusBuy" disabled>BIENTÔT DISPONIBLE</button>
+      <p class="small muted" style="margin:-4px 0 0;text-align:center;line-height:18px">7 jours d’essai gratuit. Sans engagement, annulable à tout moment depuis ton compte Apple ou Google.</p>
+      <div class="list" style="margin-top:4px">
+        <button id="plusTest"><span>Aperçu de test<span class="hint">Débloque Effem+ sur cet appareil en attendant l’ouverture des abonnements.</span></span><span id="plusTestVal" style="font-size:15px;color:var(--soleil)"></span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEUILLE RÉVEIL -->
+  <div class="scrim" id="alarmSheet" hidden>
+    <div class="sheet" role="dialog" aria-label="Réveil radio">
+      <span class="grab"></span>
+      <div class="row" style="justify-content:space-between"><h1>RÉVEIL</h1><button class="round" data-close aria-label="Fermer" style="font-weight:800">✕</button></div>
+      <input type="time" id="alarmTime" class="alarm-time" value="07:00" aria-label="Heure du réveil">
+      <div class="seg" id="alarmRep" style="grid-template-columns:1fr 1fr;padding:0"><button data-rep="0">Une fois</button><button data-rep="1">Tous les jours</button></div>
+      <p class="lbl" style="margin-top:4px">Avec quelle radio ?</p>
+      <div class="alarm-st" id="alarmSt"></div>
+      <button class="cta" id="alarmOn">ACTIVER LE RÉVEIL</button>
+      <button class="ghost" id="alarmOff" hidden style="background:transparent;box-shadow:inset 0 0 0 1.5px var(--magenta);color:var(--magenta)">Désactiver le réveil</button>
+      <p class="small muted" style="margin:0;text-align:center;line-height:18px" id="alarmNote">Laisse Effem ouverte (tu peux verrouiller l’écran) et ton téléphone branché. Le réveil sonne au volume de ton téléphone.</p>
     </div>
   </div>
 
@@ -1237,7 +1318,7 @@ function showTop(){
 }
 $('#topCard').onclick = showTop;
 let backTo = 'explore';
-function setBack(to){ backTo = to; $('#resBack').textContent = to==='regions' ? '‹ Toutes les régions' : '‹ Explorer'; }
+function setBack(to){ backTo = to; $('#resBack').textContent = to==='regions' ? '‹ Toutes les régions' : to==='world' ? '‹ Passeport monde' : '‹ Explorer'; }
 /* Retour au début d'Explorer : recherche vidée, genres affichés, en haut de page */
 function exploreHome(clear = true){
   qSeq++; clearTimeout(qTimer); regionMode = false; resMode = ''; podRes = [];
@@ -1245,11 +1326,12 @@ function exploreHome(clear = true){
   $('#exHome').hidden = false; $('#exRes').hidden = true;
   $('#v-explore').scrollTop = 0;
 }
-$('#resBack').onclick = () => backTo==='regions' ? showRegions() : exploreHome();
+$('#resBack').onclick = () => backTo==='regions' ? showRegions() : backTo==='world' ? showWorld() : exploreHome();
 $('#q').addEventListener('keydown', e => { if (e.key==='Enter') $('#q').blur(); });
 $('#qClear').onclick = e => { e.preventDefault(); $('#q').value=''; $('#q').dispatchEvent(new Event('input')); };
 $('#resList').addEventListener('click', e => {
   const g = e.target.closest('[data-reg]'); if (g) return showRegion(REGIONS[+g.dataset.reg]);
+  const w = e.target.closest('[data-cc]'); if (w) return showCountry(w.dataset.cc);
   if (e.target.closest('#nbRegions')) return showRegions();
   const p = e.target.closest('[data-p]'), f = e.target.closest('[data-f]');
   if (p){ connect(results[+p.dataset.p]); openPlayer(); }
@@ -1426,7 +1508,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261017184852';
+const BUILD = '20261017185458';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
@@ -1435,6 +1517,128 @@ function checkUpdate(){
 }
 setTimeout(checkUpdate, 1500);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) checkUpdate(); });
+
+/* ---------- Effem+ : réveil radio, Passeport monde (égaliseur à venir) ---------- */
+/* Le paiement arrivera avec les apps natives (App Store, Google Play). En attendant, « Aperçu de test » débloque Effem+ sur l'appareil. */
+let plusPreview = store.get('plusPreview', false), plusPlan = 'y';
+const hasPlus = () => plusPreview;
+function needPlus(f){ if (hasPlus()) return f(); openPlus(); }
+function openPlus(){ renderPlus(); $('#plusSheet').hidden = false; }
+function renderPlus(){
+  $('#plusTestVal').textContent = plusPreview ? 'Activé' : 'Non';
+  $('#plusGo').textContent = plusPreview ? 'Aperçu activé ›' : 'Découvrir ›';
+  document.querySelectorAll('#plans [data-plan]').forEach(b => b.classList.toggle('on', b.dataset.plan===plusPlan));
+}
+$('#plusCard').onclick = openPlus;
+$('#plans').addEventListener('click', e => { const b = e.target.closest('[data-plan]'); if (b){ plusPlan = b.dataset.plan; renderPlus(); } });
+$('#plusTest').onclick = () => { plusPreview = !plusPreview; store.set('plusPreview', plusPreview); if (!plusPreview && alarm && alarm.on){ alarm.on = false; store.set('alarm', alarm); armAlarm(); } renderPlus(); render(); toast(plusPreview ? 'Aperçu Effem+ activé sur cet appareil' : 'Aperçu Effem+ désactivé'); };
+
+/* Passeport monde : les pays de l'annuaire, puis les radios d'un pays (flux https uniquement) */
+let worldCache = null;
+const regionName = (() => { try{ const d = new Intl.DisplayNames(['fr'], {type:'region'}); return c => { try{ return d.of(c) || c; }catch(e){ return c; } }; }catch(e){ return c => c; } })();
+const flagOf = cc => /^[A-Z]{2}$/.test(cc) ? String.fromCodePoint(...[...cc].map(ch => 0x1F1E6 + ch.charCodeAt(0) - 65)) : '🌍';
+async function showWorld(){
+  const seq = ++qSeq; regionMode = false; resMode = ''; resNote = ''; podRes = [];
+  $('#exHome').hidden = true; $('#exRes').hidden = false; setBack('explore');
+  $('#resTitle').textContent = 'Passeport monde'; $('#resCount').textContent = 'Chargement…'; $('#resList').innerHTML = '';
+  $('#v-explore').scrollTop = 0;
+  try{
+    if (!worldCache){
+      const data = await rb('countries');
+      const by = {};
+      data.forEach(c => { const cc = (c.iso_3166_1 || '').toUpperCase(); if (cc.length===2 && !FR_CODES.has(cc)) by[cc] = (by[cc]||0) + (c.stationcount||0); });
+      worldCache = Object.entries(by).filter(([,n]) => n >= 5).map(([cc,n]) => ({cc, n, name: regionName(cc)})).sort((a,b) => a.name.localeCompare(b.name, 'fr'));
+    }
+    if (seq!==qSeq) return;
+    const big = worldCache.slice().sort((a,b) => b.n - a.n).slice(0, 8);
+    $('#resCount').textContent = worldCache.length + ' pays';
+    const row = c => `<li><button class="main" data-cc="${c.cc}"><span class="flag" aria-hidden="true">${flagOf(c.cc)}</span><span style="min-width:0;display:flex;flex-direction:column;gap:2px"><span class="n">${esc(c.name)}</span><span class="m">${c.n} radio${c.n>1?'s':''}</span></span></button><span class="muted" style="font-size:20px;padding-right:6px">›</span></li>`;
+    $('#resList').innerHTML = `<li class="note" style="display:block;padding:4px 4px 10px;line-height:20px">Les radios du monde entier, rangées par pays. Les plus grands pays d’abord, puis tous les pays de A à Z.</li>`
+      + big.map(row).join('') + `<li style="display:block;padding:14px 4px 6px"><p class="lbl">Tous les pays</p></li>` + worldCache.map(row).join('');
+  }catch(e){ if (seq!==qSeq) return; $('#resCount').textContent = '';
+    $('#resList').innerHTML = `<li class="empty"><h3>ANNUAIRE INJOIGNABLE</h3><p class="muted" style="margin:0">Vérifie ta connexion puis réessaie.</p></li>`; }
+}
+async function showCountry(cc){
+  const name = regionName(cc), seq = ++qSeq;
+  regionMode = false; resMode = ''; resNote = ''; podRes = [];
+  $('#exHome').hidden = true; $('#exRes').hidden = false; setBack('world');
+  $('#resTitle').textContent = flagOf(cc) + ' ' + name; $('#resCount').textContent = 'Recherche…'; $('#resList').innerHTML = '';
+  $('#v-explore').scrollTop = 0;
+  try{
+    const data = await rb(`stations/bycountrycodeexact/${cc}?hidebroken=true&order=clickcount&reverse=true&limit=300`);
+    if (seq!==qSeq) return;
+    const seen = new Set();
+    results = data.filter(x => x.url_resolved && x.url_resolved.startsWith('https://') && x.lastcheckok!==0)
+      .map(x => ({ id:'rb:'+x.stationuuid, uuid:x.stationuuid, name:x.name.trim(), url:x.url_resolved, favicon:x.favicon,
+        meta:[name, (x.tags||'').split(',').filter(Boolean).slice(0,2).join(', ')].filter(Boolean).join(' · ') }))
+      .filter(st => { const k = norm(st.name); if (!k || seen.has(k)) return false; seen.add(k); return true; }).slice(0, 200);
+    resNote = 'Classées de la plus écoutée à la moins écoutée sur l’annuaire libre Radio Browser.';
+    renderResults($('#resTitle').textContent);
+  }catch(e){ if (seq!==qSeq) return; $('#resCount').textContent = '';
+    $('#resList').innerHTML = `<li class="empty"><h3>ANNUAIRE INJOIGNABLE</h3><p class="muted" style="margin:0">Vérifie ta connexion puis réessaie.</p></li>`; }
+}
+$('#worldCard').onclick = () => needPlus(showWorld);
+
+/* Réveil radio : l'app reste éveillée grâce à un son silencieux tant qu'aucune radio ne joue, puis lance la radio à l'heure dite */
+let alarm = store.get('alarm', null), alarmTimer = null, alarmPick = null, alarmRepPick = 1, rampTimer = null;
+const SILENCE = (() => { const n = 4000, b = new Uint8Array(44 + n), v = new DataView(b.buffer), w = (o, t) => [...t].forEach((c,i) => b[o+i] = c.charCodeAt(0));
+  w(0,'RIFF'); v.setUint32(4, 36+n, true); w(8,'WAVEfmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true); v.setUint32(24,8000,true); v.setUint32(28,8000,true); v.setUint16(32,1,true); v.setUint16(34,8,true); w(36,'data'); v.setUint32(40,n,true); b.fill(128, 44);
+  let bin = ''; b.forEach(x => bin += String.fromCharCode(x)); return 'data:audio/wav;base64,' + btoa(bin); })();
+const KA = new Audio(); KA.loop = true; KA.setAttribute('playsinline','');
+function radioActive(){ return status==='live' || status==='loading' || status==='muted'; }
+function keepAwake(){ if (!(alarm && alarm.on) || radioActive()) { try{ KA.pause(); }catch(e){} return; }
+  if (!KA.src) KA.src = SILENCE; const p = KA.play(); if (p && p.catch) p.catch(() => {}); }
+function nextAt(a){ const d = new Date(); d.setHours(a.h, a.m, 0, 0); if (d.getTime() <= Date.now() + 1000) d.setDate(d.getDate() + 1); return d.getTime(); }
+function armAlarm(){
+  clearInterval(alarmTimer); alarmTimer = null;
+  if (alarm && alarm.on){ if (!alarm.at || alarm.at < Date.now() - 6*3600e3) alarm.at = nextAt(alarm); store.set('alarm', alarm); alarmTimer = setInterval(checkAlarm, 5000); checkAlarm(); }
+  keepAwake(); renderAlarmRow();
+}
+function checkAlarm(){ if (alarm && alarm.on && alarm.at && Date.now() >= alarm.at) ringAlarm(); }
+function ringAlarm(){
+  const st = alarm.st;
+  if (alarm.repeat) alarm.at = nextAt(alarm); else { alarm.on = false; alarm.at = 0; }
+  store.set('alarm', alarm);
+  setSleep(0);
+  if (st){ connect(st); show('home'); openPlayer(); toast('Bonjour ! ⏰ ' + st.name); }
+  // Montée du son en douceur (sans effet sur iPhone, où seul le bouton de volume compte)
+  clearInterval(rampTimer); let v = .15; try{ A.volume = v; }catch(e){}
+  rampTimer = setInterval(() => { v = Math.min(1, v + .05); try{ A.volume = v; }catch(e){} if (v >= 1) clearInterval(rampTimer); }, 3000);
+  armAlarm();
+}
+function alarmLabel(){ if (!(alarm && alarm.on)) return ''; return String(alarm.h).padStart(2,'0') + ':' + String(alarm.m).padStart(2,'0'); }
+function renderAlarmRow(){
+  const on = alarm && alarm.on;
+  $('#alarmVal').textContent = on ? alarmLabel() : (hasPlus() ? 'Non' : '');
+  $('#alarmHint').textContent = on ? (alarm.st ? alarm.st.name : '') + (alarm.repeat ? ' · tous les jours' : ' · une fois') : 'Réveille-toi avec ta radio préférée';
+}
+function openAlarm(){
+  const a = alarm || {h:7, m:0, repeat:true, st: mine[0]};
+  alarmPick = a.st && mine.find(x => same(x, a.st)) || a.st || mine[0]; alarmRepPick = a.repeat ? 1 : 0;
+  $('#alarmTime').value = String(a.h).padStart(2,'0') + ':' + String(a.m).padStart(2,'0');
+  renderAlarmSheet(); $('#alarmSheet').hidden = false;
+}
+function renderAlarmSheet(){
+  $('#alarmSt').innerHTML = mine.slice(0, FAV_N).map((st,i) => `<button data-i="${i}" class="${alarmPick && same(alarmPick, st) ? 'on' : ''}"><span class="logo">${logoHTML(st,12)}</span><span class="nm">${esc(shortName(st))}</span></button>`).join('');
+  document.querySelectorAll('#alarmRep [data-rep]').forEach(b => b.classList.toggle('on', +b.dataset.rep===alarmRepPick));
+  const on = alarm && alarm.on; $('#alarmOff').hidden = !on; $('#alarmOn').textContent = on ? 'MODIFIER LE RÉVEIL' : 'ACTIVER LE RÉVEIL';
+  requestAnimationFrame(() => fitAll($('#alarmSt')));
+}
+$('#alarmRow').onclick = () => needPlus(openAlarm);
+$('#alarmSt').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (b){ alarmPick = mine[+b.dataset.i]; renderAlarmSheet(); } });
+$('#alarmRep').addEventListener('click', e => { const b = e.target.closest('[data-rep]'); if (b){ alarmRepPick = +b.dataset.rep; renderAlarmSheet(); } });
+$('#alarmOn').onclick = () => {
+  const [h, m] = ($('#alarmTime').value || '07:00').split(':').map(Number);
+  alarm = { h, m, repeat: !!alarmRepPick, st: alarmPick || mine[0], on: true, at: 0 };
+  alarm.at = nextAt(alarm); store.set('alarm', alarm);
+  armAlarm(); $('#alarmSheet').hidden = true;
+  const mins = Math.round((alarm.at - Date.now()) / 60000);
+  toast('Réveil à ' + alarmLabel() + ', dans ' + (mins >= 60 ? Math.floor(mins/60) + ' h ' + String(mins%60).padStart(2,'0') : mins + ' min'));
+};
+$('#alarmOff').onclick = () => { if (alarm){ alarm.on = false; alarm.at = 0; store.set('alarm', alarm); } armAlarm(); $('#alarmSheet').hidden = true; toast('Réveil désactivé'); };
+['playing','pause','ended','error','emptied'].forEach(ev => A.addEventListener(ev, () => setTimeout(keepAwake, 300)));
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkAlarm(); });
+renderPlus(); armAlarm();
 
 /* ---------- démarrage ---------- */
 /* Écran d'ouverture « Palmiers et néon », version Enseigne (choisie le 17 octobre 2026) */

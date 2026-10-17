@@ -71,6 +71,13 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - Lecteur et « Modifier » en panneau de 440 px qui glisse depuis la droite ; minuteur et promesse en fenêtre centrée ; mode voiture en plein écran 4 × 2.
 - Écran d'ouverture : le ciel prend toute la largeur, le soleil, les palmiers et le néon gardent des proportions de téléphone au centre.
 
+## 4 sexies. Effem+ (17 octobre 2026)
+- Carte Effem+ en tête des Réglages : « EFFEM+ » en Anton dégradé soleil, fond violet avec halo doré, trois pastilles (Réveil radio, Passeport monde, Égaliseur).
+- Badge « EFFEM+ » (pastille dégradé soleil, texte nuit) devant chaque fonction payante.
+- Feuille d'offre : trois formules en cartes (l'annuelle mise en avant, liseré soleil et pastille magenta « −37 % »), bouton principal « Bientôt disponible » tant que le paiement n'existe pas.
+- Passeport monde : carte lagon dans Explorer avec un globe ; liste des pays avec drapeau dans une pastille, les 8 plus grands pays d'abord puis tous de A à Z.
+- Réveil : grande heure en Bebas Neue, « Une fois / Tous les jours », choix parmi les 8 favoris (liseré soleil sur la radio choisie).
+
 ## 5. Textes
 - Tutoiement, phrases courtes, verbes d'action (« Réessayer », « Ajouter une station »).
 - Dire ce qui se passe et quoi faire : « La station ne répond pas. Réessaie ou choisis-en une autre. »
