@@ -62,6 +62,7 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 ## 4 quater. Écran d'ouverture « Palmiers et néon » (en test depuis le 17 octobre 2026)
 - Ciel de coucher de soleil (violet → magenta → mandarine → soleil), soleil rayé, palmiers en ombre nuit, logo en enseigne néon : EFFEM (et le cadre de l'Enseigne) apparaît en douceur, sans clignoter ; seul « radio » grésille en s'allumant (le logo garde Anton et « radio » signé en bas à droite).
 - Trois versions en test, choisies dans Réglages › Écran d'ouverture (ou au hasard) : Néon XL (logo en tube rose en haut), Sur le soleil (logo plein qui traverse le soleil), Enseigne (cadre néon lagon + plaque « ● EN DIRECT »).
+- Enseigne choisie par Johanna le 17 octobre 2026 (écran par défaut) : enseigne un peu plus basse, soleil plus bas (puissance actuelle), ville au loin façon Miami sur l'horizon (décalée à droite, bas des tours caché par la courbure de la Terre, floue, couleur « brume rose »), horizon droit. Le logo et la ville sont déjà là : seul le soleil se lève (2,8 s), rien ne clignote.
 - 4,2 s (doublé le 17 octobre 2026 à la demande de Johanna), un toucher pour passer, 0,8 s si « Réduire les animations ».
 
 ## 4 quinquies. Version ordinateur (écran de 900 px et plus, 17 octobre 2026)

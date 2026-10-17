@@ -85,7 +85,8 @@ h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
 #splash.v2{--sy:46%;--sw:70cqw;--ly:37%}#splash.v2 .nlg{--fs:31cqw}
 #splash.v2 .nlg .w{animation:spFade 1.2s .4s ease-out both}   /* Sur le soleil : EFFEM apparaît en douceur, seul « radio » grésille */
 @keyframes spFade{from{opacity:0}to{opacity:1}}
-#splash.v4 .place{top:13%}
+#splash.v4{--sy:67%}#splash.v4 .place{top:21%}
+#splash.v4 .nlg .w,#splash.v4 .nlg .s,#splash.v4 .frame{animation:none}   /* Enseigne : le logo et la ville sont déjà là, seul le soleil se lève */
 #splash .frame{position:relative;padding:6cqw 8cqw 9cqw 7cqw;border-radius:8cqw;border:.9cqw solid #FFF4E6;box-shadow:0 0 2cqw #19C3B4,0 0 6cqw #19C3B4,inset 0 0 2cqw #19C3B4;background:rgba(23,11,46,.35);animation:spFade 1.2s .2s ease-out both}
 #splash .frame .nlg{--fs:23cqw}
 #splash .open{position:absolute;left:50%;bottom:-4.4cqw;transform:translateX(-50%);padding:1.4cqw 3.4cqw;border-radius:2cqw;background:#170B2E;font:800 3.2cqw/1 var(--body);letter-spacing:.8cqw;color:#FFD166;box-shadow:0 0 0 .4cqw #FFD166,0 0 3cqw rgba(255,209,102,.7);white-space:nowrap}
@@ -322,7 +323,8 @@ nav.tabs button.on svg{stroke:var(--magenta)}
   /* Écran d'ouverture : la scène garde des proportions de téléphone au centre */
   #splash{padding-inline:calc((100% - 520px) / 2)}
   #splash .palms{left:50%;right:auto;width:560px;height:auto;transform:translateX(-50%)}
-  #splash::before{content:"";position:absolute;left:0;right:0;bottom:0;height:7%;background:#170B2E;z-index:1}
+  #splash .palms .mist{display:none}   /* la brume ne couvrirait que la largeur des palmiers */
+  #splash::before{content:"";position:absolute;left:0;right:0;bottom:0;height:calc(560px * 28 / 300);background:#170B2E;z-index:1}
   ::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:rgba(255,244,230,.12);border-radius:5px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -616,7 +618,7 @@ const store = {
 let mine = store.get('mine', DEFAULTS);
 let recent = store.get('recent', []);
 let keepMin = store.get('keepMin', 15);
-let introPick = store.get('intro', 'rand');   // écran d'ouverture en test : 'rand', '1', '2' ou '4'
+let introPick = store.get('intro', '4');   // écran d'ouverture en test : 'rand', '1', '2' ou '4'
 let resumeLast = store.get('resumeLast', true);
 let cur = null;               // station en cours (objet)
 let status = 'idle';          // idle | loading | live | muted | stopped | error
@@ -1428,14 +1430,31 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) chec
 
 /* ---------- démarrage ---------- */
 /* Écran d'ouverture : 3 versions en test, choisies dans Réglages (ou au hasard) */
-const PALMS = `<svg class="palms" viewBox="0 0 300 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><g fill="#170B2E"><rect x="0" y="232" width="300" height="28"/>
+const PALMS_SVG = city => `<svg class="palms" viewBox="0 0 300 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${city||''}<g fill="#170B2E"><rect x="0" y="232" width="300" height="28"/>
   <path d="M48 240 C52 180 58 130 70 92 L74 94 C64 132 60 182 58 240Z"/><path d="M71 92 c-18-14-40-16-58-6 c20-2 36 4 52 14z M72 92 c-6-20-24-32-44-32 c18 8 30 18 40 34z M72 92 c10-18 30-24 50-18 c-20 2-34 10-46 20z M72 92 c20-6 40 2 52 18 c-16-10-32-14-50-14z M72 92 c-22 0-38 12-44 30 c10-14 26-22 42-26z"/>
   <path d="M236 240 C232 170 226 120 214 70 L210 72 C220 122 224 172 226 240Z"/><path d="M213 70 c18-14 40-16 58-6 c-20-2-36 4-52 14z M212 70 c6-20 24-32 44-32 c-18 8-30 18-40 34z M212 70 c-10-18-30-24-50-18 c20 2 34 10 46 20z M212 70 c-20-6-40 2-52 18 c16-10 32-14 50-14z M212 70 c22 0 38 12 44 30 c-10-14-26-22-42-26z"/>
   <path d="M268 240 C268 200 272 170 280 146 L283 147 C276 172 274 202 276 240Z"/><path d="M281 146 c12-10 28-10 40-2 c-14-2-26 2-38 8z M281 146 c-8-12-24-16-36-10 c14 0 24 4 34 12z M281 146 c-14 2-24 10-26 22 c6-10 16-16 26-18z"/></g></svg>`;
+const PALMS = PALMS_SVG();
+/* Ville au loin façon Miami (Enseigne, 4B + brume rose de la 4E) : le bas des tours est caché derrière l'horizon, floue et grisée, déjà là dès l'ouverture */
+const CITY = (() => {
+  const T = [[0,8,13],[7,6,19],[13,9,25],[22,5,17],[27,8,33],[35,6,39,'sp'],[41,10,29],[51,7,45],[58,9,37,'st'],[67,5,23],[72,10,52,'sp'],[82,7,41],[89,9,32],[98,6,27],[104,11,44,'rd'],[115,6,21],[121,9,35,'st'],[130,7,30],[137,8,40,'sp'],[145,5,18],[150,10,26],[160,7,33],[167,8,20],[175,9,24],[184,6,15],[190,10,11]];
+  const towers = T.map(([x,w,h,t]) => {
+    let d = `M${x} 60V${60-h}H${x+w}V60Z`;
+    if (t==='rd') d = `M${x} 60V${60-h+w/2}A${w/2} ${w/2} 0 0 1 ${x+w} ${60-h+w/2}V60Z`;
+    if (t==='st') d = `M${x} 60V${60-h}H${x+w*.2}V${60-h-4}H${x+w*.8}V${60-h}H${x+w}V60Z`;
+    return `<path d="${d}"/>` + (t==='sp' ? `<rect x="${x+w/2-.4}" y="${60-h-9}" width=".8" height="9"/>` : '');
+  }).join('');
+  return `<defs><linearGradient id="spCity" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF2E88" stop-opacity=".55"/><stop offset="1" stop-color="#FF8A3D" stop-opacity="0"/></linearGradient>
+    <linearGradient id="spMist" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF2E88" stop-opacity="0"/><stop offset=".5" stop-color="#FF2E88" stop-opacity=".5"/><stop offset="1" stop-color="#FF2E88" stop-opacity="0"/></linearGradient>
+    <filter id="spHaze" x="-5%" y="-20%" width="110%" height="140%"><feColorMatrix type="saturate" values=".55"/><feGaussianBlur stdDeviation=".9"/></filter>
+    <filter id="spMistBlur" x="0" y="-50%" width="100%" height="200%"><feGaussianBlur stdDeviation="4"/></filter></defs>
+    <g filter="url(#spHaze)" opacity=".8"><g transform="translate(111 199.9) scale(.81)" fill="url(#spCity)">${towers}</g></g>
+    <rect class="mist" x="0" y="223" width="300" height="18" fill="url(#spMist)" filter="url(#spMistBlur)"/>`;
+})();
 const NLG = cls => `<span class="nlg ${cls}"><span class="w">EFFEM</span><span class="s">radio</span></span>`;
 const INTROS = { '1':['Néon XL', () => `<span class="sunball"></span>${PALMS}<div class="place">${NLG('tube')}</div>`],
                  '2':['Sur le soleil', () => `<span class="sunball"></span>${PALMS}<div class="place">${NLG('solid')}</div>`],
-                 '4':['Enseigne', () => `<span class="sunball"></span>${PALMS}<div class="place"><div class="frame">${NLG('solid')}<span class="open">● EN DIRECT</span></div></div>`] };
+                 '4':['Enseigne', () => `<span class="sunball"></span>${PALMS_SVG(CITY)}<div class="place"><div class="frame">${NLG('solid')}<span class="open">● EN DIRECT</span></div></div>`] };
 function showIntro(){
   let sp = $('#splash');
   if (!sp){ sp = document.createElement('div'); sp.id = 'splash'; sp.setAttribute('aria-hidden','true'); document.getElementById('app').appendChild(sp); }
