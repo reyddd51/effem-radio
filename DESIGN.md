@@ -59,10 +59,10 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - Lecteur en mode podcast : pas de « EN DIRECT » ni de point magenta, barre d'avancement magenta avec temps écoulé / restant, boutons −15 s et +30 s à la place de précédent / suivant, pas de cœur ni de bandeau de favoris.
 - Raccourcis d'Explorer, juste sous la recherche : pastilles verre de 44 px qui défilent (Autour de moi en lagon, Récentes en soleil, Info en continu en magenta, Outre-mer en mandarine, icône fine + texte Rethink Sans 800). « Autour de moi » affiche « à X km » dans les résultats.
 
-## 4 quater. Écran d'ouverture « Palmiers et néon » (en test depuis le 17 octobre 2026)
+## 4 quater. Écran d'ouverture « Palmiers et néon » (version Enseigne, choisie le 17 octobre 2026)
 - Ciel de coucher de soleil (violet → magenta → mandarine → soleil), soleil rayé, palmiers en ombre nuit, logo en enseigne néon : EFFEM (et le cadre de l'Enseigne) apparaît en douceur, sans clignoter ; seul « radio » grésille en s'allumant (le logo garde Anton et « radio » signé en bas à droite).
-- Trois versions en test, choisies dans Réglages › Écran d'ouverture (ou au hasard) : Néon XL (logo en tube rose en haut), Sur le soleil (logo plein qui traverse le soleil), Enseigne (cadre néon lagon + plaque « ● EN DIRECT »).
-- Enseigne choisie par Johanna le 17 octobre 2026 (écran par défaut) : enseigne un peu plus basse, soleil plus bas (puissance actuelle), ville au loin façon Miami sur l'horizon (décalée à droite, bas des tours caché par la courbure de la Terre, floue, couleur « brume rose »), horizon droit. Le logo et la ville sont déjà là : seul le soleil se lève (2,8 s), rien ne clignote.
+- Une seule version : Enseigne (cadre néon lagon + plaque « ● EN DIRECT »). Néon XL et Sur le soleil ont été retirées, ainsi que le choix dans Réglages.
+- Enseigne choisie par Johanna le 17 octobre 2026 enseigne un peu plus basse, soleil plus bas (puissance actuelle), ville au loin façon Miami sur l'horizon (décalée à droite, bas des tours caché par la courbure de la Terre, floue, couleur « brume rose »), horizon droit. Le logo et la ville sont déjà là : seul le soleil se lève (2,8 s), rien ne clignote.
 - 4,2 s (doublé le 17 octobre 2026 à la demande de Johanna), un toucher pour passer, 0,8 s si « Réduire les animations ».
 
 ## 4 quinquies. Version ordinateur (écran de 900 px et plus, 17 octobre 2026)

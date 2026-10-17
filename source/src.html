@@ -80,10 +80,7 @@ h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
 #splash .nlg{position:relative;display:inline-block;line-height:1;--fs:28cqw;margin-right:calc(var(--fs)*.22)}
 #splash .nlg .w{display:block;font:400 var(--fs)/.88 Anton,Impact,sans-serif;letter-spacing:calc(var(--fs)*.03);animation:spFade 1.2s .4s ease-out both}   /* EFFEM apparaît en douceur, seul « radio » grésille */
 #splash .nlg .s{position:absolute;right:calc(var(--fs)*-.24);bottom:calc(var(--fs)*-.26);font:calc(var(--fs)*.5)/1 var(--script);transform:rotate(-9deg);white-space:nowrap;color:#C8FFF8;text-shadow:0 0 calc(var(--fs)*.05) #19C3B4,0 0 calc(var(--fs)*.14) #19C3B4,0 0 calc(var(--fs)*.28) rgba(25,195,180,.6);animation:spFlick 2s 2.2s steps(1) both}
-#splash .tube .w{color:transparent;-webkit-text-stroke:calc(var(--fs)*.018) #FFF4E6;text-shadow:0 0 calc(var(--fs)*.06) #FF2E88,0 0 calc(var(--fs)*.18) #FF2E88,0 0 calc(var(--fs)*.35) rgba(255,46,136,.6)}
 #splash .solid .w{color:#FFF4E6;text-shadow:0 0 calc(var(--fs)*.05) #FF2E88,0 0 calc(var(--fs)*.16) #FF2E88,0 0 calc(var(--fs)*.4) rgba(255,46,136,.55)}
-#splash.v2{--sy:46%;--sw:70cqw;--ly:37%}#splash.v2 .nlg{--fs:31cqw}
-#splash.v2 .nlg .w{animation:spFade 1.2s .4s ease-out both}   /* Sur le soleil : EFFEM apparaît en douceur, seul « radio » grésille */
 @keyframes spFade{from{opacity:0}to{opacity:1}}
 #splash.v4{--sy:67%}#splash.v4 .place{top:21%}
 #splash.v4 .nlg .w,#splash.v4 .nlg .s,#splash.v4 .frame{animation:none}   /* Enseigne : le logo et la ville sont déjà là, seul le soleil se lève */
@@ -443,13 +440,6 @@ nav.tabs button.on svg{stroke:var(--magenta)}
         </div>
       </div>
       <div class="stack" style="gap:8px">
-        <p class="lbl">Écran d’ouverture (en test)</p>
-        <div class="list">
-          <div class="seg" id="introSeg" style="border-bottom:0"></div>
-          <button id="introReplay"><span>Revoir l’écran d’ouverture</span><span class="muted">›</span></button>
-        </div>
-      </div>
-      <div class="stack" style="gap:8px">
         <p class="lbl">Effem</p>
         <div class="list">
           <button id="promiseRow"><span>Notre promesse</span><span class="muted">›</span></button>
@@ -618,7 +608,6 @@ const store = {
 let mine = store.get('mine', DEFAULTS);
 let recent = store.get('recent', []);
 let keepMin = store.get('keepMin', 15);
-let introPick = store.get('intro', '4');   // écran d'ouverture en test : 'rand', '1', '2' ou '4'
 let resumeLast = store.get('resumeLast', true);
 let cur = null;               // station en cours (objet)
 let status = 'idle';          // idle | loading | live | muted | stopped | error
@@ -924,7 +913,6 @@ function renderCore(){
   // Réglages
   $('#keepSeg').innerHTML = KEEP_OPTS.map(([v,l]) => `<button class="${v===keepMin?'on':''}" data-k="${v}">${l}</button>`).join('');
   $('#resumeVal').textContent = resumeLast ? 'Oui' : 'Non';
-  $('#introSeg').innerHTML = [['rand','Au hasard'],['1','Néon XL'],['2','Soleil'],['4','Enseigne']].map(([v,l]) => `<button class="${v===introPick?'on':''}" data-intro="${v}">${l}</button>`).join('');
   // Minuteur
   $('#tOpts').innerHTML = [15,30,60,120].map(m => `<button data-m="${m}">${m<60?m+' min':(m/60)+' h'}</button>`).join('');
   $('#tRun').hidden = !sleepEnd; $('#tActions').hidden = !sleepEnd;
@@ -992,8 +980,6 @@ const openPromise = () => { $('#promiseSheet').hidden = false; };
 $('#openPromise').onclick = openPromise; $('#promiseRow').onclick = openPromise;
 document.querySelectorAll('.scrim').forEach(s => s.addEventListener('click', e => { if (e.target===s || e.target.closest('[data-close]')) s.hidden = true; }));
 $('#keepSeg').addEventListener('click', e => { const b=e.target.closest('[data-k]'); if (!b) return; keepMin=+b.dataset.k; store.set('keepMin', keepMin); if (status==='muted'){ if (!keepMin) hardStop(); else { clearTimeout(keepTimer); keepUntil=Date.now()+keepMin*60000; keepTimer=setTimeout(hardStop, keepMin*60000);} } render(); });
-$('#introSeg').addEventListener('click', e => { const b = e.target.closest('[data-intro]'); if (!b) return; introPick = b.dataset.intro; store.set('intro', introPick); render(); showIntro(); });
-$('#introReplay').onclick = () => showIntro();
 $('#resumeRow').onclick = () => { resumeLast=!resumeLast; store.set('resumeLast', resumeLast); render(); };
 $('#resetRow').onclick = () => { mine = DEFAULTS.slice(); save(); render(); toast('Stations de départ remises'); };
 
@@ -1429,7 +1415,7 @@ setTimeout(checkUpdate, 1500);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) checkUpdate(); });
 
 /* ---------- démarrage ---------- */
-/* Écran d'ouverture : 3 versions en test, choisies dans Réglages (ou au hasard) */
+/* Écran d'ouverture « Palmiers et néon », version Enseigne (choisie le 17 octobre 2026) */
 const PALMS_SVG = city => `<svg class="palms" viewBox="0 0 300 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${city||''}<g fill="#170B2E"><rect x="0" y="232" width="300" height="28"/>
   <path d="M48 240 C52 180 58 130 70 92 L74 94 C64 132 60 182 58 240Z"/><path d="M71 92 c-18-14-40-16-58-6 c20-2 36 4 52 14z M72 92 c-6-20-24-32-44-32 c18 8 30 18 40 34z M72 92 c10-18 30-24 50-18 c-20 2-34 10-46 20z M72 92 c20-6 40 2 52 18 c-16-10-32-14-50-14z M72 92 c-22 0-38 12-44 30 c10-14 26-22 42-26z"/>
   <path d="M236 240 C232 170 226 120 214 70 L210 72 C220 122 224 172 226 240Z"/><path d="M213 70 c18-14 40-16 58-6 c-20-2-36 4-52 14z M212 70 c6-20 24-32 44-32 c-18 8-30 18-40 34z M212 70 c-10-18-30-24-50-18 c20 2 34 10 46 20z M212 70 c-20-6-40 2-52 18 c16-10 32-14 50-14z M212 70 c22 0 38 12 44 30 c-10-14-26-22-42-26z"/>
@@ -1452,14 +1438,11 @@ const CITY = (() => {
     <rect class="mist" x="0" y="223" width="300" height="18" fill="url(#spMist)" filter="url(#spMistBlur)"/>`;
 })();
 const NLG = cls => `<span class="nlg ${cls}"><span class="w">EFFEM</span><span class="s">radio</span></span>`;
-const INTROS = { '1':['Néon XL', () => `<span class="sunball"></span>${PALMS}<div class="place">${NLG('tube')}</div>`],
-                 '2':['Sur le soleil', () => `<span class="sunball"></span>${PALMS}<div class="place">${NLG('solid')}</div>`],
-                 '4':['Enseigne', () => `<span class="sunball"></span>${PALMS_SVG(CITY)}<div class="place"><div class="frame">${NLG('solid')}<span class="open">● EN DIRECT</span></div></div>`] };
+const INTRO = () => `<span class="sunball"></span>${PALMS_SVG(CITY)}<div class="place"><div class="frame">${NLG('solid')}<span class="open">● EN DIRECT</span></div></div>`;
 function showIntro(){
   let sp = $('#splash');
   if (!sp){ sp = document.createElement('div'); sp.id = 'splash'; sp.setAttribute('aria-hidden','true'); document.getElementById('app').appendChild(sp); }
-  const keys = Object.keys(INTROS), k = introPick === 'rand' ? keys[Math.floor(Math.random()*keys.length)] : introPick;
-  sp.className = 'v' + k; sp.innerHTML = INTROS[k][1]();
+  sp.className = 'v4'; sp.innerHTML = INTRO();
   const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   const done = () => { if (sp.classList.contains('out')) return; sp.classList.add('out'); setTimeout(() => sp.remove(), 350); };
   sp.addEventListener('click', done);
