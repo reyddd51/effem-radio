@@ -10,6 +10,6 @@ for p in sorted(glob.glob(L+'*.png')):   # tous les logos PNG du dossier, nommé
     out[k]='data:image/jpeg;base64,'+base64.b64encode(b.getvalue()).decode()
 s=open('source/src.html').read().replace('%%LOGOS%%',json.dumps(out)).replace('%%LOCAL%%',open('source/data/local.json').read()).replace('%%BUILD%%',__import__('time').strftime('%Y%m%d%H%M%S'))
 open('index.html','w').write(s)
-json.dump({"name":"Effem Radio","short_name":"Effem","start_url":"./","display":"standalone","background_color":"#170B2E","theme_color":"#170B2E",
+json.dump({"name":"Effem Radio","short_name":"Effem","start_url":"./","display":"standalone","background_color":"#170B2E","theme_color":"#21103B",
  "icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png"}]},open('manifest.webmanifest','w'),ensure_ascii=False)
 print(len(s)//1024,'Ko')
