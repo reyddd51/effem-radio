@@ -7,7 +7,7 @@ on:
 
 jobs:
   essai:
-    runs-on: macos-15
+    runs-on: macos-15-intel   # les Mac arm64 de GitHub manquent souvent de place
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
