@@ -33,6 +33,7 @@ Lire ce fichier en entier avant toute modification de l'app. Les règles de desi
 - Dossier `app/` : projet Capacitor 7 (gestionnaire de paquets Swift, pas de CocoaPods). Identifiant d'app `fr.cyclone.effem`, nom affiché « Effem », iPhone uniquement, portrait.
 - L'app embarque la même page que la version web : `python3 source/build.py`, puis `cd app && node copy-web.js && npx cap sync ios`.
 - Réglages natifs : lecture en arrière-plan (`UIBackgroundModes` audio + catégorie audio « playback » dans `AppDelegate.swift`), phrase d'autorisation de position pour « Autour de moi », icône 1024 px et écran de lancement au ciel de l'intro.
+- Prévu pour la version 1.1 (décision du 20 octobre 2026, avec le lancement d'Effem+ payant) : Activité en direct (Live Activity) dans la Dynamic Island et sur l'écran verrouillé pour le minuteur et le réveil. Rien à faire avant la sortie de la version 1. Pendant la bêta, vérifier que la pastille « À l'écoute » de l'iPhone s'affiche bien.
 - Fabrication et envoi sur TestFlight : `.github/workflows/ios-testflight.yml`, lancé à la main depuis l'onglet Actions de GitHub, sur un Mac Intel de GitHub (les Mac arm64 sont souvent saturés). Secrets nécessaires : `APPLE_TEAM_ID`, `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8` (Johanna les saisit elle-même dans GitHub ; ne jamais les écrire dans le dépôt).
 
 ## App native Android
