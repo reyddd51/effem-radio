@@ -33,6 +33,21 @@ jobs:
           node copy-web.js
           npx cap sync ios
 
+      - name: Vérification des 4 codes Apple
+        env:
+          A: ${{ secrets.APPLE_TEAM_ID }}
+          B: ${{ secrets.ASC_KEY_ID }}
+          C: ${{ secrets.ASC_ISSUER_ID }}
+          D: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          manque=""
+          [ -n "$A" ] || manque="$manque APPLE_TEAM_ID"
+          [ -n "$B" ] || manque="$manque ASC_KEY_ID"
+          [ -n "$C" ] || manque="$manque ASC_ISSUER_ID"
+          [ -n "$D" ] || manque="$manque ASC_KEY_P8"
+          if [ -n "$manque" ]; then echo "::error::Codes introuvables :$manque (Settings › Secrets and variables › Actions › onglet Secrets › Repository secrets)"; exit 1; fi
+          echo "Les 4 codes sont bien là."
+
       - name: Clé App Store Connect
         env:
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
