@@ -300,6 +300,9 @@ nav.tabs button.on svg{stroke:var(--magenta)}
 .edit .pos{width:22px;text-align:center;font:400 15px/1 var(--display);color:var(--gris);flex-shrink:0}
 .edit .pos.fav{color:var(--magenta)}
 html,body{touch-action:manipulation}   /* pas de zoom au double toucher */
+.pshow{align-self:flex-start;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;min-height:44px;padding:2px 0}
+.pshow #pShowName{font-size:19px;font-weight:800;color:var(--creme);line-height:24px}
+.pshow .go{font-size:13px;font-weight:700;color:var(--lagon)}
 .grip{width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:none;cursor:grab}
 .edit .logo{width:48px;height:48px;border-radius:12px}
 .minus{width:26px;height:26px;border-radius:13px;background:var(--magenta);display:flex;align-items:center;justify-content:center}
@@ -528,6 +531,7 @@ html,body{touch-action:manipulation}   /* pas de zoom au double toucher */
       <h1 id="pName"></h1>
       <span class="st" id="pSt" style="font-size:12px"></span>
       <span id="pMeta" style="font-size:16px;font-weight:600;color:rgba(255,244,230,.72)"></span>
+      <button id="pShow" class="pshow" hidden><span id="pShowName"></span><span class="go">Tous les épisodes ›</span></button>
     </div>
     <div class="prog" id="pProg" hidden>
       <input type="range" id="pSeek" min="0" max="1000" value="0" step="1" aria-label="Avancer ou reculer dans l'épisode">
@@ -1021,6 +1025,8 @@ function renderCore(){
     const ls = logoSrc(cur); $('#pBg').style.backgroundImage = ls ? `url("${ls}")` : 'none';
     $('#pName').textContent = cur.name;
     $('#pSt').innerHTML = (liveNow ? '<span class="live" style="display:inline-block;margin-right:8px;vertical-align:middle"></span>' : '') + esc(lbl) + (liveNow ? BARS : ''); $('#pSt').className = 'st '+cls;
+    $('#pShow').hidden = !isEp; $('#pMeta').hidden = isEp && status!=='muted';
+    if (isEp) $('#pShowName').textContent = cur.show || 'Podcast';
     $('#pMeta').textContent = status==='muted' ? 'Le son est coupé, la station reste branchée. Reprends : tu tombes direct sur l’antenne.' : isEp ? cur.show : (cur.meta || '');
     $('#pName').style.fontSize = isEp ? (cur.name.length > 60 ? '24px' : '30px') : '';
     $('#pBadge').hidden = !liveNow;
@@ -1080,6 +1086,10 @@ function show(v){
 }
 const openLayer = id => { $('#'+id).hidden = false; requestAnimationFrame(() => fitAll($('#'+id))); };
 const closeLayer = id => { $('#'+id).hidden = true; };
+/* Podcast en cours : toucher le nom de l'émission ouvre tous ses épisodes */
+$('#pShow').onclick = () => { if (!cur || !cur.ep || !cur.showId) return;
+  const s = podIndex[cur.showId] || follow.find(f => f.id === cur.showId) || { id: cur.showId, name: cur.show, favicon: cur.favicon };
+  closeLayer('player'); show('pods'); pdMode = ''; showShow(s); $('#v-pods').scrollTop = 0; };
 function openPlayer(){ if (cur) openLayer('player'); }
 
 $('#tabs').addEventListener('click', e => { const b=e.target.closest('button'); if (!b) return;
