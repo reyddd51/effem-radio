@@ -6,6 +6,7 @@ Lire ce fichier en entier avant toute modification de l'app. Les règles de desi
 - App de radio grand public, **radios françaises uniquement** (outre-mer compris : Guadeloupe, Martinique, Guyane, La Réunion, Mayotte, Nouvelle-Calédonie, Polynésie, etc.).
 - Promesse : **0 pub dans l'app**. Ne jamais écrire « 0 pisteur » (retiré à la demande de Johanna). La pub diffusée par la radio elle-même reste la radio.
 - Pause = **son coupé, flux gardé connecté** (durée réglable, 15 min par défaut) : à la reprise on retombe sur le direct sans nouveau préroll. Ne pas casser ce comportement.
+- Coupure de réseau pendant l'écoute d'une radio : reconnexion automatique (`scheduleRetry`, garde-fou si le son n'avance plus depuis 10 s, relance au retour du réseau), « Réseau perdu · reconnexion… » à l'écran. Ne pas la casser. L'app est figée : pas de zoom (viewport `user-scalable=no`, `touch-action: manipulation`).
 - Ne jamais contourner volontairement la publicité des radios (pas de modification des adresses de flux pour éviter les régies).
 - 8 favoris mis en avant (accueil en 4 × 2, mode voiture en 2 × 4). Une même radio sous deux noms (« France Info » / « franceinfo ») est la même radio : fonction `same()`.
 - Décision du 16 octobre 2026 : **on reste à zéro pub** pour l'instant (aucune bannière, aucun plein écran, aucun sponsor). Les revenus viendront d'**Effem+**.

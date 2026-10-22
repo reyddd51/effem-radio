@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Effem Radio</title>
 <meta name="theme-color" content="#21103B">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -299,6 +299,7 @@ nav.tabs button.on svg{stroke:var(--magenta)}
 .edit li.dragging{transition:none;z-index:5;background:var(--nuit3);box-shadow:0 0 0 1.5px var(--magenta),0 14px 30px rgba(0,0,0,.45)}
 .edit .pos{width:22px;text-align:center;font:400 15px/1 var(--display);color:var(--gris);flex-shrink:0}
 .edit .pos.fav{color:var(--magenta)}
+html,body{touch-action:manipulation}   /* pas de zoom au double toucher */
 .grip{width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:none;cursor:grab}
 .edit .logo{width:48px;height:48px;border-radius:12px}
 .minus{width:26px;height:26px;border-radius:13px;background:var(--magenta);display:flex;align-items:center;justify-content:center}
@@ -785,7 +786,34 @@ let ourPause = false, connSeq = 0;
 
 function setStatus(s){ status = s; render(); if (pdMode==='show') renderEps(); }
 
-function connect(st){
+/* Reconnexion automatique : si le réseau coupe pendant l'écoute d'une radio, on réessaie tout seul jusqu'au retour du réseau */
+let wantPlay = false, hadPlayed = false, retrying = false, retryN = 0, retryT = null, stallT = null;
+function stopRetry(){ clearTimeout(retryT); clearTimeout(stallT); retryT = null; retryN = 0; retrying = false; }
+function scheduleRetry(){
+  if (!wantPlay || !cur || cur.ep) return false;
+  const offline = navigator.onLine === false;
+  if (!hadPlayed && !offline) return false;          // une radio qui n'a jamais joué est en panne : pas d'acharnement
+  if (!offline && retryN >= 25) return false;        // réseau revenu mais la radio ne répond toujours pas (environ 5 min)
+  if (retryT) return true;                           // une tentative est déjà prévue
+  retrying = true; clearTimeout(stallT);
+  const d = Math.min(15000, 1500 * Math.pow(1.5, retryN++));
+  retryT = setTimeout(() => { retryT = null; if (wantPlay && cur && retrying) connect(cur, true); }, d);
+  if (status !== 'loading') setStatus('loading'); else render();
+  setTimeout(keepAwake, 0);
+  return true;
+}
+// Garde-fou : un direct dont le son n'avance plus depuis 10 s est considéré comme coupé (le réseau tombe parfois sans prévenir)
+let lastT = -1, lastMove = Date.now();
+setInterval(() => {
+  if (!cur || cur.ep || !wantPlay || status !== 'live') { lastT = -1; lastMove = Date.now(); return; }
+  const t = A.currentTime || 0;
+  if (t !== lastT){ lastT = t; lastMove = Date.now(); return; }
+  if (Date.now() - lastMove > 10000){ lastMove = Date.now(); hadPlayed = true; scheduleRetry(); }
+}, 2000);
+window.addEventListener('online', () => { if (retrying && wantPlay && cur){ clearTimeout(retryT); retryT = null; connect(cur, true); } });
+function connect(st, isRetry){
+  if (!isRetry){ stopRetry(); hadPlayed = false; }
+  wantPlay = true;
   clearKeep();
   if (cur && cur.ep) savePos();
   cur = st;
@@ -799,10 +827,11 @@ function connect(st){
   setMediaSession();
   const token = ++connSeq;
   const p = A.play();
-  if (p && p.catch) p.catch(err => { if (err && err.name==='AbortError') return; if (token===connSeq && status==='loading') { connected=false; setStatus(err && err.name==='NotAllowedError' ? 'stopped' : 'error'); } });
+  if (p && p.catch) p.catch(err => { if (err && err.name==='AbortError') return; if (token===connSeq && status==='loading') { connected=false; if (err && err.name!=='NotAllowedError' && scheduleRetry()) return; setStatus(err && err.name==='NotAllowedError' ? 'stopped' : 'error'); } });
   if (st.uuid) fetch(`https://${RB_HOSTS[0]}/json/url/${st.uuid}`).catch(()=>{});  // compte le clic pour l'annuaire
 }
 function hardStop(){
+  wantPlay = false; stopRetry();
   clearKeep();
   if (cur && cur.ep) savePos();
   ourPause = true;
@@ -815,6 +844,7 @@ function softPause(){
   if (!cur) return;
   if (cur.ep){ ourPause = true; try{ A.pause(); }catch(e){} ourPause = false; savePos(); setStatus('stopped'); return; }   // podcast : vraie pause, on reprend au même endroit
   if (status==='loading' || status==='error' || keepMin===0 || !connected) { hardStop(); return; }
+  wantPlay = false;
   A.muted = true;
   keepUntil = Date.now() + keepMin*60000;
   clearTimeout(keepTimer);
@@ -823,7 +853,7 @@ function softPause(){
 }
 function resume(){
   if (!cur) { const st = mine[0]; if (st) connect(st); return; }
-  if (status==='muted' && connected && !A.paused) { clearKeep(); A.muted = false; setStatus('live'); return; }
+  if (status==='muted' && connected && !A.paused) { clearKeep(); wantPlay = true; A.muted = false; setStatus('live'); return; }
   if (cur.ep && A.getAttribute('src')===cur.url && A.readyState > 0) { setStatus('loading'); const p = A.play(); if (p && p.catch) p.catch(() => setStatus('stopped')); return; }
   connect(cur);
 }
@@ -848,12 +878,14 @@ function step(d){
   connect(list[i]);
 }
 
-A.addEventListener('playing', () => { if (!A.muted && cur) setStatus('live'); });
-A.addEventListener('waiting', () => { if (!A.muted && status==='live') setStatus('loading'); });
-A.addEventListener('error', () => { if (!A.getAttribute('src')) return; connected=false; clearKeep(); setStatus('error'); });
-A.addEventListener('pause', () => { if (ourPause) return; connected=false; clearKeep(); if (cur) setStatus('stopped'); }); // coupure système (appel…)
+A.addEventListener('playing', () => { hadPlayed = true; if (retrying) stopRetry(); clearTimeout(stallT); if (!A.muted && cur) setStatus('live'); });
+A.addEventListener('waiting', () => { if (!A.muted && status==='live') setStatus('loading');
+  clearTimeout(stallT); if (wantPlay && cur && !cur.ep) stallT = setTimeout(() => { if (status==='loading' && wantPlay) scheduleRetry(); }, 12000); });   // bloqué plus de 12 s : on relance
+A.addEventListener('error', () => { if (!A.getAttribute('src')) return; connected=false; if (scheduleRetry()) return; clearKeep(); setStatus('error'); });
+A.addEventListener('pause', () => { if (ourPause || retrying) return; connected=false; clearKeep(); if (cur) setStatus('stopped'); }); // coupure système (appel…)
 A.addEventListener('ended', () => { connected=false;
   if (cur && cur.ep){ delete epPos[cur.url]; epDone[cur.url] = 1; store.set('epPos', epPos); store.set('epDone', epDone); setStatus('stopped'); return; }
+  if (scheduleRetry()) return;   // un direct qui « se termine », c'est une coupure réseau
   setStatus('error'); });
 A.addEventListener('timeupdate', () => { if (!cur || !cur.ep) return; updateProg(); if (Date.now() - lastPosSave > 5000){ lastPosSave = Date.now(); savePos(); } });
 A.addEventListener('durationchange', () => updateProg());
@@ -914,7 +946,7 @@ function stLabel(){
     case 'error': return ['ÉPISODE INDISPONIBLE','err'];
   }
   switch(status){
-    case 'loading': return ['Connexion…','load'];
+    case 'loading': return [retrying ? 'Réseau perdu · reconnexion…' : 'Connexion…','load'];
     case 'live': return ['EN DIRECT',''];
     case 'muted': return ['❚❚ PAUSE · DIRECT GARDÉ ' + fmt(keepUntil-Date.now()),'pause'];
     case 'stopped': return ['EN PAUSE','pause'];
@@ -954,7 +986,7 @@ function renderCore(){
   const hs = cur || store.get('last', null) || mine[0];
   applyTint(hs);
   if (hs){
-    const hb = !cur ? 'PRÊT À ÉCOUTER' : isEp ? (status==='live' ? 'PODCAST EN COURS' : status==='loading' ? 'CHARGEMENT…' : 'PODCAST EN PAUSE') : status==='live' ? 'EN DIRECT' : status==='loading' ? 'CONNEXION…' : status==='error' ? 'NE RÉPOND PAS' : 'EN PAUSE';
+    const hb = !cur ? 'PRÊT À ÉCOUTER' : isEp ? (status==='live' ? 'PODCAST EN COURS' : status==='loading' ? 'CHARGEMENT…' : 'PODCAST EN PAUSE') : status==='live' ? 'EN DIRECT' : status==='loading' ? (retrying ? 'RECONNEXION…' : 'CONNEXION…') : status==='error' ? 'NE RÉPOND PAS' : 'EN PAUSE';
     const hn = hs.ep ? hs.show : hs.name, hm = hs.ep ? hs.name : (hs.meta||'Radio en direct');
     $('#hero').innerHTML = `${WAVES}<span class="hb">${liveNow?'<span class="live"></span>':''}${hb}</span>
       <span class="hl"><span class="logo">${logoHTML(hs,18)}</span><span style="min-width:0;display:flex;flex-direction:column;gap:4px;padding-bottom:4px"><span class="hn" style="${hs.ep?'font-size:26px':''}">${esc(String(hn).toUpperCase())}</span><span class="hm">${esc(hm)}</span></span></span>
@@ -1508,7 +1540,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261017185458';
+const BUILD = '20261022205546';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
@@ -1586,7 +1618,8 @@ const SILENCE = (() => { const n = 4000, b = new Uint8Array(44 + n), v = new Dat
   let bin = ''; b.forEach(x => bin += String.fromCharCode(x)); return 'data:audio/wav;base64,' + btoa(bin); })();
 const KA = new Audio(); KA.loop = true; KA.setAttribute('playsinline','');
 function radioActive(){ return status==='live' || status==='loading' || status==='muted'; }
-function keepAwake(){ if (!(alarm && alarm.on) || radioActive()) { try{ KA.pause(); }catch(e){} return; }
+function keepAwake(){ const need = (alarm && alarm.on && !radioActive()) || (retrying && status !== 'live');   // aussi pendant une reconnexion, pour que l'iPhone ne mette pas l'app en veille
+  if (!need) { try{ KA.pause(); }catch(e){} return; }
   if (!KA.src) KA.src = SILENCE; const p = KA.play(); if (p && p.catch) p.catch(() => {}); }
 function nextAt(a){ const d = new Date(); d.setHours(a.h, a.m, 0, 0); if (d.getTime() <= Date.now() + 1000) d.setDate(d.getDate() + 1); return d.getTime(); }
 function armAlarm(){
@@ -1639,6 +1672,9 @@ $('#alarmOff').onclick = () => { if (alarm){ alarm.on = false; alarm.at = 0; sto
 ['playing','pause','ended','error','emptied'].forEach(ev => A.addEventListener(ev, () => setTimeout(keepAwake, 300)));
 document.addEventListener('visibilitychange', () => { if (!document.hidden) checkAlarm(); });
 renderPlus(); armAlarm();
+
+/* App figée : pas de zoom par pincement ni double toucher */
+['gesturestart','gesturechange'].forEach(ev => document.addEventListener(ev, e => e.preventDefault(), {passive:false}));
 
 /* ---------- démarrage ---------- */
 /* Écran d'ouverture « Palmiers et néon », version Enseigne (choisie le 17 octobre 2026) */
