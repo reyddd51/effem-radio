@@ -709,12 +709,20 @@ const KNOWN = {franceinter:'inter',franceinfo:'franceinfo',franceculture:'cultur
   nrj:'nrj',rireetchansons:'rireetchansons',bfmradio:'bfmradio',bfmbusiness:'bfmbusiness',rfi:'rfi',rfimonde:'rfi',rfiafrique:'rfi'};
 
 /* Logo d'une station, dans l'ordre : logo intégré à l'app, logo retrouvé et mémorisé, logo de l'annuaire */
-let logoCache = store.get('logos', {});           // nom de station → adresse d'un logo qui s'affiche bien
-const logoBad = new Set(store.get('logosBad', []));
+let logoCache = store.get('logos2', {});           // nom de station → adresse d'un logo qui s'affiche bien
+const logoBad = new Set(store.get('logosBad2', []));
+/* Logos intégrés : nom exact, ou familles de radios d'outre-mer */
+function knownKey(name){
+  const n = norm(name); if (KNOWN[n]) return KNOWN[n];
+  if (n.includes('1ere') && (n.includes('la1ere') || /^(guadeloupe|martinique|guyane|reunion|mayotte|polynesie|nouvellecaledonie|saintpierre|wallis)/.test(n))) return 'la1ere';
+  if (/^rci(guadeloupe|martinique|guyane|dancehall|radio)?$/.test(n)) return 'rci';
+  if (/^nrj(antilles|guadeloupe|martinique|guyane)$/.test(n)) return 'nrjantilles';
+  return '';
+}
 function httpsUrl(u){ return u ? String(u).replace(/^http:\/\//, 'https://') : ''; }
 function logoSrc(st){
   if (st.logo && LOGOS[st.logo]) return LOGOS[st.logo];
-  const k = KNOWN[norm(st.name)]; if (k && LOGOS[k]) return LOGOS[k];
+  const k = knownKey(st.name); if (k && LOGOS[k]) return LOGOS[k];
   const c = logoCache[skey(st)]; if (c) return c;
   const f = httpsUrl(st.favicon); if (f && !logoBad.has(f)) return f;
   return '';
@@ -722,7 +730,7 @@ function logoSrc(st){
 /* Si une station n'a pas de logo, on le cherche dans l'annuaire, on vérifie qu'il s'affiche, puis on le garde */
 const logoAsked = new Set();
 function testImg(u){ return new Promise(ok => { const i = new Image(); const t = setTimeout(() => ok(false), 6000);
-  i.onload = () => { clearTimeout(t); ok(i.naturalWidth >= 64 && i.naturalHeight >= 64); }; i.onerror = () => { clearTimeout(t); ok(false); }; i.src = u; }); }
+  i.onload = () => { clearTimeout(t); ok(i.naturalWidth >= 128 && i.naturalHeight >= 128); }; /* en dessous, le logo serait flou */ i.onerror = () => { clearTimeout(t); ok(false); }; i.src = u; }); }
 async function ensureLogo(st){
   if (st.ep) return;
   const k = skey(st); if (!k || logoAsked.has(k) || logoSrc(st)) return;
@@ -734,13 +742,25 @@ async function ensureLogo(st){
       rb(`stations/byurl?url=${encodeURIComponent(st.url)}`).catch(() => []),
       rb(`stations/search?name=${encodeURIComponent(st.name)}&countrycode=FR&order=clickcount&reverse=true&limit=25`).catch(() => [])]);
     const exact = byName.filter(x => skey(x) === k);
-    cands = [...byUrl, ...exact].map(x => httpsUrl(x.favicon)).filter(u => u && !logoBad.has(u));
+    const hits = [...byUrl, ...exact];
+    // le logo de l'annuaire, puis la grande icône du site de la radio (celle des écrans d'accueil)
+    cands = hits.map(x => httpsUrl(x.favicon));
+    hits.forEach(x => { try{ const o = new URL(httpsUrl(x.homepage)).origin; cands.push(o + '/apple-touch-icon.png', o + '/apple-touch-icon-precomposed.png'); }catch(e){} });
+    // puis l'icône de l'app officielle de la radio sur l'App Store, seulement si son nom correspond exactement
+    const strip = v => norm(String(v).split(/\s[-–:|]\s|:/)[0]).replace(/radio|fm|officiel|officielle|app/g, '');
+    const want = strip(st.name);
+    if (want.length >= 3){
+      const d = await itunes(`search?entity=software&country=fr&limit=8&term=${encodeURIComponent(st.name)}`).catch(() => null);
+      (d && d.results || []).filter(a => strip(a.trackName) === want && !/appmind|radio\.(fr|de|net)|tunein|mytuner|online radio|free apps|igears|italk/i.test(a.sellerName || ''))
+        .forEach(a => cands.push(String(a.artworkUrl512 || '').replace(/512x512bb\.jpg$/, '512x512bb.png')));
+    }
+    cands = cands.filter(u => u && !logoBad.has(u));
   }catch(e){ return; }
-  for (const u of [...new Set(cands)].slice(0, 6)){
-    if (await testImg(u)) { logoCache[k] = u; store.set('logos', logoCache); render(); if (!$('#edit').hidden) renderEdit(); return; }
+  for (const u of [...new Set(cands)].slice(0, 10)){
+    if (await testImg(u)) { logoCache[k] = u; store.set('logos2', logoCache); render(); if (!$('#edit').hidden) renderEdit(); return; }
     logoBad.add(u);
   }
-  store.set('logosBad', [...logoBad].slice(-200));
+  store.set('logosBad2', [...logoBad].slice(-300));
 }
 function ensureLogos(){ [...mine, ...(cur ? [cur] : []), ...recent].forEach(st => { if (!logoSrc(st)) ensureLogo(st); }); }
 function shortName(st){
@@ -752,9 +772,12 @@ function shortName(st){
 const fbHTML = (txt, fs) => `<span class="fb"><span class="fbt" data-fs="${fs}" style="font-size:${fs}px">${esc(txt)}</span></span>`;
 function logoHTML(st, fs){
   const src = logoSrc(st), txt = shortName(st);
-  return src ? `<img src="${esc(src)}" alt="" loading="lazy" data-fb="${esc(txt)}" data-fs="${fs}" onerror="fbFail(this)">` : fbHTML(txt, fs);
+  const checked = src && (src.startsWith('data:') || Object.values(logoCache).includes(src));
+  return src ? `<img src="${esc(src)}" alt="" loading="lazy" data-fb="${esc(txt)}" data-fs="${fs}" onerror="fbFail(this)"${checked ? '' : ' onload="lqCheck(this)"'}>` : fbHTML(txt, fs);
 }
-function fbFail(img){ if (img.src && !img.src.startsWith('data:')) { logoBad.add(img.src); for (const k in logoCache) if (logoCache[k]===img.src) { delete logoCache[k]; logoAsked.delete(k); } store.set('logos', logoCache); setTimeout(ensureLogos, 50); }
+/* Logo trop petit (flou une fois agrandi) : on le remplace par le nom, et on cherche mieux */
+function lqCheck(img){ if (img.naturalWidth >= 128 && img.naturalHeight >= 128) return; fbFail(img); store.set('logosBad2', [...logoBad].slice(-300)); }
+function fbFail(img){ if (img.src && !img.src.startsWith('data:')) { logoBad.add(img.src); for (const k in logoCache) if (logoCache[k]===img.src) { delete logoCache[k]; logoAsked.delete(k); } store.set('logos2', logoCache); setTimeout(ensureLogos, 50); }
   const w = document.createElement('span'); w.innerHTML = fbHTML(img.dataset.fb, img.dataset.fs); const el = w.firstChild; img.replaceWith(el); fitFb(el.firstChild); }
 /* Vignette sans logo : le nom tient sur une ligne par mot, on réduit la taille jusqu'à ce que le mot le plus long rentre */
 function fitFb(t){
@@ -1087,6 +1110,7 @@ function show(v){
 const openLayer = id => { $('#'+id).hidden = false; requestAnimationFrame(() => fitAll($('#'+id))); };
 const closeLayer = id => { $('#'+id).hidden = true; };
 /* Podcast en cours : toucher le nom de l'émission ouvre tous ses épisodes */
+$('#pLogo').parentElement.addEventListener('click', () => { if (cur && cur.ep) $('#pShow').click(); });   // toucher l'image du podcast : même chose
 $('#pShow').onclick = () => { if (!cur || !cur.ep || !cur.showId) return;
   const s = podIndex[cur.showId] || follow.find(f => f.id === cur.showId) || { id: cur.showId, name: cur.show, favicon: cur.favicon };
   closeLayer('player'); show('pods'); pdMode = ''; showShow(s); $('#v-pods').scrollTop = 0; };
