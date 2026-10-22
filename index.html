@@ -302,6 +302,19 @@ nav.tabs button.on svg{stroke:var(--magenta)}
 html,body{touch-action:manipulation}   /* pas de zoom au double toucher */
 .pshow{align-self:flex-start;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;min-height:44px;padding:2px 0}
 .pshow #pShowName{font-size:19px;font-weight:800;color:var(--creme);line-height:24px}
+.upnext{margin-top:12px;border-radius:22px;background:rgba(42,15,74,.7);box-shadow:inset 0 0 0 1px rgba(255,244,230,.12);padding:10px;display:flex;flex-direction:column;gap:8px}
+.upnext .uh{display:flex;justify-content:space-between;align-items:center;padding:2px 4px 0}
+.upnext .ul{font-size:11px;font-weight:800;letter-spacing:1.4px;color:var(--soleil)}
+.upnext .uc{font-size:11px;font-weight:700;color:var(--lilas)}
+.upnext .ur{display:flex;align-items:center;gap:8px}
+.upnext .ua{width:36px;height:52px;border-radius:14px;flex-shrink:0;background:rgba(23,11,46,.7);display:flex;align-items:center;justify-content:center}
+.upnext .ua:disabled{opacity:.3}
+.upnext .ub{flex:1;min-width:0;display:flex;align-items:center;gap:10px;text-align:left;min-height:52px}
+.upnext .ub .logo{width:52px;height:52px;border-radius:12px;flex-shrink:0;overflow:hidden}
+.upnext .ut{min-width:0;display:flex;flex-direction:column;gap:3px}
+.upnext .un{font-size:14px;font-weight:800;line-height:18px;color:var(--creme);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.upnext .um{font-size:12px;font-weight:600;color:var(--lilas)}
+.ctrls .side .skt{font:800 15px/1 var(--body);color:var(--creme);white-space:nowrap}
 .pshow .go{font-size:13px;font-weight:700;color:var(--lagon)}
 .grip{width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:none;cursor:grab}
 .edit .logo{width:48px;height:48px;border-radius:12px}
@@ -549,6 +562,14 @@ html,body{touch-action:manipulation}   /* pas de zoom au double toucher */
     </div>
     <div style="flex:1;min-height:12px"></div>
     <div class="strip" id="pStrip"></div>
+    <div class="upnext" id="pNext" hidden>
+      <div class="uh"><span class="ul">À SUIVRE</span><span class="uc" id="pNextPos"></span></div>
+      <div class="ur">
+        <button class="ua" id="pEpPrev" aria-label="Épisode précédent"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFF4E6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button class="ub" id="pNextGo"><span class="logo" id="pNextLogo"></span><span class="ut"><span class="un" id="pNextName"></span><span class="um" id="pNextMeta"></span></span></button>
+        <button class="ua" id="pEpNext" aria-label="Épisode suivant"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFF4E6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
     <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px">
       <button class="ghost" id="openTimer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFD166" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg><span id="timerLbl">Minuteur</span></button>
     </div>
@@ -898,7 +919,7 @@ function clearKeep(){ clearTimeout(keepTimer); keepTimer=null; keepUntil=0; }
 function toggle(){ (status==='live' || status==='loading') ? softPause() : resume(); }
 function pick(st){ if (st.ep && cur && cur.url===st.url && status==='stopped') return resume(); if (cur && cur.url===st.url && (status==='live'||status==='loading')) return openPlayer(); if (cur && cur.url===st.url && status==='muted') return resume(); connect(st); }
 function step(d){
-  if (cur && cur.ep) return seekBy(d < 0 ? -15 : 30);
+  if (cur && cur.ep) return seekBy(d < 0 ? -30 : 30);
   const list = mine.length ? mine : DEFAULTS;
   let i = cur ? list.findIndex(m => m.url===cur.url) : -1;
   i = (i + d + list.length) % list.length;
@@ -930,7 +951,7 @@ function nativeSession(){
       const on = (action, f) => { try{ NMS.setActionHandler({action}, d => { try{ f(d); }catch(e){} }); }catch(e){} };
       on('play', () => resume()); on('pause', () => softPause()); on('stop', () => hardStop());
       on('previoustrack', () => step(-1)); on('nexttrack', () => step(1));
-      on('seekbackward', () => { if (cur && cur.ep) seekBy(-15); }); on('seekforward', () => { if (cur && cur.ep) seekBy(30); });
+      on('seekbackward', () => { if (cur && cur.ep) seekBy(-30); }); on('seekforward', () => { if (cur && cur.ep) seekBy(30); });
     }
   }catch(e){}
 }
@@ -948,7 +969,7 @@ function setMediaSession(){
     ms.setActionHandler('stop', hardStop);
     ms.setActionHandler('previoustrack', () => step(-1));
     ms.setActionHandler('nexttrack', () => step(1));
-    for (const [a, f] of [['seekbackward', () => seekBy(-15)], ['seekforward', () => seekBy(30)], ['seekto', e => { try{ A.currentTime = e.seekTime; }catch(x){} }]])
+    for (const [a, f] of [['seekbackward', () => seekBy(-30)], ['seekforward', () => seekBy(30)], ['seekto', e => { try{ A.currentTime = e.seekTime; }catch(x){} }]])
       try{ ms.setActionHandler(a, ep ? f : null); }catch(e){}
   }catch(e){}
 }
@@ -1053,9 +1074,10 @@ function renderCore(){
     $('#pMeta').textContent = status==='muted' ? 'Le son est coupé, la station reste branchée. Reprends : tu tombes direct sur l’antenne.' : isEp ? cur.show : (cur.meta || '');
     $('#pName').style.fontSize = isEp ? (cur.name.length > 60 ? '24px' : '30px') : '';
     $('#pBadge').hidden = !liveNow;
-    $('#pProg').hidden = !isEp; $('#pStrip').hidden = isEp; $('#pFav').style.visibility = isEp ? 'hidden' : '';
-    $('#prev').innerHTML = isEp ? SKIP(-15) : PREV_HTML; $('#next').innerHTML = isEp ? SKIP(30) : NEXT_HTML;
-    $('#prev').setAttribute('aria-label', isEp ? 'Reculer de 15 secondes' : 'Station précédente');
+    $('#pProg').hidden = !isEp; $('#pStrip').hidden = isEp; $('#openTimer').parentElement.hidden = isEp; $('#pFav').style.visibility = isEp ? 'hidden' : '';
+    $('#prev').innerHTML = isEp ? '<span class="skt">−30 s</span>' : PREV_HTML; $('#next').innerHTML = isEp ? '<span class="skt">+30 s</span>' : NEXT_HTML;
+    $('#pNext').hidden = !isEp; if (isEp) renderUpNext();
+    $('#prev').setAttribute('aria-label', isEp ? 'Reculer de 30 secondes' : 'Station précédente');
     $('#next').setAttribute('aria-label', isEp ? 'Avancer de 30 secondes' : 'Station suivante');
     if (isEp) updateProg();
     $('#pSpin').hidden = status!=='loading';
@@ -1087,6 +1109,42 @@ setInterval(() => { if (status==='muted' || sleepEnd) render(); }, 1000);
 const PREV_HTML = $('#prev').innerHTML, NEXT_HTML = $('#next').innerHTML;
 const SKIP = n => `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFF4E6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${n<0 ? 'M4.5 12a7.5 7.5 0 1 0 2.3-5.4M5 3.5v3.6h3.6' : 'M19.5 12a7.5 7.5 0 1 1-2.3-5.4M19 3.5v3.6h-3.6'}"/><text x="12" y="15.2" text-anchor="middle" font-size="7.2" font-weight="800" fill="#FFF4E6" stroke="none" font-family="Rethink Sans,sans-serif">${Math.abs(n)}</text></svg>`;
 let seeking = false;
+/* Podcast : « À suivre » = l'épisode d'après dans la liste de l'émission (le plus ancien suivant) */
+const epLists = {}, epListAsk = new Set();
+function epNeighbours(){
+  const l = cur && cur.ep && epLists[cur.showId]; if (!l) return null;
+  const i = l.findIndex(x => x.url === cur.url); if (i < 0) return null;
+  return { l, i, prev: l[i-1], next: l[i+1] };
+}
+async function loadEpList(id){
+  if (!id || epLists[id] || epListAsk.has(id)) return; epListAsk.add(id);
+  try{
+    const d = await itunes(`lookup?id=${encodeURIComponent(id)}&entity=podcastEpisode&limit=60&country=fr`);
+    const info = d.results.find(x => x.wrapperType==='track'), nm = info ? info.collectionName : (cur && cur.show) || '';
+    const fav = cur && cur.showId === id ? cur.favicon : (info && (info.artworkUrl600 || info.artworkUrl100)) || '';
+    epLists[id] = d.results.filter(x => x.wrapperType==='podcastEpisode' && x.episodeUrl).map(x => ({ ep:true, id:'ep:'+x.trackId, name:String(x.trackName||'').trim(), show:nm, showId:id,
+      url:httpsUrl(x.episodeUrl), favicon:fav, dur:x.trackTimeMillis||0, date:x.releaseDate, meta:nm }));
+    renderUpNext();
+  }catch(e){ epListAsk.delete(id); }
+}
+function renderUpNext(){
+  if (!cur || !cur.ep) return;
+  const n = epNeighbours();
+  if (!n){ loadEpList(cur.showId); $('#pNext').hidden = true; return; }
+  $('#pNext').hidden = false;
+  $('#pEpPrev').disabled = !n.prev; $('#pEpNext').disabled = !n.next;
+  const x = n.next;
+  $('#pNextPos').textContent = x ? `${n.i+2} sur ${n.l.length}` : '';
+  $('#pNextGo').disabled = !x;
+  $('#pNextLogo').innerHTML = x ? logoHTML(x, 10) : '';
+  $('#pNextLogo').hidden = !x;
+  $('#pNextName').textContent = x ? x.name : 'C’est le dernier épisode de la liste';
+  $('#pNextMeta').textContent = x ? [epDate(x.date), epLen(x.dur)].filter(Boolean).join(' · ') : '';
+}
+function playEpAt(d){ const n = epNeighbours(), x = n && (d < 0 ? n.prev : n.next); if (x){ savePos(); connect(x); } }
+$('#pEpPrev').onclick = () => playEpAt(-1);
+$('#pEpNext').onclick = () => playEpAt(1);
+$('#pNextGo').onclick = () => playEpAt(1);
 function epDur(){ return isFinite(A.duration) && A.duration > 0 ? A.duration : (cur && cur.dur ? cur.dur/1000 : 0); }
 function updateProg(){
   if (!cur || !cur.ep) return;
@@ -1542,6 +1600,7 @@ async function showShow(s){
     if (info){ const full = toShow(info); Object.assign(s, {name:full.name, artist:full.artist, favicon:full.favicon || s.favicon}); }
     eps = d.results.filter(x => x.wrapperType==='podcastEpisode' && x.episodeUrl).map(x => ({ ep:true, id:'ep:'+x.trackId, name:String(x.trackName||'').trim(), show:s.name, showId:s.id,
       url:httpsUrl(x.episodeUrl), favicon:s.favicon, dur:x.trackTimeMillis||0, date:x.releaseDate, meta:s.name }));
+    epLists[s.id] = eps;
     renderEps(eps.length ? '' : 'Aucun épisode disponible pour le moment.');
   }catch(e){ if (seq !== pdSeq) return; renderEps('Les épisodes ne se chargent pas. Vérifie ta connexion puis réessaie.'); }
 }
@@ -1574,7 +1633,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261022211608';
+const BUILD = '20261022214926';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
