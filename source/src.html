@@ -32,7 +32,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--lagon);outline-offset:2px}
 img{display:block;max-width:100%}
 #app{position:fixed;background:var(--nuit);top:0;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;
-  --tint:229,0,126; --tabH:calc(66px + env(safe-area-inset-bottom,0px));   /* barre d'onglets collée au bas, zone du trait iPhone comprise */
+  --tint:229,0,126; --sb:max(10px, calc(env(safe-area-inset-bottom,0px) - 16px)); --tabH:calc(60px + var(--sb));   /* barre d'onglets collée au bas ; les boutons descendent près du trait iPhone sans le toucher */
   background:radial-gradient(120% 55% at 50% -12%,rgba(255,138,61,.34),rgba(255,46,136,.16) 38%,rgba(23,11,46,0) 66%),linear-gradient(180deg,#1C0D38 0%,#130827 58%,#0C0619 100%)}
 /* Premium : grain très léger et surfaces en verre dépoli */
 #app::after{content:"";position:absolute;inset:0;z-index:60;pointer-events:none;opacity:.06;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
@@ -120,7 +120,7 @@ h2.sec{margin:0;font:400 24px/1 var(--display);letter-spacing:1px}
 .play{border-radius:50%;background:var(--sun);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .play svg{fill:var(--nuit)}
 .mini .play{width:48px;height:48px;box-shadow:0 6px 16px rgba(255,46,136,.45)}
-nav.tabs{position:absolute;z-index:12;left:0;right:0;bottom:0;height:var(--tabH);border-radius:26px 26px 0 0;padding:7px max(12px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 7px) max(12px,env(safe-area-inset-left,0px));display:flex;gap:4px;
+nav.tabs{position:absolute;z-index:12;left:0;right:0;bottom:0;height:var(--tabH);border-radius:26px 26px 0 0;padding:6px max(12px,env(safe-area-inset-right,0px)) var(--sb) max(12px,env(safe-area-inset-left,0px));display:flex;gap:4px;
   background:#21103B;box-shadow:inset 0 1px 0 rgba(255,244,230,.12),0 -10px 30px rgba(0,0,0,.35)}
 nav.tabs button{flex:1;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10.5px;font-weight:600;color:var(--lilas)}
 nav.tabs button svg{stroke:currentColor;width:22px;height:22px}
