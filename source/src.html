@@ -886,6 +886,7 @@ setInterval(() => {
 }, 2000);
 window.addEventListener('online', () => { if (retrying && wantPlay && cur){ clearTimeout(retryT); retryT = null; connect(cur, true); } });
 function connect(st, isRetry){
+  sysPaused = false;
   if (!isRetry){ stopRetry(); hadPlayed = false; }
   wantPlay = true;
   clearKeep();
@@ -905,7 +906,7 @@ function connect(st, isRetry){
   if (st.uuid) fetch(`https://${RB_HOSTS[0]}/json/url/${st.uuid}`).catch(()=>{});  // compte le clic pour l'annuaire
 }
 function hardStop(){
-  wantPlay = false; stopRetry();
+  wantPlay = false; stopRetry(); sysPaused = false;
   clearKeep();
   if (cur && cur.ep) savePos();
   ourPause = true;
@@ -928,7 +929,7 @@ function softPause(){
 function resume(){
   if (!cur) { const st = mine[0]; if (st) connect(st); return; }
   if (status==='muted' && connected && !A.paused) { clearKeep(); wantPlay = true; A.muted = false; setStatus('live'); return; }
-  if (cur.ep && A.getAttribute('src')===cur.url && A.readyState > 0) { setStatus('loading'); const p = A.play(); if (p && p.catch) p.catch(() => setStatus('stopped')); return; }
+  if (cur.ep && A.getAttribute('src')===cur.url && A.readyState > 0) { sysPaused = false; wantPlay = true; setStatus('loading'); const p = A.play(); if (p && p.catch) p.catch(() => connect(cur)); return; }
   connect(cur);
 }
 /* Podcasts : position d'écoute gardée par épisode */
@@ -956,7 +957,18 @@ A.addEventListener('playing', () => { hadPlayed = true; if (retrying) stopRetry(
 A.addEventListener('waiting', () => { if (!A.muted && status==='live') setStatus('loading');
   clearTimeout(stallT); if (wantPlay && cur && !cur.ep) stallT = setTimeout(() => { if (status==='loading' && wantPlay) scheduleRetry(); }, 12000); });   // bloqué plus de 12 s : on relance
 A.addEventListener('error', () => { if (!A.getAttribute('src')) return; connected=false; if (scheduleRetry()) return; clearKeep(); setStatus('error'); });
-A.addEventListener('pause', () => { if (ourPause || retrying) return; connected=false; clearKeep(); if (cur) setStatus('stopped'); }); // coupure système (appel…)
+/* Coupure par le système (appel, FaceTime, Siri, alarme…) : on arrête proprement sans relancer pendant l'appel,
+   et on retient qu'on écoutait pour reprendre tout seul à la fin de l'appel (signal envoyé par l'app iPhone). */
+let sysPaused = false;
+A.addEventListener('pause', () => { if (ourPause || retrying) return;
+  const was = status==='live' || status==='loading';
+  connected=false; wantPlay=false; stopRetry(); clearKeep(); if (cur && cur.ep) savePos();
+  sysPaused = was && !!cur; if (cur) setStatus('stopped'); });
+window.effemAudio = (ev, again) => {   // appelé par l'app iPhone : « ended » = fin de l'appel ou de l'interruption
+  if (ev !== 'ended' || !sysPaused || !cur) return;
+  sysPaused = false;
+  if (again) setTimeout(() => { if (cur && status !== 'live' && status !== 'loading') resume(); }, 600);
+};
 A.addEventListener('ended', () => { connected=false;
   if (cur && cur.ep){ delete epPos[cur.url]; epDone[cur.url] = 1; store.set('epPos', epPos); store.set('epDone', epDone); setStatus('stopped'); return; }
   if (scheduleRetry()) return;   // un direct qui « se termine », c'est une coupure réseau
