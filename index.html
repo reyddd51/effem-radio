@@ -484,8 +484,8 @@ html,body{touch-action:manipulation}   /* pas de zoom au double toucher */
       <button class="plus-card" id="plusCard">
         <span class="pt">EFFEM+</span>
         <span class="go" id="plusGo">Découvrir ›</span>
-        <span class="small" style="color:rgba(255,244,230,.85);line-height:19px">Toujours 0 pub. Trois fonctions en plus pour aller plus loin.</span>
-        <span class="pf"><span>⏰ Réveil radio</span><span>🌍 Passeport monde</span><span>🎚️ Égaliseur</span></span>
+        <span class="small" id="plusCardTxt" style="color:rgba(255,244,230,.85);line-height:19px">Toujours 0 pub. Des fonctions en plus pour aller plus loin.</span>
+        <span class="pf"><span>⏰ Réveil radio</span><span>🌍 Passeport monde</span></span>
       </button>
       <div class="stack" style="gap:8px">
         <p class="lbl">Réveil <span class="pbadge">EFFEM+</span></p>
@@ -663,16 +663,16 @@ html,body{touch-action:manipulation}   /* pas de zoom au double toucher */
       <p class="muted" style="margin:0;line-height:21px">Toujours 0 pub, avec ou sans Effem+. L’écoute, tes 8 favoris, le mode voiture, les podcasts et Autour de moi restent gratuits pour tout le monde.</p>
       <div class="prom"><span class="k">⏰</span><span><b>Réveil radio</b><span class="hint">Réveille-toi avec ta radio, à l’heure que tu veux, une fois ou tous les jours.</span></span></div>
       <div class="prom"><span class="k">🌍</span><span><b>Passeport monde</b><span class="hint">Les radios de plus de 200 pays, rangées par pays. Pour voyager ou garder le lien avec chez toi.</span></span></div>
-      <div class="prom"><span class="k">🎚️</span><span><b>Égaliseur <span class="soon">· bientôt</span></b><span class="hint">Plus de basses, voix plus claires : arrive avec la prochaine version de l’app.</span></span></div>
-      <div class="plans" id="plans">
+      <div class="note" id="plusFree" hidden style="text-align:center"><b style="color:var(--soleil)">Offert pendant le lancement.</b> Le réveil et le Passeport monde sont ouverts à tout le monde, sans rien payer.</div>
+      <div class="plans paid" id="plans">
         <button data-plan="m"><small>Mensuel</small><b>1,99 €</b><small>par mois</small></button>
         <button data-plan="y" class="on"><i>−37 %</i><small>Annuel</small><b>14,99 €</b><small>par an</small></button>
         <button data-plan="l"><small>À vie</small><b>29,99 €</b><small>une fois</small></button>
       </div>
-      <button class="cta" id="plusBuy" disabled>BIENTÔT DISPONIBLE</button>
-      <p class="small muted" style="margin:-4px 0 0;text-align:center;line-height:18px">7 jours d’essai gratuit. Sans engagement, annulable à tout moment depuis ton compte Apple ou Google.</p>
-      <button class="small" id="plusMot" style="align-self:center;min-height:44px;background:none;color:var(--lagon);font-weight:700">Un mot de l’équipe ›</button>
-      <div class="list" style="margin-top:4px">
+      <button class="cta paid" id="plusBuy" disabled>BIENTÔT DISPONIBLE</button>
+      <p class="small muted paid" style="margin:-4px 0 0;text-align:center;line-height:18px">7 jours d’essai gratuit. Sans engagement, annulable à tout moment depuis ton compte Apple ou Google.</p>
+      <button class="small paid" id="plusMot" style="align-self:center;min-height:44px;background:none;color:var(--lagon);font-weight:700">Un mot de l’équipe ›</button>
+      <div class="list paid" style="margin-top:4px">
         <button id="plusTest"><span>Aperçu de test<span class="hint">Débloque Effem+ sur cet appareil en attendant l’ouverture des abonnements.</span></span><span id="plusTestVal" style="font-size:15px;color:var(--soleil)"></span></button>
       </div>
     </div>
@@ -1671,7 +1671,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261030133156';
+const BUILD = '20261030140633';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
@@ -1681,10 +1681,13 @@ function checkUpdate(){
 setTimeout(checkUpdate, 1500);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) checkUpdate(); });
 
-/* ---------- Effem+ : réveil radio, Passeport monde (égaliseur à venir) ---------- */
+/* ---------- Effem+ : réveil radio, Passeport monde ---------- */
+/* Version 1.0 (décision du 30 octobre 2026) : Effem+ offert à tout le monde pendant le lancement, sans prix ni achat.
+   Passer LAUNCH_FREE à false le jour où les abonnements (achats intégrés) arrivent, en version 1.1. */
+const LAUNCH_FREE = true;
 /* Le paiement arrivera avec les apps natives (App Store, Google Play). En attendant, « Aperçu de test » débloque Effem+ sur l'appareil. */
 let plusPreview = store.get('plusPreview', false), plusPlan = 'y';
-const hasPlus = () => plusPreview;
+const hasPlus = () => LAUNCH_FREE || plusPreview;
 function needPlus(f){ if (hasPlus()) return f(); openPlus(); }
 function openPlus(){ if (!hasPlus() && !store.get('motVu', false)) return openMot(); renderPlus(); $('#plusSheet').hidden = false; }
 /* « Un mot de l'équipe » : montré la première fois qu'on ouvre Effem+, puis relisible depuis la feuille Effem+ */
@@ -1695,10 +1698,12 @@ $('#motLater').onclick = closeMot; $('#motClose').onclick = closeMot;
 $('#plusMot').onclick = () => { $('#plusSheet').hidden = true; openMot(); };
 function renderPlus(){
   $('#plusTestVal').textContent = plusPreview ? 'Activé' : 'Non';
-  $('#plusGo').textContent = plusPreview ? 'Aperçu activé ›' : 'Découvrir ›';
+  $('#plusGo').textContent = LAUNCH_FREE ? 'Offert ›' : plusPreview ? 'Aperçu activé ›' : 'Découvrir ›';
+  $('#plusFree').hidden = !LAUNCH_FREE; document.querySelectorAll('#plusSheet .paid').forEach(e => e.hidden = LAUNCH_FREE);
   document.querySelectorAll('#plans [data-plan]').forEach(b => b.classList.toggle('on', b.dataset.plan===plusPlan));
 }
 $('#plusCard').onclick = openPlus;
+renderPlus();
 $('#plans').addEventListener('click', e => { const b = e.target.closest('[data-plan]'); if (b){ plusPlan = b.dataset.plan; renderPlus(); } });
 $('#plusTest').onclick = () => { plusPreview = !plusPreview; store.set('plusPreview', plusPreview); if (!plusPreview && alarm && alarm.on){ alarm.on = false; store.set('alarm', alarm); armAlarm(); } renderPlus(); render(); toast(plusPreview ? 'Aperçu Effem+ activé sur cet appareil' : 'Aperçu Effem+ désactivé'); };
 
