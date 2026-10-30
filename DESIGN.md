@@ -92,3 +92,6 @@ Règle : **un seul dégradé soleil visible par zone d'écran.** Le reste est en
 - Pas de logo de radio déformé, recoloré ou recadré au point de le rendre illisible.
 - Pas de faux logo : si on n'a pas le vrai, on affiche la vignette avec le nom.
 - Pas d'animation qui dure plus de 300 ms ou qui bloque une action.
+
+## Un mot de l'équipe (30 octobre 2026)
+- Écran plein, fond nuit #1E0E38. « psst… » en écriture manuscrite (Yellowtail, lagon), titre « UN MOT DE L'ÉQUIPE » en Bebas Neue 46 px sur deux lignes, deux paragraphes courts en lilas clair 17 px, trois raisons avec icône au trait soleil (zéro pub dans l'app, nouveautés régulières, une vraie personne qui répond), signature « Merci, l'équipe Effem » en manuscrite mandarine, bouton dégradé soleil « SOUTENIR L'ÉQUIPE », lien « Plus tard » en lilas. Calme : aucune pression, aucun prix sur cette page (les prix sont sur la feuille Effem+ juste après).

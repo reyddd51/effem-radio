@@ -199,6 +199,15 @@ nav.tabs button.on svg{stroke:var(--magenta)}
 .plus-card .pf{display:flex;flex-wrap:wrap;gap:6px}
 .plus-card .pf span{height:28px;padding:0 10px;border-radius:14px;background:rgba(23,11,46,.5);display:inline-flex;align-items:center;font-size:13px;font-weight:700}
 .plus-card .go{position:absolute;right:16px;top:18px;font-size:13px;font-weight:800;color:var(--soleil)}
+/* Un mot de l'équipe (design C « Nuit calme », 30 octobre 2026) : s'affiche avant l'offre Effem+ */
+#motTeam{z-index:35;background:#1E0E38;padding:calc(env(safe-area-inset-top,0px) + 12px) 22px calc(env(safe-area-inset-bottom,0px) + 18px);gap:18px;overflow-y:auto}
+#motTeam .psst{font:400 30px/1 var(--script);color:var(--lagon)}
+#motTeam h1{margin:0;font:400 46px/.95 var(--display);letter-spacing:.5px}
+#motTeam p{margin:0;font-size:17px;line-height:26px;font-weight:500;color:#E6DCF5}
+#motTeam .why{display:flex;flex-direction:column;gap:14px;padding:4px 0}
+#motTeam .why span{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:700}
+#motTeam .sig{font:400 30px/1 var(--script);color:var(--mandarine)}
+#motTeam .later{height:44px;border-radius:22px;background:transparent;color:var(--lilas);font-size:14px;font-weight:700}
 .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .plans button{position:relative;border-radius:18px;background:var(--nuit2);padding:14px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
 .plans button.on{box-shadow:inset 0 0 0 2px var(--soleil);background:rgba(255,209,102,.10)}
@@ -631,6 +640,22 @@ html,body{touch-action:manipulation}   /* pas de zoom au double toucher */
   </div>
 
   <!-- FEUILLE EFFEM+ -->
+  <div class="layer" id="motTeam" hidden role="dialog" aria-label="Un mot de l’équipe">
+    <div class="row" style="justify-content:flex-end"><button class="round" id="motClose" aria-label="Fermer" style="font-weight:800">✕</button></div>
+    <div class="stack" style="gap:6px;padding-top:6px"><span class="psst">psst…</span><h1>UN MOT DE<br>L’ÉQUIPE</h1></div>
+    <p>Effem, c’est une toute petite équipe indépendante. On a fait l’app qu’on voulait écouter : la radio, sans pub, gratuite pour tout le monde.</p>
+    <p>Si elle te plaît, Effem+ nous aide à la garder comme ça.</p>
+    <div class="why">
+      <span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFD166" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 17 0a8.5 8.5 0 1 0 -17 0M6 6l12 12"/></svg>Zéro pub dans l’app</span>
+      <span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFD166" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 4v4h4M4 13a8 8 0 0 0 14.6 4.5M20 20v-4h-4"/></svg>Des nouveautés régulières</span>
+      <span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFD166" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 18l-1 3 3.5-1.5A8 8 0 1 0 5 18z"/></svg>Une vraie personne qui te répond</span>
+    </div>
+    <div style="flex:1;min-height:8px"></div>
+    <span class="sig">Merci, l’équipe Effem</span>
+    <button class="cta" id="motGo">SOUTENIR L’ÉQUIPE</button>
+    <button class="later" id="motLater">Plus tard</button>
+  </div>
+
   <div class="scrim" id="plusSheet" hidden>
     <div class="sheet" role="dialog" aria-label="Effem+">
       <span class="grab"></span>
@@ -646,6 +671,7 @@ html,body{touch-action:manipulation}   /* pas de zoom au double toucher */
       </div>
       <button class="cta" id="plusBuy" disabled>BIENTÔT DISPONIBLE</button>
       <p class="small muted" style="margin:-4px 0 0;text-align:center;line-height:18px">7 jours d’essai gratuit. Sans engagement, annulable à tout moment depuis ton compte Apple ou Google.</p>
+      <button class="small" id="plusMot" style="align-self:center;min-height:44px;background:none;color:var(--lagon);font-weight:700">Un mot de l’équipe ›</button>
       <div class="list" style="margin-top:4px">
         <button id="plusTest"><span>Aperçu de test<span class="hint">Débloque Effem+ sur cet appareil en attendant l’ouverture des abonnements.</span></span><span id="plusTestVal" style="font-size:15px;color:var(--soleil)"></span></button>
       </div>
@@ -1648,7 +1674,13 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) chec
 let plusPreview = store.get('plusPreview', false), plusPlan = 'y';
 const hasPlus = () => plusPreview;
 function needPlus(f){ if (hasPlus()) return f(); openPlus(); }
-function openPlus(){ renderPlus(); $('#plusSheet').hidden = false; }
+function openPlus(){ if (!hasPlus() && !store.get('motVu', false)) return openMot(); renderPlus(); $('#plusSheet').hidden = false; }
+/* « Un mot de l'équipe » : montré la première fois qu'on ouvre Effem+, puis relisible depuis la feuille Effem+ */
+function openMot(){ $('#motTeam').scrollTop = 0; openLayer('motTeam'); }
+function closeMot(){ store.set('motVu', true); closeLayer('motTeam'); }
+$('#motGo').onclick = () => { closeMot(); renderPlus(); $('#plusSheet').hidden = false; };
+$('#motLater').onclick = closeMot; $('#motClose').onclick = closeMot;
+$('#plusMot').onclick = () => { $('#plusSheet').hidden = true; openMot(); };
 function renderPlus(){
   $('#plusTestVal').textContent = plusPreview ? 'Activé' : 'Non';
   $('#plusGo').textContent = plusPreview ? 'Aperçu activé ›' : 'Découvrir ›';
