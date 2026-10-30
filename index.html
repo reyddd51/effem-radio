@@ -273,6 +273,8 @@ nav.tabs button.on svg{stroke:var(--magenta)}
 .short::-webkit-scrollbar{display:none}
 .short button{flex-shrink:0;height:44px;padding:0 16px 0 12px;border-radius:22px;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;background:rgba(42,15,74,.55);box-shadow:inset 0 0 0 1px rgba(255,244,230,.12);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
 .short svg{flex-shrink:0}
+.short.cats button{padding:0 16px;font-weight:700}
+.short.cats button.on{background:var(--sunh);color:var(--nuit);box-shadow:none;font-weight:800}
 /* Podcasts */
 .excard.pod{background:linear-gradient(135deg,rgba(25,195,180,.20),rgba(139,43,217,.22) 60%,rgba(42,15,74,.6));box-shadow:inset 0 0 0 1px rgba(25,195,180,.35)}
 .res .ep .n{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15px;line-height:20px}
@@ -468,6 +470,7 @@ html,body{touch-action:manipulation}   /* pas de zoom au double toucher */
           <div class="recent" id="pdMine"></div>
         </div>
         <div class="row" style="justify-content:space-between;align-items:baseline;margin-top:2px"><h2 class="sec" style="font-size:22px">TOP DES PODCASTS</h2><span class="small muted" id="pdTopSub"></span></div>
+        <div class="short cats" id="pdCats" role="tablist" aria-label="Catégories de podcasts"></div>
         <ul class="res" id="pdTop"></ul>
       </div>
       <div id="pdRes" hidden class="stack" style="gap:6px">
@@ -1562,10 +1565,21 @@ async function itunes(path){   // l'annuaire répond parfois sans autorisation d
 const toShow = x => ({ id:String(x.collectionId), name:x.collectionName, artist:x.artistName, favicon:httpsUrl(x.artworkUrl600 || x.artworkUrl100) });
 follow.forEach(x => podIndex[x.id] = x);
 /* Top : classement du jour d'Apple Podcasts en France (gardé 6 h sur le téléphone) */
+/* Catégories du classement (identifiants des genres Apple Podcasts) */
+const POD_CATS = [['','Tout'],['1489','Actualités'],['1488','Faits divers'],['1303','Humour'],['1324','Société'],['1487','Histoire'],['1545','Sport'],
+  ['1533','Sciences'],['1512','Santé et bien-être'],['1321','Business'],['1301','Culture'],['1483','Fiction'],['1305','Enfants et famille'],
+  ['1304','Éducation'],['1310','Musique'],['1309','Ciné et séries'],['1318','Tech'],['1502','Loisirs'],['1314','Religion']];
+let podCat = '';
+$('#pdCats').innerHTML = POD_CATS.map(([g,n]) => `<button role="tab" data-cat="${g}" aria-selected="${g===podCat}" class="${g===podCat?'on':''}">${esc(n)}</button>`).join('');
+$('#pdCats').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (!b || b.dataset.cat === podCat) return;
+  podCat = b.dataset.cat;
+  document.querySelectorAll('#pdCats [data-cat]').forEach(x => { const on = x.dataset.cat === podCat; x.classList.toggle('on', on); x.setAttribute('aria-selected', on); });
+  b.scrollIntoView({block:'nearest', inline:'center', behavior:'smooth'});
+  $('#pdTop').innerHTML = '<li class="small muted">Chargement du classement…</li>'; podsHome(false, true); });
 async function loadPodTop(){
-  const c = store.get('podTop', null);
+  const key = 'podTop' + podCat, c = store.get(key, null);
   if (c && c.t > Date.now() - 6*36e5 && c.list.length) { c.list.forEach(x => podIndex[x.id] = x); return c.list; }
-  const d = await itunes('fr/rss/toppodcasts/limit=60/json');
+  const d = await itunes(`fr/rss/toppodcasts/limit=60${podCat ? '/genre=' + podCat : ''}/json`);
   const seen = new Set(), list = [];
   for (const e of (d.feed && d.feed.entry) || []){
     const name = e['im:name'].label, k = norm(name); if (seen.has(k)) continue; seen.add(k);
@@ -1573,7 +1587,7 @@ async function loadPodTop(){
     list.push({ id:e.id.attributes['im:id'], name, artist:e['im:artist'].label, favicon:httpsUrl(img), cat:(e.category && e.category.attributes.label) || '' });
     if (list.length === 50) break;
   }
-  store.set('podTop', {t:Date.now(), list}); list.forEach(x => podIndex[x.id] = x);
+  store.set(key, {t:Date.now(), list}); list.forEach(x => podIndex[x.id] = x);
   return list;
 }
 const chev = '<span class="muted" style="font-size:20px">›</span>';
@@ -1582,10 +1596,10 @@ function renderPdMine(){
   $('#pdMineWrap').hidden = !follow.length;
   $('#pdMine').innerHTML = follow.map(s => `<button class="logo" data-show="${esc(s.id)}" aria-label="${esc(s.name)}">${logoHTML(s,10)}</button>`).join('');
 }
-async function podsHome(clear = true){
+async function podsHome(clear = true, keepScroll = false){
   const seq = ++pdSeq; pdMode = ''; podsLoaded = true;
   if (clear){ $('#pq').value = ''; $('#pqClear').hidden = true; }
-  $('#pdHome').hidden = false; $('#pdRes').hidden = true; $('#v-pods').scrollTop = 0;
+  $('#pdHome').hidden = false; $('#pdRes').hidden = true; if (!keepScroll) $('#v-pods').scrollTop = 0;
   renderPdMine();
   if (!$('#pdTop').children.length) $('#pdTop').innerHTML = '<li class="small muted">Chargement du classement…</li>';
   try{
@@ -1593,10 +1607,11 @@ async function podsHome(clear = true){
     const pod = [1,0,2].map(i => { const s = list[i], big = i===0, sz = big ? 96 : i===1 ? 76 : 70;
       return `<button data-show="${esc(s.id)}" class="${big?'first':''}" aria-label="N°${i+1} ${esc(s.name)}"><span class="pl"><span class="logo" style="width:${sz}px;height:${sz}px">${logoHTML(s,14)}</span><span class="rk">${i+1}</span></span><span class="base" style="height:${big?84:i===1?64:54}px;padding-left:4px;padding-right:4px"><span class="bn" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(s.name)}</span><span class="bv" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px">${esc(s.artist)}</span></span></button>`; }).join('');
     $('#pdTopSub').textContent = 'Apple Podcasts · aujourd’hui';
+    if (list.length < 3) throw new Error('vide');
     $('#pdTop').innerHTML = `<li style="display:block;padding:0"><div class="podium">${pod}</div></li>` + list.slice(3).map((s,j) => `<li>
       <span class="rank">${j+4}</span>
       <button class="main" data-show="${esc(s.id)}"><span class="logo" style="width:52px;height:52px;border-radius:12px">${logoHTML(s,11)}</span><span style="min-width:0;flex:1;display:flex;flex-direction:column;gap:2px"><span class="n" style="font-size:15px">${esc(s.name)}</span><span class="m">${esc(s.artist)}${s.cat ? ' · ' + esc(s.cat) : ''}</span></span>${chev}</button></li>`).join('')
-      + `<li class="small muted" style="display:block;line-height:19px;padding:14px 2px">Source : classement Apple Podcasts en France, mis à jour chaque jour. Les épisodes viennent directement de chaque éditeur.</li>`;
+      + `<li class="small muted" style="display:block;line-height:19px;padding:14px 2px">Source : classement Apple Podcasts en France${podCat ? ', catégorie « ' + esc((POD_CATS.find(c => c[0]===podCat)||[])[1]||'') + ' »' : ''}, mis à jour chaque jour. Les épisodes viennent directement de chaque éditeur.</li>`;
   }catch(e){ if (seq !== pdSeq) return;
     $('#pdTop').innerHTML = `<li class="empty"><h3>CLASSEMENT INJOIGNABLE</h3><p class="muted" style="margin:0">Vérifie ta connexion puis réessaie.</p><button class="ghost" id="pdRetry" style="margin-top:12px">Réessayer</button></li>`; }
   requestAnimationFrame(() => fitAll($('#v-pods')));
@@ -1674,7 +1689,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261030140814';
+const BUILD = '20261030140937';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
