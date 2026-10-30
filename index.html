@@ -245,7 +245,8 @@ nav.tabs button.on svg{stroke:var(--magenta)}
 .excard.top{background:linear-gradient(135deg,rgba(255,209,102,.22),rgba(255,46,136,.18) 55%,rgba(42,15,74,.6));box-shadow:inset 0 0 0 1px rgba(255,209,102,.35)}
 .stack3{position:relative;width:112px;height:66px;flex-shrink:0}
 .stack3 .logo{position:absolute;border-radius:15px;box-shadow:0 0 0 1px rgba(255,244,230,.08),0 8px 18px rgba(0,0,0,.4)}
-.chips{display:flex;gap:6px;overflow:hidden}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span.more{background:none;box-shadow:inset 0 0 0 1px rgba(25,195,180,.5);color:var(--lagon)}
 .chips span{flex-shrink:0;height:30px;padding:0 12px;border-radius:15px;display:flex;align-items:center;font-size:12.5px;font-weight:700;background:rgba(255,244,230,.07)}
 .podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;padding:8px 0 4px}
 .podium button{display:flex;flex-direction:column;align-items:center;width:104px}
@@ -1404,7 +1405,9 @@ $('#q').addEventListener('input', () => {
 /* ---------- Radios locales par région ---------- */
 const REGIONS = [...new Set(LOCAL.map(r => r.r))].sort((a,b) => a.localeCompare(b,'fr'));
 $('#localSub').textContent = REGIONS.length + ' régions, outre-mer compris';
-$('#localChips').innerHTML = ['Bretagne','Guadeloupe','Occitanie','La Réunion',"Provence-Alpes-Côte d'Azur"].filter(r => REGIONS.includes(r)).map(r => `<span>${esc(r.replace("Provence-Alpes-Côte d'Azur",'Provence'))}</span>`).join('');
+{ const shown = ['Bretagne','Guadeloupe','Occitanie','La Réunion',"Provence-Alpes-Côte d'Azur"].filter(r => REGIONS.includes(r));
+  $('#localChips').innerHTML = shown.map(r => `<span>${esc(r.replace("Provence-Alpes-Côte d'Azur",'Provence'))}</span>`).join('')
+    + (REGIONS.length > shown.length ? `<span class="more">+ ${REGIONS.length - shown.length} autres</span>` : ''); }
 $('#localCard').onclick = showRegions;
 let regionMode = false;
 function renderTop(){
@@ -1671,7 +1674,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261030140633';
+const BUILD = '20261030140814';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
