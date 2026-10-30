@@ -13,7 +13,7 @@ on:
 jobs:
   testflight:
     runs-on: macos-15-intel   # les Mac arm64 de GitHub manquent souvent de place
-    timeout-minutes: 45
+    timeout-minutes: 80
     steps:
       - uses: actions/checkout@v4
 
@@ -97,3 +97,38 @@ jobs:
             -allowProvisioningUpdates \
             -authenticationKeyPath "$RUNNER_TEMP/keys/AuthKey_${KEY_ID}.p8" \
             -authenticationKeyID "$KEY_ID" -authenticationKeyIssuerID "$ISSUER"
+
+      # Les builds envoyés hors de Xcode Cloud ne vont pas tout seuls aux testeurs internes :
+      # on attend qu'Apple ait fini de préparer le build, puis on l'ajoute à chaque groupe de tests internes (« Équipe »).
+      - name: Ajout aux testeurs internes
+        env:
+          KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ISSUER: ${{ secrets.ASC_ISSUER_ID }}
+          APP_ID: "6825839731"
+        run: |
+          python3 -m pip install --quiet "pyjwt[crypto]" requests || python3 -m pip install --quiet --break-system-packages "pyjwt[crypto]" requests
+          python3 - <<'PY'
+          import os, time, jwt, requests
+          key = open(f"{os.environ['RUNNER_TEMP']}/keys/AuthKey_{os.environ['KEY_ID']}.p8").read()
+          def h():
+              t = int(time.time())
+              tok = jwt.encode({"iss": os.environ["ISSUER"], "iat": t, "exp": t + 1100, "aud": "appstoreconnect-v1"}, key, algorithm="ES256", headers={"kid": os.environ["KEY_ID"]})
+              return {"Authorization": f"Bearer {tok}"}
+          api = "https://api.appstoreconnect.apple.com/v1"
+          app, num = os.environ["APP_ID"], os.environ["GITHUB_RUN_NUMBER"]
+          build = None
+          for i in range(70):   # jusqu'à 35 minutes
+              r = requests.get(f"{api}/builds", headers=h(), params={"filter[app]": app, "filter[version]": num, "limit": 1}).json()
+              d = r.get("data") or []
+              state = d[0]["attributes"].get("processingState") if d else "pas encore visible"
+              print(f"Build {num} : {state}")
+              if state == "VALID": build = d[0]["id"]; break
+              if state in ("FAILED", "INVALID"): raise SystemExit(f"Apple a refusé le build : {state}")
+              time.sleep(30)
+          if not build: raise SystemExit("Build pas prêt à temps : l'ajouter à la main dans App Store Connect › TestFlight › Équipe › Builds.")
+          groups = requests.get(f"{api}/apps/{app}/betaGroups", headers=h(), params={"limit": 50}).json().get("data", [])
+          for g in groups:
+              if g["attributes"].get("isInternalGroup"):
+                  r = requests.post(f"{api}/betaGroups/{g['id']}/relationships/builds", headers=h(), json={"data": [{"type": "builds", "id": build}]})
+                  print(f"Groupe « {g['attributes'].get('name')} » : {'ajouté' if r.status_code in (200, 204) else r.text}")
+          PY
