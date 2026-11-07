@@ -857,7 +857,39 @@ mine = mine.filter((m,i) => mine.findIndex(x => same(x, m)) === i); save();
 function save(){ store.set('mine', mine); store.set('recent', recent); }
 
 /* ---------- audio : pause = son coupé, le direct reste connecté ---------- */
-const A = new Audio();
+/* App iPhone : le son passe par le lecteur natif (EffemPlayerPlugin.swift), seule façon de continuer écran éteint.
+   NativeAudio imite un élément <audio> pour que tout le reste du code reste identique. */
+const NP = (() => { try{ const C = window.Capacitor; return C && C.getPlatform && C.getPlatform()==='ios' && C.Plugins && C.Plugins.EffemPlayer || null; }catch(e){ return null; } })();
+class NativeAudio extends EventTarget {
+  constructor(){
+    super(); this._src = ''; this._muted = false; this._t = 0; this.duration = NaN; this.paused = true; this.readyState = 0; this.preload = 'none'; this.volume = 1;
+    NP.addListener('state', d => { try{ this._on(d || {}); }catch(e){} });
+  }
+  _on(d){
+    if (typeof d.t === 'number') this._t = d.t;
+    if (typeof d.d === 'number') this.duration = d.d; else if (d.live) this.duration = Infinity;
+    if (typeof d.muted === 'boolean') this._muted = d.muted;
+    const ev = d.ev; if (!ev) return;
+    if (ev === 'playing'){ this.paused = false; this.readyState = 4; }
+    if (ev === 'loadedmetadata' && this.readyState < 1) this.readyState = 1;
+    if (ev === 'pause' || ev === 'ended' || ev === 'error') this.paused = true;
+    if (ev === 'track' || ev === 'alarm'){ this._src = d.url || this._src; this.paused = false; }
+    const e = new Event(ev); e.detail = d; this.dispatchEvent(e);
+  }
+  get src(){ return this._src; }
+  set src(u){ this._src = u || ''; this._t = 0; this.duration = NaN; this.readyState = 0; this.paused = true; if (u) NP.load({ url: u, live: !(cur && cur.ep) }); }
+  getAttribute(k){ return k === 'src' ? (this._src || null) : null; }
+  setAttribute(){}
+  removeAttribute(k){ if (k === 'src') this._src = ''; }
+  load(){ if (!this._src){ this.paused = true; this.readyState = 0; NP.stop(); } }
+  play(){ this.paused = false; return NP.play().then(() => undefined); }
+  pause(){ if (this.paused) return; this.paused = true; NP.pause(); this.dispatchEvent(new Event('pause')); }
+  get muted(){ return this._muted; }
+  set muted(m){ m = !!m; if (m === this._muted) return; this._muted = m; NP.setMuted({ muted: m, keepMin: keepMin }); }
+  get currentTime(){ return this._t; }
+  set currentTime(t){ this._t = t; NP.seek({ t }); }
+}
+const A = NP ? new NativeAudio() : new Audio();
 A.preload = 'none';
 A.setAttribute('playsinline','');
 let ourPause = false, connSeq = 0;
@@ -957,7 +989,17 @@ function step(d){
   connect(list[i]);
 }
 
-A.addEventListener('playing', () => { hadPlayed = true; if (retrying) stopRetry(); clearTimeout(stallT); if (!A.muted && cur) setStatus('live'); });
+A.addEventListener('playing', () => { hadPlayed = true; if (retrying) stopRetry(); clearTimeout(stallT); if (!A.muted && cur){ wantPlay = true; sysPaused = false; setStatus('live'); } });
+/* Lecteur natif de l'iPhone : pause / lecture / radio suivante faites depuis l'écran verrouillé ou le centre de contrôle */
+if (NP){
+  A.addEventListener('mutechange', e => { const m = e.detail && e.detail.muted;
+    if (m && cur && !cur.ep && status !== 'muted') softPause();
+    else if (!m && cur && (status === 'muted' || status === 'stopped')){ clearKeep(); wantPlay = true; setStatus(status === 'muted' ? 'live' : 'loading'); } });
+  A.addEventListener('track', e => { const u = e.detail && e.detail.url; const list = mine.length ? mine : DEFAULTS; const st = list.find(x => x.url === u); if (!st) return;
+    clearKeep(); stopRetry(); hadPlayed = false; wantPlay = true; connected = true; cur = st;
+    recent = [st, ...recent.filter(r => r.url !== st.url)].slice(0, 8); store.set('last', st); save(); setMediaSession(); setStatus('loading'); });
+  A.addEventListener('alarm', () => { if (alarm && alarm.on) ringAlarm(true); });
+}
 A.addEventListener('waiting', () => { if (!A.muted && status==='live') setStatus('loading');
   clearTimeout(stallT); if (wantPlay && cur && !cur.ep) stallT = setTimeout(() => { if (status==='loading' && wantPlay) scheduleRetry(); }, 12000); });   // bloqué plus de 12 s : on relance
 A.addEventListener('error', () => { if (!A.getAttribute('src')) return; connected=false; if (scheduleRetry()) return; clearKeep(); setStatus('error'); });
@@ -999,8 +1041,11 @@ function nativeSession(){
 }
 function nativeState(st){ if (!NMS || st === nmsState) return; nmsState = st; try{ NMS.setPlaybackState({playbackState: st}); }catch(e){} }
 
+function nativeQueue(){ if (!NP) return; try{ NP.setQueue({ items: (mine.length ? mine : DEFAULTS).slice(0, FAV_N).map(st => ({ url: st.url, title: st.name, artwork: nativeArt(st) })) }); }catch(e){} }
+function nativeArt(st){ const src = logoSrc(st) || ''; return src.startsWith('data:image/svg') ? '' : src; }
 function setMediaSession(){
   nativeSession();
+  if (NP && cur){ try{ const ep = !!cur.ep; NP.setInfo({ title: cur.name, artist: ep ? (cur.show || 'Podcast') : 'En direct · Effem Radio', album: ep ? 'Podcast' : (cur.meta || ''), artwork: nativeArt(cur) }); nativeQueue(); }catch(e){} }
   if (!('mediaSession' in navigator) || !cur) return;
   try{
     const src = logoSrc(cur);
@@ -1019,6 +1064,7 @@ function setMediaSession(){
 /* ---------- minuteur ---------- */
 function setSleep(min){
   clearTimeout(sleepTimer);
+  if (NP) try{ NP.sleep({ min: min || 0 }); }catch(e){}
   if (!min){ sleepEnd = 0; render(); return; }
   sleepEnd = Date.now() + min*60000;
   sleepTimer = setTimeout(() => { sleepEnd = 0; hardStop(); toast('Minuteur terminé : radio arrêtée'); }, min*60000);
@@ -1689,7 +1735,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261030140937';
+const BUILD = '20261107131520';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
@@ -1778,22 +1824,25 @@ const SILENCE = (() => { const n = 4000, b = new Uint8Array(44 + n), v = new Dat
   let bin = ''; b.forEach(x => bin += String.fromCharCode(x)); return 'data:audio/wav;base64,' + btoa(bin); })();
 const KA = new Audio(); KA.loop = true; KA.setAttribute('playsinline','');
 function radioActive(){ return status==='live' || status==='loading' || status==='muted'; }
-function keepAwake(){ const need = (alarm && alarm.on && !radioActive()) || (retrying && status !== 'live');   // aussi pendant une reconnexion, pour que l'iPhone ne mette pas l'app en veille
+function keepAwake(){ if (NP) return;   // iPhone : le lecteur natif garde l'app éveillée
+  const need = (alarm && alarm.on && !radioActive()) || (retrying && status !== 'live');   // aussi pendant une reconnexion, pour que l'iPhone ne mette pas l'app en veille
   if (!need) { try{ KA.pause(); }catch(e){} return; }
   if (!KA.src) KA.src = SILENCE; const p = KA.play(); if (p && p.catch) p.catch(() => {}); }
 function nextAt(a){ const d = new Date(); d.setHours(a.h, a.m, 0, 0); if (d.getTime() <= Date.now() + 1000) d.setDate(d.getDate() + 1); return d.getTime(); }
 function armAlarm(){
   clearInterval(alarmTimer); alarmTimer = null;
   if (alarm && alarm.on){ if (!alarm.at || alarm.at < Date.now() - 6*3600e3) alarm.at = nextAt(alarm); store.set('alarm', alarm); alarmTimer = setInterval(checkAlarm, 5000); checkAlarm(); }
+  if (NP) try{ const on = alarm && alarm.on && alarm.st; NP.armAlarm(on ? { at: alarm.at, url: alarm.st.url, title: alarm.st.name, artwork: nativeArt(alarm.st) } : { at: 0 }); }catch(e){}
   keepAwake(); renderAlarmRow();
 }
 function checkAlarm(){ if (alarm && alarm.on && alarm.at && Date.now() >= alarm.at) ringAlarm(); }
-function ringAlarm(){
+function ringAlarm(fromNative){
   const st = alarm.st;
+  if (NP && !fromNative && alarm.at && Date.now() - alarm.at < 120000) return;   // iPhone : c'est le lecteur natif qui sonne, la page suit
   if (alarm.repeat) alarm.at = nextAt(alarm); else { alarm.on = false; alarm.at = 0; }
   store.set('alarm', alarm);
   setSleep(0);
-  if (st){ connect(st); show('home'); openPlayer(); toast('Bonjour ! ⏰ ' + st.name); }
+  if (st){ if (fromNative){ cur = st; wantPlay = true; connected = true; setMediaSession(); setStatus('loading'); } else connect(st); show('home'); openPlayer(); toast('Bonjour ! ⏰ ' + st.name); }
   // Montée du son en douceur (sans effet sur iPhone, où seul le bouton de volume compte)
   clearInterval(rampTimer); let v = .15; try{ A.volume = v; }catch(e){}
   rampTimer = setInterval(() => { v = Math.min(1, v + .05); try{ A.volume = v; }catch(e){} if (v >= 1) clearInterval(rampTimer); }, 3000);

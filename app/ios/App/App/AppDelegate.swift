@@ -11,25 +11,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // La radio continue écran éteint ou dans une autre app : catégorie « lecture » du système audio.
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
         try? AVAudioSession.sharedInstance().setActive(true)
-        // Appel, Siri, alarme… : à la fin de l'interruption on réactive le son et on prévient la page pour qu'elle reprenne
-        NotificationCenter.default.addObserver(self, selector: #selector(audioInterruption(_:)),
-                                               name: AVAudioSession.interruptionNotification,
-                                               object: AVAudioSession.sharedInstance())
+        // Les appels, Siri et alarmes sont gérés par le lecteur natif (EffemPlayerPlugin.swift)
         return true
-    }
-
-    @objc func audioInterruption(_ note: Notification) {
-        guard let info = note.userInfo,
-              let raw = info[AVAudioSessionInterruptionTypeKey] as? UInt,
-              let type = AVAudioSession.InterruptionType(rawValue: raw) else { return }
-        guard type == .ended else { return }
-        let opts = AVAudioSession.InterruptionOptions(rawValue: (info[AVAudioSessionInterruptionOptionKey] as? UInt) ?? 0)
-        try? AVAudioSession.sharedInstance().setActive(true)
-        let again = opts.contains(.shouldResume) ? "true" : "false"
-        DispatchQueue.main.async {
-            let vc = self.window?.rootViewController as? CAPBridgeViewController
-            vc?.bridge?.webView?.evaluateJavaScript("window.effemAudio && window.effemAudio('ended', \(again))", completionHandler: nil)
-        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
