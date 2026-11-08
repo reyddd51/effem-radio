@@ -23,7 +23,7 @@ Lire ce fichier en entier avant toute modification de l'app. Les règles de desi
 - `source/radio_logos/` : logos intégrés. Un fichier `cle.png` (carré, 320 px) devient le logo `cle` ; l'associer au nom de la radio dans `KNOWN` (clé = nom normalisé, sans espaces ni accents).
 - `source/data/local.json` : radios locales par région (relevé Radio Browser).
 - Annuaire en direct : Radio Browser (`de1.api.radio-browser.info`), uniquement les flux en `https://`.
-- Top radios : classement ACPM du mois (écoutes actives en ligne en France), dans `TOP` ; autorisation de réutilisation à demander à l'ACPM avant le lancement public.
+- Top radios : classement ACPM du mois (écoutes actives en ligne en France), dans `TOP` ; autorisation de réutilisation obtenue de l'ACPM (confirmée par Johanna le 8 novembre 2026) ; garder la mention « classement ACPM » et le mois. Mettre à jour `TOP` chaque mois quand l'ACPM publie le nouveau classement (vers le milieu du mois suivant).
 - Publication : GitHub Pages, dépôt `reyddd51/effem-radio`, branche `main`, domaine **effemradio.fr** (fichier `CNAME`, zone DNS chez OVH). L’app en ligne : https://effemradio.fr/
 
 ## Façon de travailler
