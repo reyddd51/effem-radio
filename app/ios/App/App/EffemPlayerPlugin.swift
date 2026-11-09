@@ -49,6 +49,8 @@ public class EffemPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
     private var retryN = 0
     private var hadPlayed = false
     private var wasAudibleBeforeInterruption = false
+    private var interrupted = false          // une autre app (vidéo avec du son, appel…) a pris le son
+    private var guardTimer: Timer?
     private var info: [String: Any] = [:]
     private var artwork: MPMediaItemArtwork?
     private var artworkKey = ""
@@ -67,7 +69,46 @@ public class EffemPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
         timeObs = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 2), queue: .main) { [weak self] _ in
             self?.emit("timeupdate")
         }
-        DispatchQueue.main.async { self.setupRemote() }
+        NotificationCenter.default.addObserver(self, selector: #selector(routeChanged(_:)), name: AVAudioSession.routeChangeNotification, object: s)
+        NotificationCenter.default.addObserver(self, selector: #selector(wentBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(cameBack), name: UIApplication.didBecomeActiveNotification, object: nil)
+        DispatchQueue.main.async {
+            self.setupRemote()
+            // Garde-fou : tant qu'on veut entendre la radio et qu'aucune autre app n'a pris le son, on relance si l'iPhone l'a coupée
+            self.guardTimer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { [weak self] _ in self?.keepPlaying() }
+        }
+    }
+
+    private func keepPlaying() {
+        guard wantPlaying, !interrupted, player.currentItem != nil, player.timeControlStatus == .paused, retryTimer == nil else { return }
+        activate()
+        if live, player.currentItem?.status == .failed { open(url) }
+        player.play()
+    }
+
+    @objc private func wentBackground() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { self.keepPlaying() }
+    }
+
+    @objc private func cameBack() {
+        // Retour dans Effem : si une autre app avait pris le son sans le rendre, on reprend
+        if interrupted, wasAudibleBeforeInterruption, !AVAudioSession.sharedInstance().isOtherAudioPlaying {
+            interrupted = false; wasAudibleBeforeInterruption = false
+            wantPlaying = true; activate()
+            if live { open(url) }
+            player.play()
+        }
+    }
+
+    // Écouteurs ou casque débranchés : on s'arrête (règle d'Apple), sans repartir tout seul sur le haut-parleur
+    @objc private func routeChanged(_ n: Notification) {
+        guard let raw = n.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt,
+              let reason = AVAudioSession.RouteChangeReason(rawValue: raw), reason == .oldDeviceUnavailable else { return }
+        DispatchQueue.main.async {
+            guard self.wantPlaying, !self.muted else { return }
+            if self.live, self.keepMin > 0 { self.applyMute(true, notify: true) }
+            else { self.wantPlaying = false; self.player.pause(); self.emit("pause") }
+        }
     }
 
     // MARK: - Commandes venant de la page
@@ -343,12 +384,18 @@ public class EffemPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
               let type = AVAudioSession.InterruptionType(rawValue: raw) else { return }
         DispatchQueue.main.async {
             if type == .began {
+                // « L'app a été suspendue » n'est pas une vraie interruption : on l'ignore
+                if #available(iOS 16.0, *), let r = info[AVAudioSessionInterruptionReasonKey] as? UInt,
+                   AVAudioSession.InterruptionReason(rawValue: r) == .appWasSuspended { return }
+                if (info[AVAudioSessionInterruptionWasSuspendedKey] as? Bool) == true { return }
+                self.interrupted = true
                 self.wasAudibleBeforeInterruption = self.wantPlaying && !self.muted && self.player.currentItem != nil
                 self.cancelRetry()
                 self.emit("pause")
                 self.updateNowPlaying()
             } else {
                 let opts = AVAudioSession.InterruptionOptions(rawValue: (info[AVAudioSessionInterruptionOptionKey] as? UInt) ?? 0)
+                self.interrupted = false
                 self.activate()
                 if self.wasAudibleBeforeInterruption && opts.contains(.shouldResume) {
                     self.wantPlaying = true
@@ -407,6 +454,8 @@ public class EffemPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
     private func isAudible() -> Bool { return wantPlaying && !muted && player.timeControlStatus != .paused }
 
     private func remotePlay() {
+        interrupted = false; wasAudibleBeforeInterruption = false
+        activate()
         if live {
             if muted, player.currentItem != nil, player.timeControlStatus != .paused {
                 applyMute(false, notify: true)

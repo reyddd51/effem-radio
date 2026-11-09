@@ -1735,7 +1735,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261107131520';
+const BUILD = '20261109104926';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
@@ -1822,7 +1822,8 @@ let alarm = store.get('alarm', null), alarmTimer = null, alarmPick = null, alarm
 const SILENCE = (() => { const n = 4000, b = new Uint8Array(44 + n), v = new DataView(b.buffer), w = (o, t) => [...t].forEach((c,i) => b[o+i] = c.charCodeAt(0));
   w(0,'RIFF'); v.setUint32(4, 36+n, true); w(8,'WAVEfmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true); v.setUint32(24,8000,true); v.setUint32(28,8000,true); v.setUint16(32,1,true); v.setUint16(34,8,true); w(36,'data'); v.setUint32(40,n,true); b.fill(128, 44);
   let bin = ''; b.forEach(x => bin += String.fromCharCode(x)); return 'data:audio/wav;base64,' + btoa(bin); })();
-const KA = new Audio(); KA.loop = true; KA.setAttribute('playsinline','');
+/* Sur iPhone aucun lecteur web ne doit exister : sa seule présence fait couper le son de l'app en arrière-plan par l'iPhone */
+const KA = NP ? null : new Audio(); if (KA){ KA.loop = true; KA.setAttribute('playsinline',''); }
 function radioActive(){ return status==='live' || status==='loading' || status==='muted'; }
 function keepAwake(){ if (NP) return;   // iPhone : le lecteur natif garde l'app éveillée
   const need = (alarm && alarm.on && !radioActive()) || (retrying && status !== 'live');   // aussi pendant une reconnexion, pour que l'iPhone ne mette pas l'app en veille
