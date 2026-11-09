@@ -79,7 +79,24 @@ public class EffemPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
         }
     }
 
+    private var quietChecks = 0
+
     private func keepPlaying() {
+        // Une autre app a pris le son (YouTube, Instagram… dès leur ouverture) mais ne joue rien d'audible :
+        // au bout de 2 vérifications (≈ 8 s) on reprend la radio. Si elle lance ensuite une vidéo avec du son, elle reprendra la main.
+        if interrupted, wasAudibleBeforeInterruption {
+            if AVAudioSession.sharedInstance().isOtherAudioPlaying { quietChecks = 0; return }
+            quietChecks += 1
+            if quietChecks >= 2 {
+                quietChecks = 0
+                interrupted = false; wasAudibleBeforeInterruption = false
+                wantPlaying = true; activate()
+                if live { open(url) }
+                player.play()
+            }
+            return
+        }
+        quietChecks = 0
         guard wantPlaying, !interrupted, player.currentItem != nil, player.timeControlStatus == .paused, retryTimer == nil else { return }
         activate()
         if live, player.currentItem?.status == .failed { open(url) }
