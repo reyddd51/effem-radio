@@ -674,7 +674,7 @@ html,body{touch-action:manipulation}   /* pas de zoom au double toucher */
         <button data-plan="l"><small>À vie</small><b>29,99 €</b><small>une fois</small></button>
       </div>
       <button class="cta paid" id="plusBuy" disabled>BIENTÔT DISPONIBLE</button>
-      <p class="small muted paid" id="plusLegal" style="margin:-4px 0 0;text-align:center;line-height:18px">7 jours d’essai gratuit. Sans engagement, annulable à tout moment depuis ton compte Apple ou Google.</p>
+      <p class="small muted paid" id="plusLegal" style="margin:-4px 0 0;text-align:center;line-height:18px">1 mois d’essai gratuit. Sans engagement, annulable à tout moment depuis ton compte Apple ou Google.</p>
       <button class="small paid" id="plusRestore" hidden style="align-self:center;min-height:44px;background:none;color:var(--lilas);font-weight:700">Restaurer mes achats</button>
       <button class="small paid" id="plusMot" style="align-self:center;min-height:44px;background:none;color:var(--lagon);font-weight:700">Un mot de l’équipe ›</button>
       <div class="list paid" style="margin-top:4px">
@@ -1736,7 +1736,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261121161047';
+const BUILD = '20261121161251';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
@@ -1799,11 +1799,11 @@ function renderPlus(){
     const bt = $('#plusBuy');
     if (!rcBusy){
       bt.disabled = plusActive || !rcPkgs[plusPlan];
-      bt.textContent = plusActive ? 'EFFEM+ EST ACTIVÉ ✓' : !rcPkgs[plusPlan] ? 'CHARGEMENT DES OFFRES…' : plusPlan === 'l' ? 'ACHETER À VIE' : 'ESSAYER 7 JOURS GRATUITS';
+      bt.textContent = plusActive ? 'EFFEM+ EST ACTIVÉ ✓' : !rcPkgs[plusPlan] ? 'CHARGEMENT DES OFFRES…' : plusPlan === 'l' ? 'ACHETER À VIE' : 'ESSAYER 1 MOIS GRATUIT';
     }
     $('#plusLegal').innerHTML = plusPlan === 'l'
       ? 'Paiement unique sur ton compte Apple, Effem+ à vie sur tes appareils. <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Conditions d’utilisation</a> · <a href="legal/confidentialite.html" target="_blank" rel="noopener">Confidentialité</a>'
-      : '7 jours gratuits, puis renouvellement automatique au prix indiqué, sauf résiliation au moins 24 h avant la fin de la période. Gère ou résilie ton abonnement dans les Réglages de l’iPhone › ton nom › Abonnements. <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Conditions d’utilisation</a> · <a href="legal/confidentialite.html" target="_blank" rel="noopener">Confidentialité</a>';
+      : '1 mois gratuit, puis renouvellement automatique au prix indiqué, sauf résiliation au moins 24 h avant la fin de la période. Gère ou résilie ton abonnement dans les Réglages de l’iPhone › ton nom › Abonnements. <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Conditions d’utilisation</a> · <a href="legal/confidentialite.html" target="_blank" rel="noopener">Confidentialité</a>';
   }
   document.querySelectorAll('#plans [data-plan]').forEach(b => b.classList.toggle('on', b.dataset.plan===plusPlan));
 }
