@@ -674,7 +674,8 @@ html,body{touch-action:manipulation}   /* pas de zoom au double toucher */
         <button data-plan="l"><small>À vie</small><b>29,99 €</b><small>une fois</small></button>
       </div>
       <button class="cta paid" id="plusBuy" disabled>BIENTÔT DISPONIBLE</button>
-      <p class="small muted paid" style="margin:-4px 0 0;text-align:center;line-height:18px">7 jours d’essai gratuit. Sans engagement, annulable à tout moment depuis ton compte Apple ou Google.</p>
+      <p class="small muted paid" id="plusLegal" style="margin:-4px 0 0;text-align:center;line-height:18px">7 jours d’essai gratuit. Sans engagement, annulable à tout moment depuis ton compte Apple ou Google.</p>
+      <button class="small paid" id="plusRestore" hidden style="align-self:center;min-height:44px;background:none;color:var(--lilas);font-weight:700">Restaurer mes achats</button>
       <button class="small paid" id="plusMot" style="align-self:center;min-height:44px;background:none;color:var(--lagon);font-weight:700">Un mot de l’équipe ›</button>
       <div class="list paid" style="margin-top:4px">
         <button id="plusTest"><span>Aperçu de test<span class="hint">Débloque Effem+ sur cet appareil en attendant l’ouverture des abonnements.</span></span><span id="plusTestVal" style="font-size:15px;color:var(--soleil)"></span></button>
@@ -1735,7 +1736,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261109104926';
+const BUILD = '20261121161047';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
@@ -1751,7 +1752,33 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) chec
 const LAUNCH_FREE = true;
 /* Le paiement arrivera avec les apps natives (App Store, Google Play). En attendant, « Aperçu de test » débloque Effem+ sur l'appareil. */
 let plusPreview = store.get('plusPreview', false), plusPlan = 'y';
-const hasPlus = () => LAUNCH_FREE || plusPreview;
+/* Paiement Effem+ (version 1.1) : abonnements Apple gérés par RevenueCat (@revenuecat/purchases-capacitor), sur l'app iPhone.
+   RC_KEY = clé publique iOS de RevenueCat (commence par « appl_ », pas un secret). Droit d'accès RevenueCat : « plus ».
+   Formules (offre « default ») : paquets Mensuel, Annuel, À vie. Rien ne s'active tant que LAUNCH_FREE est vrai ou RC_KEY vide. */
+const RC_KEY = '';
+const RC = (() => { try{ const C = window.Capacitor; return C && C.getPlatform && C.getPlatform()==='ios' && C.Plugins && C.Plugins.Purchases || null; }catch(e){ return null; } })();
+const PAY = !!(RC && RC_KEY && !LAUNCH_FREE);
+let plusActive = store.get('plusActive', false), rcPkgs = {}, rcBusy = false;
+const hasPlus = () => LAUNCH_FREE || plusActive || (!PAY && plusPreview);
+function rcInfo(r){
+  const ci = r && (r.customerInfo || r);
+  if (!ci || !ci.entitlements) return;
+  const a = !!(ci.entitlements.active && ci.entitlements.active.plus);
+  if (a !== plusActive){ plusActive = a; store.set('plusActive', a); if (!a && alarm && alarm.on){ alarm.on = false; store.set('alarm', alarm); armAlarm(); } render(); }
+  renderPlus();
+}
+async function rcInit(){
+  if (!PAY) return;
+  try{
+    await RC.configure({ apiKey: RC_KEY });
+    rcInfo(await RC.getCustomerInfo());
+    try{ RC.addCustomerInfoUpdateListener({}, r => rcInfo(r)); }catch(e){}
+    const o = await RC.getOfferings(), cur = o && (o.current || (o.offerings && o.offerings.current));
+    ((cur && cur.availablePackages) || []).forEach(p => { const k = {MONTHLY:'m', ANNUAL:'y', LIFETIME:'l'}[p.packageType]; if (k) rcPkgs[k] = p; });
+    renderPlus();
+  }catch(e){}
+}
+const rcCancelled = e => !!(e && (e.userCancelled || (e.data && e.data.userCancelled) || String(e.code) === '1' || /cancel/i.test(String(e.message || ''))));
 function needPlus(f){ if (hasPlus()) return f(); openPlus(); }
 function openPlus(){ if (!hasPlus() && !store.get('motVu', false)) return openMot(); renderPlus(); $('#plusSheet').hidden = false; }
 /* « Un mot de l'équipe » : montré la première fois qu'on ouvre Effem+, puis relisible depuis la feuille Effem+ */
@@ -1762,12 +1789,40 @@ $('#motLater').onclick = closeMot; $('#motClose').onclick = closeMot;
 $('#plusMot').onclick = () => { $('#plusSheet').hidden = true; openMot(); };
 function renderPlus(){
   $('#plusTestVal').textContent = plusPreview ? 'Activé' : 'Non';
-  $('#plusGo').textContent = LAUNCH_FREE ? 'Offert ›' : plusPreview ? 'Aperçu activé ›' : 'Découvrir ›';
+  $('#plusGo').textContent = LAUNCH_FREE ? 'Offert ›' : plusActive ? 'Activé ›' : (!PAY && plusPreview) ? 'Aperçu activé ›' : 'Découvrir ›';
   $('#plusFree').hidden = !LAUNCH_FREE; document.querySelectorAll('#plusSheet .paid').forEach(e => e.hidden = LAUNCH_FREE);
+  if (PAY){
+    $('#plusTest').parentElement.hidden = true;            // pas d'aperçu de test dans la version payante
+    $('#plusRestore').hidden = false;
+    const lbl = {m:'par mois', y:'par an', l:'une fois'};
+    document.querySelectorAll('#plans [data-plan]').forEach(b => { const p = rcPkgs[b.dataset.plan]; if (p && p.product){ b.querySelector('b').textContent = p.product.priceString; b.querySelector('small:last-child').textContent = lbl[b.dataset.plan]; } });
+    const bt = $('#plusBuy');
+    if (!rcBusy){
+      bt.disabled = plusActive || !rcPkgs[plusPlan];
+      bt.textContent = plusActive ? 'EFFEM+ EST ACTIVÉ ✓' : !rcPkgs[plusPlan] ? 'CHARGEMENT DES OFFRES…' : plusPlan === 'l' ? 'ACHETER À VIE' : 'ESSAYER 7 JOURS GRATUITS';
+    }
+    $('#plusLegal').innerHTML = plusPlan === 'l'
+      ? 'Paiement unique sur ton compte Apple, Effem+ à vie sur tes appareils. <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Conditions d’utilisation</a> · <a href="legal/confidentialite.html" target="_blank" rel="noopener">Confidentialité</a>'
+      : '7 jours gratuits, puis renouvellement automatique au prix indiqué, sauf résiliation au moins 24 h avant la fin de la période. Gère ou résilie ton abonnement dans les Réglages de l’iPhone › ton nom › Abonnements. <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Conditions d’utilisation</a> · <a href="legal/confidentialite.html" target="_blank" rel="noopener">Confidentialité</a>';
+  }
   document.querySelectorAll('#plans [data-plan]').forEach(b => b.classList.toggle('on', b.dataset.plan===plusPlan));
 }
 $('#plusCard').onclick = openPlus;
-renderPlus();
+renderPlus(); rcInit();
+$('#plusBuy').onclick = async () => {
+  if (!PAY || rcBusy || plusActive) return;
+  const p = rcPkgs[plusPlan]; if (!p){ toast('Offre indisponible pour le moment. Réessaie dans un instant.'); return; }
+  rcBusy = true; const bt = $('#plusBuy'); bt.disabled = true; bt.textContent = 'UN INSTANT…';
+  try{ rcInfo(await RC.purchasePackage({ aPackage: p })); if (plusActive){ $('#plusSheet').hidden = true; toast('Merci ! Effem+ est activé 🎉'); } }
+  catch(e){ if (!rcCancelled(e)) toast('Le paiement n’a pas abouti. Réessaie dans un instant.'); }
+  finally{ rcBusy = false; renderPlus(); }
+};
+$('#plusRestore').onclick = async () => {
+  if (!PAY || rcBusy) return; rcBusy = true;
+  try{ rcInfo(await RC.restorePurchases()); toast(plusActive ? 'Effem+ est de nouveau activé ✓' : 'Aucun achat Effem+ trouvé sur ce compte Apple.'); }
+  catch(e){ toast('Impossible de vérifier tes achats. Réessaie dans un instant.'); }
+  finally{ rcBusy = false; renderPlus(); }
+};
 $('#plans').addEventListener('click', e => { const b = e.target.closest('[data-plan]'); if (b){ plusPlan = b.dataset.plan; renderPlus(); } });
 $('#plusTest').onclick = () => { plusPreview = !plusPreview; store.set('plusPreview', plusPreview); if (!plusPreview && alarm && alarm.on){ alarm.on = false; store.set('alarm', alarm); armAlarm(); } renderPlus(); render(); toast(plusPreview ? 'Aperçu Effem+ activé sur cet appareil' : 'Aperçu Effem+ désactivé'); };
 
