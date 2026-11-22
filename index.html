@@ -1489,27 +1489,27 @@ function showRegion(r){
 }
 
 /* ---------- Top radios du mois (classement ACPM, écoute en ligne) ---------- */
-const TOP = { mois:'septembre 2026', src:'ACPM', rows:[
-  ['France Inter',33964486,'https://icecast.radiofrance.fr/franceinter-midfi.mp3'],
-  ['RTL',27533748,'https://icecast.rtl.fr/rtl-1-44-128'],
-  ['franceinfo',19613787,'https://icecast.radiofrance.fr/franceinfo-midfi.mp3'],
-  ['RMC',18764739,'https://audio.bfmtv.com/rmcradio_128.mp3'],
-  ['NRJ',12118779,'https://streaming.nrjaudio.fm/oumvmk8fnozc'],
-  ['Nostalgie',11099519,'https://streaming.nrjaudio.fm/oua8a3w2dqao'],
-  ['Europe 1',9972502,'https://stream.europe1.fr/europe1.aac'],
-  ['FIP',9677285,'https://icecast.radiofrance.fr/fip-midfi.mp3'],
-  ['Skyrock',7044258,'https://icecast.skyrock.net/s/natio_mp3_128k'],
-  ['ici',6792054,'https://icecast.radiofrance.fr/fb1071-midfi.mp3','ici Paris'],
-  ['Chérie FM',6429955,'https://cdnradio.streamakaci.com/cheriefm1.mp3'],
-  ['France Culture',6275224,'https://icecast.radiofrance.fr/franceculture-midfi.mp3'],
-  ['RTL2',6167093,'https://icecast.rtl.fr/rtl2-1-44-128'],
-  ['RFM',5919692,'https://stream.rfm.fr/rfm.mp3'],
-  ['Fun Radio',4387458,'https://icecast.funradio.fr/fun-1-44-128'],
-  ['Rire et Chansons',3673518,'https://streaming.nrjaudio.fm/ou8o8xgk7oiu'],
-  ['Europe 2',3553190,'https://europe2.lmn.fm/europe2.mp3'],
-  ['Radio Classique',3298336,'https://radioclassique.ice.infomaniak.ch/radioclassique-high.mp3'],
-  ['France Musique',2773277,'https://icecast.radiofrance.fr/francemusique-midfi.mp3'],
-  ['Radio FG',2727739,'https://radiofg.impek.com/fg.mp3']
+const TOP = { mois:'octobre 2026', src:'ACPM', rows:[
+  ['France Inter',35922063,'https://icecast.radiofrance.fr/franceinter-midfi.mp3'],
+  ['RTL',27880481,'https://icecast.rtl.fr/rtl-1-44-128'],
+  ['franceinfo',21731869,'https://icecast.radiofrance.fr/franceinfo-midfi.mp3'],
+  ['RMC',19363973,'https://audio.bfmtv.com/rmcradio_128.mp3'],
+  ['NRJ',11688970,'https://streaming.nrjaudio.fm/oumvmk8fnozc'],
+  ['Nostalgie',11661837,'https://streaming.nrjaudio.fm/oua8a3w2dqao'],
+  ['Europe 1',10882163,'https://stream.europe1.fr/europe1.aac'],
+  ['FIP',10602207,'https://icecast.radiofrance.fr/fip-midfi.mp3'],
+  ['ici',7421265,'https://icecast.radiofrance.fr/fb1071-midfi.mp3','ici Paris'],
+  ['Skyrock',7240422,'https://icecast.skyrock.net/s/natio_mp3_128k'],
+  ['Chérie FM',6808790,'https://cdnradio.streamakaci.com/cheriefm1.mp3'],
+  ['France Culture',6739159,'https://icecast.radiofrance.fr/franceculture-midfi.mp3'],
+  ['RTL2',6230978,'https://icecast.rtl.fr/rtl2-1-44-128'],
+  ['RFM',5639078,'https://stream.rfm.fr/rfm.mp3'],
+  ['Fun Radio',4273268,'https://icecast.funradio.fr/fun-1-44-128'],
+  ['Rire et Chansons',3767932,'https://streaming.nrjaudio.fm/ou8o8xgk7oiu'],
+  ['Radio Classique',3335560,'https://radioclassique.ice.infomaniak.ch/radioclassique-high.mp3'],
+  ['Europe 2',3307051,'https://europe2.lmn.fm/europe2.mp3'],
+  ['France Musique',3057071,'https://icecast.radiofrance.fr/francemusique-midfi.mp3'],
+  ['Radio FG',2747295,'https://radiofg.impek.com/fg.mp3']
 ]};
 $('#topSub').textContent = 'Top · ' + TOP.mois.split(' ')[0];
 $('#topStack').innerHTML = topStations().slice(0,3).reverse().map((t,j) => { const pos = [['right:0;top:10px;transform:rotate(8deg)',52],['right:34px;top:4px;transform:rotate(-4deg)',56],['right:64px;top:0',62]][j];
@@ -1736,7 +1736,7 @@ $('#v-pods').addEventListener('click', e => {
 /* ---------- mise à jour automatique ----------
    L'iPhone garde l'ancienne version en mémoire jusqu'à 10 minutes. À chaque ouverture, on demande la page
    la plus récente sans passer par cette mémoire ; si elle est plus récente, on la charge tout de suite. */
-const BUILD = '20261121161251';
+const BUILD = '20261122220726';
 function checkUpdate(){
   fetch('./?check=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.text() : '').then(t => {
     const m = t.match(/const BUILD = '(\d{14})'/);
